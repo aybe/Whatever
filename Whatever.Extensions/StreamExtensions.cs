@@ -3,6 +3,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
@@ -224,6 +225,28 @@ namespace Whatever.Extensions
                 .ConfigureAwait(false);
 
             ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
+        }
+
+        public static string ReadStringAscii(this Stream stream, int length)
+        {
+            Span<byte> buffer = stackalloc byte[length];
+
+            stream.ReadExactly(buffer);
+
+            var ascii = Encoding.ASCII.GetString(buffer);
+
+            return ascii;
+        }
+
+        public static async Task<string> ReadStringAsciiAsync(this Stream stream, int length)
+        {
+            using var buffer = new SharedBuffer<byte>(length);
+
+            await stream.ReadExactlyAsync(buffer.AsMemory(0, length)).ConfigureAwait(false);
+
+            var ascii = Encoding.ASCII.GetString(buffer.AsReadOnlySpan(0, length));
+
+            return ascii;
         }
 
         #endregion

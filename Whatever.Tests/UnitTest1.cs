@@ -139,4 +139,22 @@ public class UnitTest1
             CollectionAssert.AreEqual(pattern, buffer);
         }
     }
+
+    [TestMethod]
+    [SuppressMessage("ReSharper", "MethodHasAsyncOverload")]
+    [SuppressMessage("ReSharper", "StringLiteralTypo")]
+    public async Task TestStreamStringAscii()
+    {
+        using var stream = new MemoryStream("ABCD"u8.ToArray());
+
+        var ascii1 = stream.ReadStringAscii(4);
+
+        Assert.AreEqual("ABCD", ascii1);
+
+        stream.Position = 0;
+
+        var ascii2 = await stream.ReadStringAsciiAsync(4);
+
+        Assert.AreEqual("ABCD", ascii2);
+    }
 }
