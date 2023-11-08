@@ -5,12 +5,15 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 
 namespace Whatever.Extensions
 {
     public static class StreamExtensions
     {
         #region Endianness
+
+        [PublicAPI] public static Endianness EnvironmentEndianness { get; } = BitConverter.IsLittleEndian ? Endianness.LE : Endianness.BE;
 
         private static ConcurrentDictionary<Stream, Endianness?> EndiannessDictionary { get; } = new();
 
@@ -109,7 +112,7 @@ namespace Whatever.Extensions
 
         private static void TryReverseEndianness(Endianness? endianness, Span<byte> buffer)
         {
-            var actual = BinaryReaderExtensions.Endianness;
+            var actual = EnvironmentEndianness;
 
             if ((endianness ?? actual) != actual)
             {
