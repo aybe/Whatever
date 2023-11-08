@@ -162,7 +162,7 @@ namespace Whatever.Extensions
 
             TryReverseEndianness(endianness ?? stream.GetEndianness(), memory.Span);
 
-            var value = MemoryMarshal.Read<T>(buffer);
+            var value = MemoryMarshal.Read<T>(buffer.AsReadOnlySpan());
 
             return value;
         }

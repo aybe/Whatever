@@ -3,25 +3,60 @@ using System.Buffers;
 
 namespace Whatever.Extensions
 {
-    public readonly struct SharedBuffer<T> : IDisposable
+    public readonly struct SharedBuffer<T> : IDisposable, IEquatable<SharedBuffer<T>>
     {
         private static ArrayPool<T> Pool { get; } = ArrayPool<T>.Shared;
 
-        public readonly T[] Array;
+        private readonly T[] Array;
 
         public SharedBuffer(int minimumLength)
         {
             Array = Pool.Rent(minimumLength);
         }
 
+        public T[] AsArray()
+        {
+            return Array;
+        }
+
+        public Memory<T> AsMemory()
+        {
+            return new Memory<T>(Array);
+        }
+
         public Memory<T> AsMemory(int start, int length)
         {
-            return Array.AsMemory(start, length);
+            return new Memory<T>(Array, start, length);
+        }
+
+        public Span<T> AsSpan()
+        {
+            return new Span<T>(Array);
         }
 
         public Span<T> AsSpan(int start, int length)
         {
-            return Array.AsSpan(start, length);
+            return new Span<T>(Array, start, length);
+        }
+
+        public ReadOnlyMemory<T> AsReadOnlyMemory()
+        {
+            return new ReadOnlyMemory<T>(Array);
+        }
+
+        public ReadOnlyMemory<T> AsReadOnlyMemory(int start, int length)
+        {
+            return new ReadOnlyMemory<T>(Array, start, length);
+        }
+
+        public ReadOnlySpan<T> AsReadOnlySpan()
+        {
+            return new ReadOnlySpan<T>(Array);
+        }
+
+        public ReadOnlySpan<T> AsReadOnlySpan(int start, int length)
+        {
+            return new ReadOnlySpan<T>(Array, start, length);
         }
 
         public void Dispose()
@@ -29,29 +64,29 @@ namespace Whatever.Extensions
             Pool.Return(Array);
         }
 
-        public static implicit operator T[](SharedBuffer<T> buffer)
+        public bool Equals(SharedBuffer<T> other)
         {
-            return buffer.Array;
+            return Array.Equals(other.Array);
         }
 
-        public static implicit operator Memory<T>(SharedBuffer<T> buffer)
+        public override bool Equals(object? obj)
         {
-            return buffer.Array;
+            return obj is SharedBuffer<T> other && Equals(other);
         }
 
-        public static implicit operator Span<T>(SharedBuffer<T> buffer)
+        public override int GetHashCode()
         {
-            return buffer.Array;
+            return Array.GetHashCode();
         }
 
-        public static implicit operator ReadOnlyMemory<T>(SharedBuffer<T> buffer)
+        public static bool operator ==(SharedBuffer<T> left, SharedBuffer<T> right)
         {
-            return buffer.Array;
+            return left.Equals(right);
         }
 
-        public static implicit operator ReadOnlySpan<T>(SharedBuffer<T> buffer)
+        public static bool operator !=(SharedBuffer<T> left, SharedBuffer<T> right)
         {
-            return buffer.Array;
+            return !left.Equals(right);
         }
     }
 }
