@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 
 namespace Whatever.Extensions
@@ -10,9 +11,10 @@ namespace Whatever.Extensions
             await new ValueTask().ConfigureAwait(false);
         }
 
+        [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "https://github.com/dotnet/roslyn-analyzers/issues/3675")]
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsyncCore();
+            await DisposeAsyncCore().ConfigureAwait(false);
 
             GC.SuppressFinalize(this);
         }
