@@ -8,6 +8,13 @@
 		<EnableNETAnalyzers>True</EnableNETAnalyzers>
 		<EnforceCodeStyleInBuild>True</EnforceCodeStyleInBuild>
 		<AnalysisLevel>latest-all</AnalysisLevel>
+		<Description>Whatever, as title says.</Description>
+		<Title>Whatever</Title>
+		<PackageProjectUrl>https://github.com/aybe/Whatever</PackageProjectUrl>
+		<RepositoryUrl>https://github.com/aybe/Whatever</RepositoryUrl>
+		<RepositoryType>git</RepositoryType>
+		<IncludeSymbols>True</IncludeSymbols>
+		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 	</PropertyGroup>
 
 	<ItemGroup>
