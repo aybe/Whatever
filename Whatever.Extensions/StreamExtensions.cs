@@ -103,6 +103,20 @@ namespace Whatever.Extensions
 
         #region Read
 
+        private static int SizeOf<T>() where T : unmanaged
+        {
+            var type = typeof(T);
+
+            if (type.IsEnum)
+            {
+                type = type.GetEnumUnderlyingType();
+            }
+
+            var sizeOf = Marshal.SizeOf(type);
+
+            return sizeOf;
+        }
+
         private static void ThrowIfNotEqual<TValue>(TValue value1, TValue value2, Func<Exception> exception)
         {
             if (!EqualityComparer<TValue>.Default.Equals(value1, value2))
@@ -130,7 +144,7 @@ namespace Whatever.Extensions
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            var length = Marshal.SizeOf<T>();
+            var length = SizeOf<T>();
 
             using var buffer = new SharedBuffer<byte>(length);
 
@@ -154,7 +168,7 @@ namespace Whatever.Extensions
                 throw new ArgumentNullException(nameof(stream));
             }
 
-            var length = Marshal.SizeOf<T>();
+            var length = SizeOf<T>();
 
             using var buffer = new SharedBuffer<byte>(length);
 

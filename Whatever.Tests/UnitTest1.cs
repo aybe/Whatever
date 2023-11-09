@@ -138,6 +138,22 @@ public class UnitTest1
 
             CollectionAssert.AreEqual(pattern, buffer);
         }
+
+        {
+            stream.Position = 0;
+
+            var value = stream.Read<TestEnum>();
+
+            Assert.AreEqual(value, TestEnum.Value);
+        }
+
+        {
+            stream.Position = 0;
+
+            var value = await stream.ReadAsync<TestEnum>();
+
+            Assert.AreEqual(value, TestEnum.Value);
+        }
     }
 
     [TestMethod]
@@ -156,5 +172,10 @@ public class UnitTest1
         var ascii2 = await stream.ReadStringAsciiAsync(4);
 
         Assert.AreEqual("ABCD", ascii2);
+    }
+
+    private enum TestEnum : byte
+    {
+        Value = 1
     }
 }
