@@ -185,6 +185,15 @@ namespace Whatever.Extensions
             return value;
         }
 
+        public static byte[] ReadExactly(this Stream stream, int count)
+        {
+            var buffer = new byte[count];
+
+            stream.ReadExactly(buffer);
+
+            return buffer;
+        }
+
         public static void ReadExactly(
             this Stream stream, byte[] buffer, int offset, int count)
         {
@@ -209,6 +218,16 @@ namespace Whatever.Extensions
             var read = stream.Read(buffer);
 
             ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
+        }
+
+        public static async Task<byte[]> ReadExactlyAsync(
+            this Stream stream, int count, CancellationToken cancellationToken = default)
+        {
+            var buffer = new byte[count];
+
+            await stream.ReadExactlyAsync(buffer, cancellationToken).ConfigureAwait(false);
+
+            return buffer;
         }
 
         public static async Task ReadExactlyAsync(
