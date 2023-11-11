@@ -18,6 +18,7 @@ https://www.nuget.org/packages/Whatever.Extensions/
 | Disposable.cs | `IDisposable` base class. |
 | DisposableAsync.cs | `IDisposableAsync` base class. |
 | EnumExtensions.cs | `Enum.HasFlags<T>(...)`, type-safe enum flag-checking.|
+| QuantizedProgress.cs | `IProgress<T>` that doesn't report unnecessarily. |
 | SharedBuffer.cs | `Span<T>` alternative for async scenarios + `As[Array\|[[ReadOnly][Memory\|Span]]]()`. |
 | SpanMemoryManager.cs | `MemoryManager<T>` implementation for `Span<T>` as `Memory<T>` in async scenarios. |
 | StreamExtensions.cs |`[Get\|Set]Endianness[Scope]`, gets/sets endianness for endian-aware stuff. |
