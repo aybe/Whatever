@@ -2,9 +2,9 @@
 
 namespace Whatever.Extensions
 {
-    public sealed class QuantizedProgressEventArgs<T> : EventArgs
+    public sealed class SparseProgressEventArgs<T> : EventArgs
     {
-        public QuantizedProgressEventArgs(T value)
+        public SparseProgressEventArgs(T value)
         {
             Value = value;
         }
