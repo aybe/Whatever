@@ -6,6 +6,8 @@ namespace Whatever.Extensions
 {
     public sealed class TextProgressBar
     {
+        private readonly object Lock = new();
+
         public StringBuilder Builder { get; } = new();
 
         public TextProgressBarOptions Options { get; set; } = new();
@@ -34,29 +36,35 @@ namespace Whatever.Extensions
                 throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 1.");
             }
 
-            var width = Options.Width;
-
-            var state = (int)Math.Floor(value * width);
-
-            for (var j = 0; j < state; j++)
+            lock (Lock)
             {
-                Builder.Append(Options.Foreground);
-            }
+                var width = Options.Width;
 
-            for (var j = state; j < width; j++)
-            {
-                Builder.Append(Options.Background);
-            }
+                var state = (int)Math.Floor(value * width);
 
-            if (Options.Text)
-            {
-                Builder.Append($" {value.ToString($"P{Options.TextDigits}", CultureInfo.InvariantCulture)}");
+                for (var j = 0; j < state; j++)
+                {
+                    Builder.Append(Options.Foreground);
+                }
+
+                for (var j = state; j < width; j++)
+                {
+                    Builder.Append(Options.Background);
+                }
+
+                if (Options.Text)
+                {
+                    Builder.Append($" {value.ToString($"P{Options.TextDigits}", CultureInfo.InvariantCulture)}");
+                }
             }
         }
 
         public override string ToString()
         {
-            return Builder.ToString();
+            lock (Lock)
+            {
+                return Builder.ToString();
+            }
         }
     }
 }
