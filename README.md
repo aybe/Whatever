@@ -20,6 +20,7 @@ https://www.nuget.org/packages/Whatever.Extensions/
 | EnumExtensions.cs | `Enum.HasFlags<T>(...)`, type-safe enum flag-checking.|
 | QuantizedProgress.cs | `IProgress<T>` that doesn't report unnecessarily. |
 | SharedBuffer.cs | `Span<T>` alternative for async scenarios + `As[Array\|[[ReadOnly][Memory\|Span]]]()`. |
+| Singleton.cs | Generic singleton base class. |
 | SpanMemoryManager.cs | `MemoryManager<T>` implementation for `Span<T>` as `Memory<T>` in async scenarios. |
 | StreamExtensions.cs |`[Get\|Set]Endianness[Scope]`, gets/sets endianness for endian-aware stuff. |
 | |`Read<T>[Async](endianness?)`, for reading primitive types. |
