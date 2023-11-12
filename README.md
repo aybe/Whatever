@@ -14,7 +14,7 @@ https://www.nuget.org/packages/Whatever.Extensions/
 | File | Description |
 | - | - |
 | ConvertExtensions.cs | `To[[S]Byte\|[U]Int[16\|32\|64]\|Single\|Double\|Decimal]()`, replaces `Convert.To...()`. |
-| DictionaryExtensions.cs | `IDictionary.GetOrAdd(..., Func<TKey> valueFactory)`, to mimic `ConcurrentDictionary`. |
+| DictionaryExtensions.cs | `IDictionary.GetOrAdd(..., Func<TKey> valueFactory)`, like `ConcurrentDictionary`. |
 | Disposable.cs | `IDisposable` base class. |
 | DisposableAsync.cs | `IDisposableAsync` base class. |
 | EnumExtensions.cs | `Enum.HasFlags<T>(...)`, type-safe enum flag-checking.|
