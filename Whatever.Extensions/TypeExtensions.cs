@@ -3,6 +3,9 @@ using System.Text.RegularExpressions;
 
 namespace Whatever.Extensions
 {
+    /// <summary>
+    ///     Extension methods for <see cref="Type" />.
+    /// </summary>
     public static class TypeExtensions
     {
         private const RegexOptions GetNiceNameRegexOptions = RegexOptions.Compiled | RegexOptions.Singleline;
@@ -13,6 +16,9 @@ namespace Whatever.Extensions
 
         private static readonly Regex GetNiceNameRegex3 = new(@"\w+\.", GetNiceNameRegexOptions);
 
+        /// <summary>
+        ///     Gets a nice name string for a type, i.e. without back-quotes for type arguments and optionally non-qualified.
+        /// </summary>
         public static string GetNiceName(this Type type, bool qualified)
         {
             if (type == null)

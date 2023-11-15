@@ -25,6 +25,18 @@ namespace Whatever.Extensions
 
         private double Value;
 
+        /// <summary>
+        ///     Initializes a new instance of <see cref="SparseProgress{T}" />.
+        /// </summary>
+        /// <param name="getter">
+        ///     See <see cref="SparseProgressGetter{T}" />.
+        /// </param>
+        /// <param name="setter">
+        ///     See <see cref="SparseProgressSetter{T}" />.
+        /// </param>
+        /// <param name="action">
+        ///     An action to receive progress updates.
+        /// </param>
         public SparseProgress(SparseProgressGetter<T> getter, SparseProgressSetter<T> setter, Action<T>? action = null)
         {
             Getter = getter;
@@ -42,6 +54,7 @@ namespace Whatever.Extensions
         /// </summary>
         public bool Synchronous { get; set; }
 
+        /// <inheritdoc />
         public void Report(T value)
         {
             var input = Getter(ref value);
@@ -122,6 +135,9 @@ namespace Whatever.Extensions
             ProgressChanged?.Invoke(this, new SparseProgressEventArgs<T>(value));
         }
 
+        /// <summary>
+        ///     Event for listening to progress changed events.
+        /// </summary>
         public event EventHandler<SparseProgressEventArgs<T>>? ProgressChanged;
     }
 }

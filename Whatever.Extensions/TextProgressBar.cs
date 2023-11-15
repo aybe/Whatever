@@ -4,12 +4,21 @@ using System.Text;
 
 namespace Whatever.Extensions
 {
+    /// <summary>
+    ///     Text-mode progress bar.
+    /// </summary>
     public sealed class TextProgressBar
     {
         private readonly object Lock = new();
 
+        /// <summary>
+        ///     Gets the <see cref="StringBuilder" /> used by this instance.
+        /// </summary>
         public StringBuilder Builder { get; } = new();
 
+        /// <summary>
+        ///     Gets or sets the options for this instance.
+        /// </summary>
         public TextProgressBarOptions Options { get; set; } = new();
 
         /// <summary>
@@ -59,6 +68,7 @@ namespace Whatever.Extensions
             }
         }
 
+        /// <inheritdoc />
         public override string ToString()
         {
             lock (Lock)

@@ -31,21 +31,24 @@ namespace Whatever.Extensions
             fixed (T* pointer = &MemoryMarshal.GetReference(span))
             {
                 Pointer = pointer;
-                Length  = span.Length;
+                Length = span.Length;
             }
         }
 
+        /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
             Pointer = default;
-            Length  = default;
+            Length = default;
         }
 
+        /// <inheritdoc />
         public override Span<T> GetSpan()
         {
             return new Span<T>(Pointer, Length);
         }
 
+        /// <inheritdoc />
         public override MemoryHandle Pin(int elementIndex = 0)
         {
             if (elementIndex <= 0 || elementIndex >= Length)
@@ -58,6 +61,7 @@ namespace Whatever.Extensions
             return handle;
         }
 
+        /// <inheritdoc />
         public override void Unpin()
         {
         }

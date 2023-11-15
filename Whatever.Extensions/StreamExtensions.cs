@@ -10,14 +10,30 @@ using JetBrains.Annotations;
 
 namespace Whatever.Extensions
 {
+    /// <summary>
+    ///     Extension methods for <see cref="Stream" />.
+    /// </summary>
     public static class StreamExtensions
     {
         #region Endianness
 
-        [PublicAPI] public static Endianness EnvironmentEndianness { get; } = BitConverter.IsLittleEndian ? Endianness.LE : Endianness.BE;
+        /// <summary>
+        ///     Gets the endianness of current environment.
+        /// </summary>
+        [PublicAPI]
+        public static Endianness EnvironmentEndianness { get; } = BitConverter.IsLittleEndian ? Endianness.LE : Endianness.BE;
 
         private static ConcurrentDictionary<Stream, Endianness?> EndiannessDictionary { get; } = new();
 
+        /// <summary>
+        ///     Gets the endianness for this instance.
+        /// </summary>
+        /// <param name="stream">
+        ///     The source stream.
+        /// </param>
+        /// <returns>
+        ///     The endianness or <c>null</c> if none is explicitly set.
+        /// </returns>
         public static Endianness? GetEndianness(this Stream stream)
         {
             var endianness = EndiannessDictionary.GetOrAdd(stream, default(Endianness?));
@@ -25,6 +41,18 @@ namespace Whatever.Extensions
             return endianness;
         }
 
+        /// <summary>
+        ///     Sets the endianness for this instance.
+        /// </summary>
+        /// <param name="stream">
+        ///     The source stream.
+        /// </param>
+        /// <param name="endianness">
+        ///     The endianness, or <c>null</c> to follow <see cref="EnvironmentEndianness" />.
+        /// </param>
+        /// <returns>
+        ///     The previous endianness that was set.
+        /// </returns>
         public static Endianness? SetEndianness(this Stream stream, Endianness? endianness)
         {
             var previous = stream.GetEndianness();
@@ -34,6 +62,18 @@ namespace Whatever.Extensions
             return previous;
         }
 
+        /// <summary>
+        ///     Gets a disposable object to temporarily switch this instance to specified endianness.
+        /// </summary>
+        /// <param name="stream">
+        ///     The source stream.
+        /// </param>
+        /// <param name="endianness">
+        ///     The endianness, or <c>null</c> to follow <see cref="EnvironmentEndianness" />.
+        /// </param>
+        /// <returns>
+        ///     A disposable object to use with <c>using</c> keyword.
+        /// </returns>
         public static IDisposable SetEndiannessScope(this Stream stream, Endianness? endianness)
         {
             var scope = new EndiannessScope(stream, endianness);
@@ -62,6 +102,9 @@ namespace Whatever.Extensions
 
         #region Peek
 
+        /// <summary>
+        ///     Peeks an object using a function.
+        /// </summary>
         public static T Peek<T>(this Stream stream, Func<Stream, T> reader)
         {
             if (stream == null)
@@ -83,6 +126,9 @@ namespace Whatever.Extensions
             return value;
         }
 
+        /// <summary>
+        ///     Tries to peek an object using a function.
+        /// </summary>
         public static bool TryPeek<T>(this Stream stream, Func<Stream, T> reader, out T result)
         {
             try
@@ -135,6 +181,9 @@ namespace Whatever.Extensions
             }
         }
 
+        /// <summary>
+        ///     Reads an unmanaged type with specified endianness.
+        /// </summary>
         public static T Read<T>(
             this Stream stream, Endianness? endianness = null)
             where T : unmanaged
@@ -159,6 +208,9 @@ namespace Whatever.Extensions
             return value;
         }
 
+        /// <summary>
+        ///     See <see cref="Read{T}" />.
+        /// </summary>
         public static async Task<T> ReadAsync<T>(
             this Stream stream, Endianness? endianness = null, CancellationToken cancellationToken = default)
             where T : unmanaged
@@ -185,6 +237,9 @@ namespace Whatever.Extensions
             return value;
         }
 
+        /// <summary>
+        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
+        /// </summary>
         public static byte[] ReadExactly(this Stream stream, int count)
         {
             var buffer = new byte[count];
@@ -194,6 +249,9 @@ namespace Whatever.Extensions
             return buffer;
         }
 
+        /// <summary>
+        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
+        /// </summary>
         public static void ReadExactly(
             this Stream stream, byte[] buffer, int offset, int count)
         {
@@ -207,6 +265,9 @@ namespace Whatever.Extensions
             ThrowIfNotEqual(read, count, () => new EndOfStreamException());
         }
 
+        /// <summary>
+        ///     Reads an exact number of bytes.
+        /// </summary>
         public static void ReadExactly(
             this Stream stream, Span<byte> buffer)
         {
@@ -220,6 +281,9 @@ namespace Whatever.Extensions
             ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
         }
 
+        /// <summary>
+        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
+        /// </summary>
         public static async Task<byte[]> ReadExactlyAsync(
             this Stream stream, int count, CancellationToken cancellationToken = default)
         {
@@ -230,6 +294,9 @@ namespace Whatever.Extensions
             return buffer;
         }
 
+        /// <summary>
+        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
+        /// </summary>
         public static async Task ReadExactlyAsync(
             this Stream stream, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
         {
@@ -245,6 +312,9 @@ namespace Whatever.Extensions
             ThrowIfNotEqual(read, count, () => new EndOfStreamException());
         }
 
+        /// <summary>
+        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
+        /// </summary>
         public static async ValueTask ReadExactlyAsync(
             this Stream stream, Memory<byte> buffer, CancellationToken cancellationToken = default)
         {
@@ -260,6 +330,9 @@ namespace Whatever.Extensions
             ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
         }
 
+        /// <summary>
+        ///     Reads an ASCII string.
+        /// </summary>
         public static string ReadStringAscii(this Stream stream, int length)
         {
             Span<byte> buffer = stackalloc byte[length];
@@ -271,6 +344,9 @@ namespace Whatever.Extensions
             return ascii;
         }
 
+        /// <summary>
+        ///     See <see cref="ReadStringAscii" />.
+        /// </summary>
         public static async Task<string> ReadStringAsciiAsync(this Stream stream, int length)
         {
             using var buffer = new SharedBuffer<byte>(length);
