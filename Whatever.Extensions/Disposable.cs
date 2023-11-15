@@ -5,7 +5,7 @@ namespace Whatever.Extensions
 {
     public abstract class Disposable : IDisposable
     {
-        private bool IsDisposed { get; set; }
+        protected bool IsDisposed { get; set; }
 
         public void Dispose()
         {
