@@ -28,3 +28,9 @@ https://www.nuget.org/packages/Whatever.Extensions/
 | |`ReadStringAscii[Async]`, because it never gets old. |
 | TextProgressBar.cs | Text-mode progress bar, e.g. `████████████░░░░░░░░░░░░░░░░░░ 42.86%`.|
 | TypeExtensions.cs | `GetNiceName`, friendlier version of `Type.ToString()`.|
+
+### Templates
+
+| Name | Description |
+| - | - |
+| Default.csproj | NuGet package, SourceLink, versioning, code analysis/style.  |
