@@ -261,6 +261,7 @@ namespace Whatever.Extensions
             return buffer;
         }
 
+#if NETSTANDARD2_1
         /// <summary>
         ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
         /// </summary>
@@ -276,7 +277,9 @@ namespace Whatever.Extensions
 
             ThrowIfNotEqual(read, count, () => new EndOfStreamException());
         }
+#endif
 
+#if NETSTANDARD2_1
         /// <summary>
         ///     Reads an exact number of bytes.
         /// </summary>
@@ -292,6 +295,7 @@ namespace Whatever.Extensions
 
             ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
         }
+#endif
 
         /// <summary>
         ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
@@ -306,6 +310,7 @@ namespace Whatever.Extensions
             return buffer;
         }
 
+#if NETSTANDARD2_1
         /// <summary>
         ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
         /// </summary>
@@ -323,7 +328,9 @@ namespace Whatever.Extensions
 
             ThrowIfNotEqual(read, count, () => new EndOfStreamException());
         }
+#endif
 
+#if NETSTANDARD2_1
         /// <summary>
         ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
         /// </summary>
@@ -341,6 +348,7 @@ namespace Whatever.Extensions
 
             ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
         }
+#endif
 
         /// <summary>
         ///     Reads an ASCII string.

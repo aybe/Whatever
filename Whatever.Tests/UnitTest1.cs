@@ -99,6 +99,7 @@ public class UnitTest1
             Assert.AreEqual(0x04030201, read);
         }
 
+#if NETSTANDARD2_1
         {
             stream.Position = 0;
 
@@ -138,6 +139,7 @@ public class UnitTest1
 
             CollectionAssert.AreEqual(pattern, buffer);
         }
+#endif
 
         {
             stream.Position = 0;
