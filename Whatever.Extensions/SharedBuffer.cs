@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Whatever.Extensions
 {
@@ -76,6 +77,42 @@ namespace Whatever.Extensions
         public static bool operator !=(SharedBuffer<T> left, SharedBuffer<T> right)
         {
             return !left.Equals(right);
+        }
+
+        /// <summary>
+        ///     Converts the value to a <see cref="Memory{T}" />.
+        /// </summary>
+        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "<Pending>")]
+        public static implicit operator Memory<T>(SharedBuffer<T> buffer)
+        {
+            return buffer.Memory;
+        }
+
+        /// <summary>
+        ///     Converts the value to a <see cref="ReadOnlyMemory{T}" />.
+        /// </summary>
+        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "<Pending>")]
+        public static implicit operator ReadOnlyMemory<T>(SharedBuffer<T> buffer)
+        {
+            return buffer.Memory;
+        }
+
+        /// <summary>
+        ///     Converts the value to a <see cref="Span{T}" />.
+        /// </summary>
+        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "<Pending>")]
+        public static implicit operator Span<T>(SharedBuffer<T> buffer)
+        {
+            return buffer.Span;
+        }
+
+        /// <summary>
+        ///     Converts the value to a <see cref="ReadOnlySpan{T}" />.
+        /// </summary>
+        [SuppressMessage("Usage", "CA2225:Operator overloads have named alternates", Justification = "<Pending>")]
+        public static implicit operator ReadOnlySpan<T>(SharedBuffer<T> buffer)
+        {
+            return buffer.Span;
         }
     }
 }
