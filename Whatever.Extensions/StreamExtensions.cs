@@ -197,7 +197,7 @@ namespace Whatever.Extensions
 
             using var buffer = new SharedBuffer<byte>(length);
 
-            var span = buffer.AsSpan(0, length);
+            var span = buffer.Span;
 
             stream.ReadExactly(span);
 
@@ -224,15 +224,13 @@ namespace Whatever.Extensions
 
             using var buffer = new SharedBuffer<byte>(length);
 
-            var memory = buffer.AsMemory(0, length);
-
             await stream
-                .ReadExactlyAsync(memory, cancellationToken)
+                .ReadExactlyAsync(buffer.Memory, cancellationToken)
                 .ConfigureAwait(false);
 
-            TryReverseEndianness(endianness ?? stream.GetEndianness(), memory.Span);
+            TryReverseEndianness(endianness ?? stream.GetEndianness(), buffer.Span);
 
-            var value = MemoryMarshal.Read<T>(buffer.AsReadOnlySpan());
+            var value = MemoryMarshal.Read<T>(buffer.Span);
 
             return value;
         }
@@ -351,9 +349,9 @@ namespace Whatever.Extensions
         {
             using var buffer = new SharedBuffer<byte>(length);
 
-            await stream.ReadExactlyAsync(buffer.AsMemory(0, length)).ConfigureAwait(false);
+            await stream.ReadExactlyAsync(buffer.Memory).ConfigureAwait(false);
 
-            var ascii = Encoding.ASCII.GetString(buffer.AsReadOnlySpan(0, length));
+            var ascii = Encoding.ASCII.GetString(buffer.Span);
 
             return ascii;
         }

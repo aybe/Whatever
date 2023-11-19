@@ -18,82 +18,25 @@ namespace Whatever.Extensions
         /// <summary>
         ///     See <see cref="ArrayPool{T}.Rent" />.
         /// </summary>
-        public SharedBuffer(int minimumLength)
+        public SharedBuffer(int length)
         {
-            Array = Pool.Rent(minimumLength);
+            Array = Pool.Rent(Length = length);
         }
 
         /// <summary>
-        ///     Gets the underlying buffer as an array.
+        ///     Gets the buffer length.
         /// </summary>
-        public T[] AsArray()
-        {
-            return Array;
-        }
+        public int Length { get; }
 
         /// <summary>
-        ///     Gets the underlying buffer as a <see cref="Memory{T}" />.
+        ///     Gets the buffer as a <see cref="Memory{T}" />.
         /// </summary>
-        public Memory<T> AsMemory()
-        {
-            return new Memory<T>(Array);
-        }
+        public Memory<T> Memory => Array.AsMemory(0, Length);
 
         /// <summary>
-        ///     Gets the underlying buffer as a <see cref="Memory{T}" />.
+        ///     Gets the buffer as a <see cref="Span{T}" />.
         /// </summary>
-        public Memory<T> AsMemory(int start, int length)
-        {
-            return new Memory<T>(Array, start, length);
-        }
-
-        /// <summary>
-        ///     Gets the underlying buffer as a <see cref="Span{T}" />.
-        /// </summary>
-        public Span<T> AsSpan()
-        {
-            return new Span<T>(Array);
-        }
-
-        /// <summary>
-        ///     Gets the underlying buffer as a <see cref="Span{T}" />.
-        /// </summary>
-        public Span<T> AsSpan(int start, int length)
-        {
-            return new Span<T>(Array, start, length);
-        }
-
-        /// <summary>
-        ///     Gets the underlying buffer as a <see cref="ReadOnlyMemory{T}" />.
-        /// </summary>
-        public ReadOnlyMemory<T> AsReadOnlyMemory()
-        {
-            return new ReadOnlyMemory<T>(Array);
-        }
-
-        /// <summary>
-        ///     Gets the underlying buffer as a <see cref="ReadOnlyMemory{T}" />.
-        /// </summary>
-        public ReadOnlyMemory<T> AsReadOnlyMemory(int start, int length)
-        {
-            return new ReadOnlyMemory<T>(Array, start, length);
-        }
-
-        /// <summary>
-        ///     Gets the underlying buffer as a <see cref="ReadOnlySpan{T}" />.
-        /// </summary>
-        public ReadOnlySpan<T> AsReadOnlySpan()
-        {
-            return new ReadOnlySpan<T>(Array);
-        }
-
-        /// <summary>
-        ///     Gets the underlying buffer as a <see cref="ReadOnlySpan{T}" />.
-        /// </summary>
-        public ReadOnlySpan<T> AsReadOnlySpan(int start, int length)
-        {
-            return new ReadOnlySpan<T>(Array, start, length);
-        }
+        public Span<T> Span => Array.AsSpan(0, Length);
 
         /// <inheritdoc />
         public void Dispose()
