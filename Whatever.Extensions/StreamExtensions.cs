@@ -15,6 +15,22 @@ namespace Whatever.Extensions
     /// </summary>
     public static class StreamExtensions
     {
+        private static SharedBuffer<byte> ToBuffer<T>(ref T value, Endianness? endianness)
+            where T : unmanaged
+        {
+            var span = MemoryMarshal.CreateSpan(ref value, 1);
+
+            var bytes = MemoryMarshal.AsBytes(span);
+
+            TryReverseEndianness(endianness, bytes);
+
+            var buffer = new SharedBuffer<byte>(SizeOf<T>());
+
+            bytes.CopyTo(buffer.Span);
+
+            return buffer;
+        }
+
         #region Endianness
 
         /// <summary>
@@ -354,6 +370,84 @@ namespace Whatever.Extensions
             var ascii = Encoding.ASCII.GetString(buffer.Span);
 
             return ascii;
+        }
+
+        #endregion
+
+        #region Write
+
+        /// <summary>
+        ///     Writes an unmanaged type with specified endianness.
+        /// </summary>
+        public static void Write<T>(
+            this Stream stream, T value, Endianness? endianness = null)
+            where T : unmanaged
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            using var buffer = ToBuffer(ref value, endianness ?? stream.GetEndianness());
+
+            stream.Write(buffer.Span);
+        }
+
+        /// <summary>
+        ///     See <see cref="Write{T}" />.
+        /// </summary>
+        public static async Task WriteAsync<T>(
+            this Stream stream, T value, Endianness? endianness = null)
+            where T : unmanaged
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            using var buffer = ToBuffer(ref value, endianness ?? stream.GetEndianness());
+
+            await stream.WriteAsync(buffer.Memory).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        ///     Writes an ASCII string.
+        /// </summary>
+        public static void WriteStringAscii(this Stream stream, string value)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var buffer = Encoding.ASCII.GetBytes(value);
+
+            stream.Write(buffer);
+        }
+
+        /// <summary>
+        ///     See <see cref="WriteStringAscii" />
+        /// </summary>
+        public static async Task WriteStringAsciiAsync(this Stream stream, string value)
+        {
+            if (stream == null)
+            {
+                throw new ArgumentNullException(nameof(stream));
+            }
+
+            if (value == null)
+            {
+                throw new ArgumentNullException(nameof(value));
+            }
+
+            var buffer = Encoding.ASCII.GetBytes(value);
+
+            await stream.WriteAsync(buffer).ConfigureAwait(false);
         }
 
         #endregion
