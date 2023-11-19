@@ -26,7 +26,7 @@ namespace Whatever.Extensions
 
             var buffer = new SharedBuffer<byte>(SizeOf<T>());
 
-            bytes.CopyTo(buffer.Span);
+            bytes.CopyTo(buffer);
 
             return buffer;
         }
@@ -213,13 +213,11 @@ namespace Whatever.Extensions
 
             using var buffer = new SharedBuffer<byte>(length);
 
-            var span = buffer.Span;
+            stream.ReadExactly(buffer);
 
-            stream.ReadExactly(span);
+            TryReverseEndianness(endianness ?? stream.GetEndianness(), buffer);
 
-            TryReverseEndianness(endianness ?? stream.GetEndianness(), span);
-
-            var value = MemoryMarshal.Read<T>(span);
+            var value = MemoryMarshal.Read<T>(buffer);
 
             return value;
         }
@@ -241,12 +239,12 @@ namespace Whatever.Extensions
             using var buffer = new SharedBuffer<byte>(length);
 
             await stream
-                .ReadExactlyAsync(buffer.Memory, cancellationToken)
+                .ReadExactlyAsync(buffer, cancellationToken)
                 .ConfigureAwait(false);
 
-            TryReverseEndianness(endianness ?? stream.GetEndianness(), buffer.Span);
+            TryReverseEndianness(endianness ?? stream.GetEndianness(), buffer);
 
-            var value = MemoryMarshal.Read<T>(buffer.Span);
+            var value = MemoryMarshal.Read<T>(buffer);
 
             return value;
         }
@@ -365,9 +363,9 @@ namespace Whatever.Extensions
         {
             using var buffer = new SharedBuffer<byte>(length);
 
-            await stream.ReadExactlyAsync(buffer.Memory).ConfigureAwait(false);
+            await stream.ReadExactlyAsync(buffer).ConfigureAwait(false);
 
-            var ascii = Encoding.ASCII.GetString(buffer.Span);
+            var ascii = Encoding.ASCII.GetString(buffer);
 
             return ascii;
         }
@@ -390,7 +388,7 @@ namespace Whatever.Extensions
 
             using var buffer = ToBuffer(ref value, endianness ?? stream.GetEndianness());
 
-            stream.Write(buffer.Span);
+            stream.Write(buffer);
         }
 
         /// <summary>
@@ -407,7 +405,7 @@ namespace Whatever.Extensions
 
             using var buffer = ToBuffer(ref value, endianness ?? stream.GetEndianness());
 
-            await stream.WriteAsync(buffer.Memory).ConfigureAwait(false);
+            await stream.WriteAsync(buffer).ConfigureAwait(false);
         }
 
         /// <summary>
