@@ -20,11 +20,8 @@
 		<GeneratePackageOnBuild>True</GeneratePackageOnBuild>
 		<Description>Whatever, as title says.</Description>
 		<Title>Whatever</Title>
-		<PackageProjectUrl>https://github.com/aybe/Whatever</PackageProjectUrl>
 		<RepositoryUrl>https://github.com/aybe/Whatever</RepositoryUrl>
-		<RepositoryType>git</RepositoryType>
 		<PublishRepositoryUrl>true</PublishRepositoryUrl>
-		<EmbedUntrackedSources>true</EmbedUntrackedSources>
 		<IncludeSymbols>True</IncludeSymbols>
 		<SymbolPackageFormat>snupkg</SymbolPackageFormat>
 		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
@@ -39,10 +36,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
-		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
 	</ItemGroup>
 
 </Project>
