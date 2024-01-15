@@ -6,7 +6,7 @@ namespace Whatever.Interop
     {
         public static NativeAllocator Default { get; } = NativeAllocatorNet.Instance; // TODO #if UNITY
 
-        public virtual T* Alloc<T>(int elementCount)
+        public T* Alloc<T>(int elementCount)
             where T : unmanaged
         {
             if (elementCount <= 0)

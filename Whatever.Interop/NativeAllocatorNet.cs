@@ -6,22 +6,6 @@ namespace Whatever.Interop
     public sealed unsafe class NativeAllocatorNet
         : NativeAllocator<NativeAllocatorNet>
     {
-        public override T* Alloc<T>(int elementCount)
-        {
-            if (elementCount <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(elementCount), elementCount, null);
-            }
-
-            var elementSize = NativeHelper.SizeOf<T>();
-
-            var byteCount = elementCount * elementSize;
-
-            var pointer = Marshal.AllocHGlobal(byteCount);
-
-            return (T*)pointer;
-        }
-
         public override void* Alloc(int byteCount)
         {
             if (byteCount <= 0)
