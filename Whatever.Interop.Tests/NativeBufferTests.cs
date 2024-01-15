@@ -4,6 +4,22 @@
 public sealed class NativeBufferTests
 {
     [TestMethod]
+    public unsafe void TestAllocClearFree()
+    {
+        var allocator = NativeAllocator.Default;
+
+        var alloc = (byte*)allocator.Alloc(3);
+
+        allocator.Clear(alloc, 3);
+
+        Assert.AreEqual(0, alloc[0]);
+        Assert.AreEqual(0, alloc[1]);
+        Assert.AreEqual(0, alloc[2]);
+
+        allocator.Free(alloc);
+    }
+
+    [TestMethod]
     public void TestBuffer1D()
     {
         using var buffer = new NativeBuffer1D<int>(3);
