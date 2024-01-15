@@ -33,7 +33,7 @@ public static unsafe class Globals
 
         var isStereo = (sector[19] & 0x3) != 0;
         var is8Bit = (sector[19] & 0x30) != 0;
-        var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37000;
+        var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37800;
 
         var samplesPerChunk = isStereo
             ? is8Bit
