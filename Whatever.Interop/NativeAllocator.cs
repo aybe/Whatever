@@ -30,6 +30,11 @@ namespace Whatever.Interop
         public void Clear<T>(T* pointer, int elementCount)
             where T : unmanaged
         {
+            if (elementCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(elementCount), elementCount, null);
+            }
+
             var sizeOf = NativeHelper.SizeOf<T>();
 
             var byteCount = elementCount * sizeOf;

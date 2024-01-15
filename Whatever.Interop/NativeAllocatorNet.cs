@@ -8,6 +8,11 @@ namespace Whatever.Interop
     {
         public override T* Alloc<T>(int elementCount)
         {
+            if (elementCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(elementCount), elementCount, null);
+            }
+
             var elementSize = NativeHelper.SizeOf<T>();
 
             var byteCount = elementCount * elementSize;
@@ -19,6 +24,11 @@ namespace Whatever.Interop
 
         public override void* Alloc(int byteCount)
         {
+            if (byteCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(byteCount), byteCount, null);
+            }
+
             var pointer = Marshal.AllocHGlobal(byteCount);
 
             return (void*)pointer;
