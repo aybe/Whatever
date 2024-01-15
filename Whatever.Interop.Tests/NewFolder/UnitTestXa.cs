@@ -15,7 +15,7 @@ public class UnitTestXa : UnitTestBase
     public void Test(string path)
     {
         var sourceFileName = Path.GetFileName(path);
-        var targetFileName = Path.ChangeExtension(path, ".raw");
+        var targetFileName = Path.ChangeExtension(path, ".wav");
 
         if (File.Exists(targetFileName))
         {
@@ -47,6 +47,10 @@ public class UnitTestXa : UnitTestBase
 
         var buffer = new byte[length];
 
+        var samples = 0u;
+
+        WriteWavHeader(target);
+
         while (source.Position < source.Length)
         {
             source.ReadExactly(buffer);
@@ -57,19 +61,25 @@ public class UnitTestXa : UnitTestBase
 
             var span = output.Samples.AsSpan(0, (int)output.SampleCount);
 
+            samples += output.SampleCount;
+
             target.Write(MemoryMarshal.AsBytes(span));
         }
 
+        target.Position = 0;
+
+        WriteWavHeader(target, 16, output.Channels, output.SampleRate, samples);
+
         var expectedHash = sourceFileName switch
         {
-            "test_18900_4_1_2352.xa" => "28b0b2e4c6a233b0922a8cf6c6709a3d1a95cdb7b2a1c0d142c0f72e909ccf8e", // changed
-            "test_18900_4_2_2352.xa" => "40b2d653915c6ef7d58c7de79f2f1f5749935c6603c605594b8992f32417868a",
-            "test_18900_8_1_2352.xa" => "a48f1415cbdcb8444cd0d20226b39d5867e00658c15d9a3ab41dd17165c6aeae", // changed
-            "test_18900_8_2_2352.xa" => "cdcf0f497528e006e1e4bdd17455439e3e9d6d0762c1a804253acd52064d9242",
-            "test_37800_4_1_2352.xa" => "46f31730092481c3c07df60e4c059f2ccb183976b16d828e86af66ee332be10f", // changed
-            "test_37800_4_2_2352.xa" => "53fde476d343409a2322c6def4f2d16eb7dd0bc08b0dc208f0451ba8222313b2",
-            "test_37800_8_1_2352.xa" => "9e33db59c79cca78a9c638e8b7e5b8031a5d45b9f229e579de0fb076691800cb", // changed
-            "test_37800_8_2_2352.xa" => "b1d0dcdff4daf5e23c615175559da61d3202e555826aa1bc8667e0ee48d6e1af",
+            "test_18900_4_1_2352.xa" => "dcd1bc2dba860d444ca178f194df0c111e8338a7f234e7335694ea8537deaa9e",
+            "test_18900_4_2_2352.xa" => "577a3c4502edbef14beee087db9d4f8541275f77bb67484eb20d9adb68dacc1c",
+            "test_18900_8_1_2352.xa" => "e48bf59a49b6bdbd5f7d023b84287a032ea93aad225821c45c37f730895494e3",
+            "test_18900_8_2_2352.xa" => "23cbaf82a54f0d65079d35d5c54acb474ac8bd2de5166e796561b7f55cf56474",
+            "test_37800_4_1_2352.xa" => "3388ee0f87068acf0acb4b23128ba560bfb3cfc12a86fe5ff1daaed489f5ac83",
+            "test_37800_4_2_2352.xa" => "01bfa41e6892a8938494ec498bd2a676a02398e2b8c748f64265d345219ba48a",
+            "test_37800_8_1_2352.xa" => "3183e6b960e4ac1055d7de500dbea4370f9da5117e424ea0dde04f01b5a863e5",
+            "test_37800_8_2_2352.xa" => "92a8603174e5e36e2492a68557aa6d3a57243fa30b1e398fae81cf130fe22bbb",
             _ => throw new NotSupportedException()
         };
 
@@ -78,5 +88,32 @@ public class UnitTestXa : UnitTestBase
         File.WriteAllBytes(targetFileName, target.ToArray());
 
         Assert.AreEqual(expectedHash, actualHash);
+    }
+
+    private static void WriteWavHeader(Stream stream, ushort bitsPerSample = 16, ushort channels = 2, uint sampleRate = 44100u, uint samples = 0)
+    {
+        const ushort formatTag = 1;
+
+        var bytesPerSample = bitsPerSample / 8;
+
+        var avgBytesPerSec = (uint)(sampleRate * bytesPerSample * channels);
+
+        var blockAlign = (ushort)(bytesPerSample * channels);
+
+        var writer = new BinaryWriter(stream);
+
+        writer.Write("RIFF"u8.ToArray());
+        writer.Write((uint)(40 + bytesPerSample * samples * channels));
+        writer.Write("WAVE"u8.ToArray());
+        writer.Write("fmt "u8.ToArray());
+        writer.Write(16);
+        writer.Write(formatTag);
+        writer.Write(channels);
+        writer.Write(sampleRate);
+        writer.Write(avgBytesPerSec);
+        writer.Write(blockAlign);
+        writer.Write(bitsPerSample);
+        writer.Write("data"u8.ToArray());
+        writer.Write(bytesPerSample * samples * channels);
     }
 }

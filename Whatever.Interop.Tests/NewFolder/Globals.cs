@@ -82,6 +82,7 @@ public static unsafe class Globals
             }
         }
 
+        output.Channels = (ushort)(isStereo ? 2 : 1);
         output.SampleCount = samplesPerChunk * ChunksPerSector;
         output.SampleRate = (uint)sampleRate;
 
