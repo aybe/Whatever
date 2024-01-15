@@ -106,7 +106,7 @@ public static unsafe class Globals
             {
                 var unfilteredSample = GetSample(blockScale, sampleMask, sampleShift, words, sample, block);
 
-                samplesOut[0] = samplesOut[1] = DecodeAdpcmSample(unfilteredSample, ref ctx.M1, ref ctx.M2, shl, pos, neg);
+                samplesOut[0] = samplesOut[1] = DecodeAdpcmSample(unfilteredSample, ref ctx.History[0][0], ref ctx.History[0][1], shl, pos, neg);
 
                 samplesOut += 2;
             }
@@ -129,8 +129,8 @@ public static unsafe class Globals
             {
                 var unfilteredSample = GetSample(blockScale, sampleMask, sampleShift, words, sample, block);
 
-                ref var last1 = ref right ? ref ctx.R1 : ref ctx.L1;
-                ref var last2 = ref right ? ref ctx.R2 : ref ctx.L2;
+                ref var last1 = ref right ? ref ctx.History[1][0] : ref ctx.History[0][0];
+                ref var last2 = ref right ? ref ctx.History[1][1] : ref ctx.History[0][1];
 
                 samplesOut[0] = DecodeAdpcmSample(unfilteredSample, ref last1, ref last2, shl, pos, neg);
 

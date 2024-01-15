@@ -1,6 +1,11 @@
 ﻿namespace Whatever.Interop.Tests.NewFolder;
 
-public class Context
+public class Context : IDisposable
 {
-    public short L1, L2, R1, R2, M1, M2;
+    public readonly NativeBuffer2D<short> History = new(2, 2);
+
+    public void Dispose() // TODO dispose pattern
+    {
+        History.Dispose();
+    }
 }
