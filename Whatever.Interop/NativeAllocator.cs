@@ -1,4 +1,6 @@
-﻿namespace Whatever.Interop
+﻿using System;
+
+namespace Whatever.Interop
 {
     public abstract unsafe class NativeAllocator
     {
@@ -6,6 +8,22 @@
 
         public virtual T* Alloc<T>(int elementCount)
             where T : unmanaged
+        {
+            if (elementCount <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(elementCount), elementCount, null);
+            }
+
+            var sizeOf = NativeHelper.SizeOf<T>();
+
+            var byteCount = elementCount * sizeOf;
+
+            var pointer = Alloc(byteCount);
+
+            return (T*)pointer;
+        }
+
+        public abstract void* Alloc(int byteCount);
 
         public abstract void Clear(void* pointer, uint byteCount);
 

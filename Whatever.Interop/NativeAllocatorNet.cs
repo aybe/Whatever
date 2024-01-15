@@ -17,6 +17,13 @@ namespace Whatever.Interop
             return (T*)pointer;
         }
 
+        public override void* Alloc(int byteCount)
+        {
+            var pointer = Marshal.AllocHGlobal(byteCount);
+
+            return (void*)pointer;
+        }
+
         public override void Clear(void* pointer, uint byteCount)
         {
             new Span<byte>(pointer, (int)byteCount).Clear();
