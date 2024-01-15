@@ -1,6 +1,4 @@
-﻿using System.Runtime.InteropServices;
-
-namespace Whatever.Interop.Tests.NewFolder;
+﻿namespace Whatever.Interop.Tests.NewFolder;
 
 public static unsafe class Globals
 {
@@ -24,10 +22,10 @@ public static unsafe class Globals
     {
         output.SampleCount = 0;
 
-        var source = MemoryMarshal.Read<Sector>(sector);
-        var isStereo = (source.SubHeader1.CodingInformation & 0x3) != 0;
-        var is8Bit = ((source.SubHeader1.CodingInformation & 0x30) != 0 ? 8 : 4) >= 8;
+        var isStereo = (sector[19] & 0x3) != 0;
+        var is8Bit = ((sector[19] & 0x30) != 0 ? 8 : 4) >= 8;
         var is4Bit = is8Bit == false;
+        var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37000;
         var samplesPerChunk = GetSamplesPerAdpcmChunk(isStereo, is8Bit);
 
         fixed (byte* pDataIn1 = sector[(12 + 4 + 8)..])
@@ -70,7 +68,7 @@ public static unsafe class Globals
         }
 
         output.SampleCount = samplesPerChunk * ChunksPerSector;
-        output.SampleRate = (uint)((source.SubHeader1.CodingInformation & 0xC) != 0 ? 18900 : 37000);
+        output.SampleRate = (uint)sampleRate;
 
         return true;
     }
