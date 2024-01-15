@@ -4,8 +4,8 @@
     {
         public static NativeAllocator Default { get; } = NativeAllocatorNet.Instance; // TODO #if UNITY
 
-        public abstract T* Alloc<T>(uint elementCount)
-            where T : unmanaged;
+        public virtual T* Alloc<T>(int elementCount)
+            where T : unmanaged
 
         public abstract void Clear(void* pointer, uint byteCount);
 

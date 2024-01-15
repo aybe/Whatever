@@ -6,7 +6,7 @@ namespace Whatever.Interop
     public sealed unsafe class NativeAllocatorNet
         : NativeAllocator<NativeAllocatorNet>
     {
-        public override T* Alloc<T>(uint elementCount)
+        public override T* Alloc<T>(int elementCount)
         {
             var elementSize = NativeHelper.SizeOf<T>();
 
