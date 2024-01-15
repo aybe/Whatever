@@ -43,12 +43,6 @@ namespace Whatever.Interop
         }
 
         public abstract void Free(void* pointer);
-
-        public void Free<T>(T* pointer)
-            where T : unmanaged
-        {
-            Free((void*)pointer);
-        }
     }
 
     public abstract class NativeAllocator<T>
