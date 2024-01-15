@@ -31,8 +31,8 @@ public static unsafe class Globals
                 ? ChunkMaxSamples / 4
                 : ChunkMaxSamples / 2
             : is8Bit
-                ? ChunkMaxSamples / 2
-                : ChunkMaxSamples;
+                ? ChunkMaxSamples / 4
+                : ChunkMaxSamples / 2;
 
         fixed (byte* pDataIn1 = sector[(12 + 4 + 8)..])
         {
@@ -102,13 +102,13 @@ public static unsafe class Globals
         {
             DecodeUnpack(pDataIn, block, out var shl, out var pos, out var neg);
 
-            for (var sample = 0; sample < DataWordsPerChunk; sample++) // Mono: double up the sample for the left and right channels
+            for (var sample = 0; sample < DataWordsPerChunk; sample++)
             {
                 var unfilteredSample = GetSample(blockScale, sampleMask, sampleShift, words, sample, block);
 
-                samplesOut[0] = samplesOut[1] = DecodeAdpcmSample(unfilteredSample, ref ctx.History[0][0], ref ctx.History[0][1], shl, pos, neg);
+                samplesOut[0] = DecodeAdpcmSample(unfilteredSample, ref ctx.History[0][0], ref ctx.History[0][1], shl, pos, neg);
 
-                samplesOut += 2;
+                samplesOut += 1;
             }
         }
     }

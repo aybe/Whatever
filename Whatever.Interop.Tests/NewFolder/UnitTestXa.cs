@@ -62,13 +62,13 @@ public class UnitTestXa : UnitTestBase
 
         var expectedHash = sourceFileName switch
         {
-            "test_18900_4_1_2352.xa" => "d7b15a43ab752dda8d1dda562bd013c09840497efd1b3505f87d4096804b1943",
+            "test_18900_4_1_2352.xa" => "28b0b2e4c6a233b0922a8cf6c6709a3d1a95cdb7b2a1c0d142c0f72e909ccf8e", // changed
             "test_18900_4_2_2352.xa" => "40b2d653915c6ef7d58c7de79f2f1f5749935c6603c605594b8992f32417868a",
-            "test_18900_8_1_2352.xa" => "cb307aca605ea00eb38e32f0ecd467ad6256823c3bb9d4b05aa599ed95bfb699",
+            "test_18900_8_1_2352.xa" => "a48f1415cbdcb8444cd0d20226b39d5867e00658c15d9a3ab41dd17165c6aeae", // changed
             "test_18900_8_2_2352.xa" => "cdcf0f497528e006e1e4bdd17455439e3e9d6d0762c1a804253acd52064d9242",
-            "test_37800_4_1_2352.xa" => "11a6698c0236df3159732c49a3e17ba453b2809787f42177766cdadc4ebebf3d",
+            "test_37800_4_1_2352.xa" => "46f31730092481c3c07df60e4c059f2ccb183976b16d828e86af66ee332be10f", // changed
             "test_37800_4_2_2352.xa" => "53fde476d343409a2322c6def4f2d16eb7dd0bc08b0dc208f0451ba8222313b2",
-            "test_37800_8_1_2352.xa" => "60721b5e87459a9d77b33a5530b8c4a9a3624d991d11d9a600198369eebc6c54",
+            "test_37800_8_1_2352.xa" => "9e33db59c79cca78a9c638e8b7e5b8031a5d45b9f229e579de0fb076691800cb", // changed
             "test_37800_8_2_2352.xa" => "b1d0dcdff4daf5e23c615175559da61d3202e555826aa1bc8667e0ee48d6e1af",
             _ => throw new NotSupportedException()
         };
