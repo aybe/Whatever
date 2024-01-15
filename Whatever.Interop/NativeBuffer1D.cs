@@ -1,5 +1,4 @@
 ﻿using System;
-using Whatever.Extensions;
 
 namespace Whatever.Interop
 {
@@ -20,7 +19,7 @@ namespace Whatever.Interop
 
             allocator ??= NativeAllocator.Default;
 
-            var items = allocator.Alloc<T>(count.ToUInt32());
+            var items = allocator.Alloc<T>(count);
 
             NativeBuffer.Register(items, allocator);
 

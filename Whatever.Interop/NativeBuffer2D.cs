@@ -1,5 +1,4 @@
 ﻿using System;
-using Whatever.Extensions;
 
 namespace Whatever.Interop
 {
@@ -25,13 +24,13 @@ namespace Whatever.Interop
 
             allocator ??= NativeAllocator.Default;
 
-            var items = (T**)allocator.Alloc<IntPtr>(ySize.ToUInt32());
+            var items = (T**)allocator.Alloc<IntPtr>(ySize);
 
             NativeBuffer.Register(items, allocator);
 
             for (var i = 0; i < xSize; i++)
             {
-                var item = allocator.Alloc<T>(xSize.ToUInt32());
+                var item = allocator.Alloc<T>(xSize);
 
                 NativeBuffer.Register(item, allocator);
 
