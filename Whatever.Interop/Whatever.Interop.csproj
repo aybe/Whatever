@@ -6,4 +6,8 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Whatever.Extensions\Whatever.Extensions.csproj" />
+	</ItemGroup>
+
 </Project>
