@@ -44,22 +44,22 @@ public static unsafe class Globals
                     {
                         if (isStereo)
                         {
-                            Decode2(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, Sample4BitToSample16Bit);
+                            Decode2(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, 12);
                         }
                         else
                         {
-                            Decode1(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, Sample4BitToSample16Bit);
+                            Decode1(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, 12);
                         }
                     }
                     else
                     {
                         if (isStereo)
                         {
-                            Decode2(ctx, pDataIn, pSamplesOut, 4, 8, 0xFF, Sample8BitToSample16Bit);
+                            Decode2(ctx, pDataIn, pSamplesOut, 4, 8, 0xFF, 8);
                         }
                         else
                         {
-                            Decode1(ctx, pDataIn, pSamplesOut, 4, 8, 0xFF, Sample8BitToSample16Bit);
+                            Decode1(ctx, pDataIn, pSamplesOut, 4, 8, 0xFF, 8);
                         }
                     }
 
@@ -82,20 +82,6 @@ public static unsafe class Globals
         return b8Bit ? ChunkMaxSamples / 2 : ChunkMaxSamples;
     }
 
-    private static short Sample4BitToSample16Bit(in ushort nibble)
-    {
-        if ((nibble & 0x8) != 0) return (short)((nibble << 12) - 65536);
-
-        return (short)(nibble << 12);
-    }
-
-    private static short Sample8BitToSample16Bit(in ushort @byte)
-    {
-        if ((@byte & 0x80) != 0) return (short)((@byte << 8) - 65536);
-
-        return (short)(@byte << 8);
-    }
-
     private static short DecodeAdpcmSample(
         in short unfilteredSample, ref short prevSample1, ref short prevSample2, in byte sampleShift,
         in short posFilter, in short negFilter)
@@ -112,8 +98,7 @@ public static unsafe class Globals
     }
 
     private static void Decode1(
-        Context ctx, byte* pDataIn, in short* pSamplesOut, int blockCount, int blockScale, byte sampleMask,
-        SampleFunc sampleFunc)
+        Context ctx, byte* pDataIn, in short* pSamplesOut, int blockCount, int blockScale, byte sampleMask, int sampleShift)
     {
         var words = (uint*)(pDataIn + 16);
         var samplesOut = pSamplesOut;
@@ -126,7 +111,8 @@ public static unsafe class Globals
                  sample < DataWordsPerChunk;
                  sample++) // Mono: double up the sample for the left and right channels
             {
-                var unfilteredSample = sampleFunc((byte)((words[sample] >> (block * blockScale)) & sampleMask));
+                var unfilteredSample =
+                    (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
 
                 samplesOut[0] = samplesOut[1] =
                     DecodeAdpcmSample(unfilteredSample, ref ctx.M1, ref ctx.M2, shl, pos, neg);
@@ -137,8 +123,7 @@ public static unsafe class Globals
     }
 
     private static void Decode2(
-        Context ctx, byte* pDataIn, in short* pSamplesOut, int blockCount, int blockScale, byte sampleMask,
-        SampleFunc sampleFunc)
+        Context ctx, byte* pDataIn, in short* pSamplesOut, int blockCount, int blockScale, byte sampleMask, int sampleShift)
     {
         var words = (uint*)(pDataIn + 16);
         var samplesOut = pSamplesOut;
@@ -153,7 +138,8 @@ public static unsafe class Globals
                  sample < DataWordsPerChunk;
                  sample++) // Note: the other channel will be handled by a separate block
             {
-                var unfilteredSample = sampleFunc((byte)((words[sample] >> (block * blockScale)) & sampleMask));
+                var unfilteredSample =
+                    (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
 
                 ref var last1 = ref right ? ref ctx.R1 : ref ctx.L1;
                 ref var last2 = ref right ? ref ctx.R2 : ref ctx.L2;
@@ -185,6 +171,4 @@ public static unsafe class Globals
         pos = PositiveFilters[hdrFilterBits];
         neg = NegativeFilters[hdrFilterBits];
     }
-
-    private delegate short SampleFunc(in ushort value);
 }
