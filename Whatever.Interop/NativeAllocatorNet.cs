@@ -6,7 +6,7 @@ namespace Whatever.Interop
     public sealed unsafe class NativeAllocatorNet
         : NativeAllocator<NativeAllocatorNet>
     {
-        public override void* Alloc(int byteCount)
+        protected override void* Alloc(int byteCount)
         {
             if (byteCount <= 0)
             {
@@ -18,7 +18,7 @@ namespace Whatever.Interop
             return (void*)pointer;
         }
 
-        public override void Clear(void* pointer, int byteCount)
+        protected override void Clear(void* pointer, int byteCount)
         {
             if (byteCount < 0)
             {

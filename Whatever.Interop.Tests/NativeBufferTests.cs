@@ -8,7 +8,7 @@ public sealed class NativeBufferTests
     {
         var allocator = NativeAllocator.Default;
 
-        var alloc = (byte*)allocator.Alloc(3);
+        var alloc = allocator.Alloc<byte>(3);
 
         allocator.Clear(alloc, 3);
 

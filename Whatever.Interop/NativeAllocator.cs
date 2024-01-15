@@ -40,9 +40,9 @@ namespace Whatever.Interop
 
         #region Abstract
 
-        public abstract void* Alloc(int byteCount);
+        protected abstract void* Alloc(int byteCount);
 
-        public abstract void Clear(void* pointer, int byteCount);
+        protected abstract void Clear(void* pointer, int byteCount);
 
         public abstract void Free(void* pointer);
 
