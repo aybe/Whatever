@@ -25,7 +25,14 @@ public static unsafe class Globals
         var isStereo = (sector[19] & 0x3) != 0;
         var is8Bit = (sector[19] & 0x30) != 0;
         var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37000;
-        var samplesPerChunk = GetSamplesPerAdpcmChunk(isStereo, is8Bit);
+
+        var samplesPerChunk = isStereo
+            ? is8Bit
+                ? ChunkMaxSamples / 4
+                : ChunkMaxSamples / 2
+            : is8Bit
+                ? ChunkMaxSamples / 2
+                : ChunkMaxSamples;
 
         fixed (byte* pDataIn1 = sector[(12 + 4 + 8)..])
         {
@@ -70,13 +77,6 @@ public static unsafe class Globals
         output.SampleRate = (uint)sampleRate;
 
         return true;
-    }
-
-    private static uint GetSamplesPerAdpcmChunk(in bool bStereo, in bool b8Bit)
-    {
-        if (bStereo) return b8Bit ? ChunkMaxSamples / 4 : ChunkMaxSamples / 2;
-
-        return b8Bit ? ChunkMaxSamples / 2 : ChunkMaxSamples;
     }
 
     private static short DecodeAdpcmSample(
