@@ -1,3 +1,6 @@
 [*.cs]
 
 dotnet_remove_unnecessary_suppression_exclusions=category:ReSharper
+
+# ReSharper properties
+resharper_csharp_max_line_length=150
