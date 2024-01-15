@@ -81,11 +81,9 @@ public static unsafe class Globals
     }
 
     private static short DecodeAdpcmSample(
-        in short unfilteredSample, ref short prevSample1, ref short prevSample2, in byte sampleShift,
-        in short posFilter, in short negFilter)
+        in short unfilteredSample, ref short prevSample1, ref short prevSample2, in byte sampleShift, in short posFilter, in short negFilter)
     {
-        var filteredSample = (unfilteredSample >> sampleShift) +
-                             (prevSample1 * posFilter + prevSample2 * negFilter + 32) / 64;
+        var filteredSample = (unfilteredSample >> sampleShift) + (prevSample1 * posFilter + prevSample2 * negFilter + 32) / 64;
 
         var clamp = (short)Math.Clamp(filteredSample, short.MinValue, short.MaxValue);
 
@@ -105,15 +103,11 @@ public static unsafe class Globals
         {
             DecodeUnpack(pDataIn, block, out var shl, out var pos, out var neg);
 
-            for (var sample = 0;
-                 sample < DataWordsPerChunk;
-                 sample++) // Mono: double up the sample for the left and right channels
+            for (var sample = 0; sample < DataWordsPerChunk; sample++) // Mono: double up the sample for the left and right channels
             {
-                var unfilteredSample =
-                    (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
+                var unfilteredSample = (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
 
-                samplesOut[0] = samplesOut[1] =
-                    DecodeAdpcmSample(unfilteredSample, ref ctx.M1, ref ctx.M2, shl, pos, neg);
+                samplesOut[0] = samplesOut[1] = DecodeAdpcmSample(unfilteredSample, ref ctx.M1, ref ctx.M2, shl, pos, neg);
 
                 samplesOut += 2;
             }
@@ -132,12 +126,9 @@ public static unsafe class Globals
 
             var right = (block & 1) != 0;
 
-            for (var sample = 0;
-                 sample < DataWordsPerChunk;
-                 sample++) // Note: the other channel will be handled by a separate block
+            for (var sample = 0; sample < DataWordsPerChunk; sample++) // Note: the other channel will be handled by a separate block
             {
-                var unfilteredSample =
-                    (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
+                var unfilteredSample = (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
 
                 ref var last1 = ref right ? ref ctx.R1 : ref ctx.L1;
                 ref var last2 = ref right ? ref ctx.R2 : ref ctx.L2;
