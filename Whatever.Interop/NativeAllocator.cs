@@ -25,16 +25,16 @@ namespace Whatever.Interop
 
         public abstract void* Alloc(int byteCount);
 
-        public abstract void Clear(void* pointer, uint byteCount);
+        public abstract void Clear(void* pointer, int byteCount);
 
-        public void Clear<T>(T* pointer, uint elementCount)
+        public void Clear<T>(T* pointer, int elementCount)
             where T : unmanaged
         {
             var sizeOf = NativeHelper.SizeOf<T>();
 
             var byteCount = elementCount * sizeOf;
 
-            Clear((void*)pointer, (uint)byteCount);
+            Clear((void*)pointer, byteCount);
         }
 
         public abstract void Free(void* pointer);

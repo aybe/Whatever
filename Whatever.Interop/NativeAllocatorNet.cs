@@ -12,7 +12,7 @@ namespace Whatever.Interop
 
             var byteCount = elementCount * elementSize;
 
-            var pointer = Marshal.AllocHGlobal((int)byteCount);
+            var pointer = Marshal.AllocHGlobal(byteCount);
 
             return (T*)pointer;
         }
@@ -24,9 +24,14 @@ namespace Whatever.Interop
             return (void*)pointer;
         }
 
-        public override void Clear(void* pointer, uint byteCount)
+        public override void Clear(void* pointer, int byteCount)
         {
-            new Span<byte>(pointer, (int)byteCount).Clear();
+            if (byteCount < 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(byteCount));
+            }
+
+            new Span<byte>(pointer, byteCount).Clear();
         }
 
         public override void Free(void* pointer)
