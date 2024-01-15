@@ -104,7 +104,7 @@ public static unsafe class Globals
 
             for (var sample = 0; sample < DataWordsPerChunk; sample++) // Mono: double up the sample for the left and right channels
             {
-                var unfilteredSample = (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
+                var unfilteredSample = GetSample(blockScale, sampleMask, sampleShift, words, sample, block);
 
                 samplesOut[0] = samplesOut[1] = DecodeAdpcmSample(unfilteredSample, ref ctx.M1, ref ctx.M2, shl, pos, neg);
 
@@ -127,7 +127,7 @@ public static unsafe class Globals
 
             for (var sample = 0; sample < DataWordsPerChunk; sample++) // Note: the other channel will be handled by a separate block
             {
-                var unfilteredSample = (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
+                var unfilteredSample = GetSample(blockScale, sampleMask, sampleShift, words, sample, block);
 
                 ref var last1 = ref right ? ref ctx.R1 : ref ctx.L1;
                 ref var last2 = ref right ? ref ctx.R2 : ref ctx.L2;
@@ -147,6 +147,11 @@ public static unsafe class Globals
                 samplesOut += 1;
             }
         }
+    }
+
+    private static short GetSample(int blockScale, byte sampleMask, int sampleShift, uint* words, int sample, int block)
+    {
+        return (short)((byte)((words[sample] >> (block * blockScale)) & sampleMask) << sampleShift);
     }
 
     private static void DecodeUnpack(byte* pDataIn, int block, out byte shl, out short pos, out short neg)
