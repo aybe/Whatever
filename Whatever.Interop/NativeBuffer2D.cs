@@ -32,6 +32,8 @@ namespace Whatever.Interop
             {
                 var item = allocator.Alloc<T>(xSize);
 
+                allocator.Clear(item, xSize);
+
                 NativeBuffer.Register(item, allocator);
 
                 items[i] = item;

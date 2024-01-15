@@ -21,6 +21,8 @@ namespace Whatever.Interop
 
             var items = allocator.Alloc<T>(count);
 
+            allocator.Clear(items, count);
+
             NativeBuffer.Register(items, allocator);
 
             Count = count;
