@@ -23,8 +23,7 @@ public static unsafe class Globals
         output.SampleCount = 0;
 
         var isStereo = (sector[19] & 0x3) != 0;
-        var is8Bit = ((sector[19] & 0x30) != 0 ? 8 : 4) >= 8;
-        var is4Bit = is8Bit == false;
+        var is8Bit = (sector[19] & 0x30) != 0;
         var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37000;
         var samplesPerChunk = GetSamplesPerAdpcmChunk(isStereo, is8Bit);
 
@@ -38,18 +37,7 @@ public static unsafe class Globals
 
                 for (uint chunkIdx = 0; chunkIdx < ChunksPerSector; chunkIdx++)
                 {
-                    if (is4Bit)
-                    {
-                        if (isStereo)
-                        {
-                            Decode2(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, 12);
-                        }
-                        else
-                        {
-                            Decode1(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, 12);
-                        }
-                    }
-                    else
+                    if (is8Bit)
                     {
                         if (isStereo)
                         {
@@ -58,6 +46,17 @@ public static unsafe class Globals
                         else
                         {
                             Decode1(ctx, pDataIn, pSamplesOut, 4, 8, 0xFF, 8);
+                        }
+                    }
+                    else
+                    {
+                        if (isStereo)
+                        {
+                            Decode2(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, 12);
+                        }
+                        else
+                        {
+                            Decode1(ctx, pDataIn, pSamplesOut, 8, 4, 0x0F, 12);
                         }
                     }
 
