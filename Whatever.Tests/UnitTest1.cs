@@ -3,6 +3,7 @@ using Whatever.Extensions;
 
 namespace Whatever.Tests;
 
+[Obsolete("should be Whatever.Extensions.Tests")] // TODO should be Whatever.Extensions.Tests
 [TestClass]
 public class UnitTest1
 {
