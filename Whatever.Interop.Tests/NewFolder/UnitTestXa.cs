@@ -59,27 +59,31 @@ public class UnitTestXa : UnitTestBase
 
             Assert.IsTrue(decode); // TODO delete
 
-            var span = output.Samples.AsSpan(0, (int)output.SampleCount);
+            var sampleCount = output.SampleCount;
 
-            samples += output.SampleCount;
+            var span = output.Samples.AsSpan(0, (int)sampleCount);
+
+            samples += sampleCount;
 
             target.Write(MemoryMarshal.AsBytes(span));
         }
 
         target.Position = 0;
 
+        samples /= output.Channels; // BUG samples is wrong terminology here since we have to divide by channels...
+
         WriteWavHeader(target, 16, output.Channels, output.SampleRate, samples);
 
         var expectedHash = sourceFileName switch
         {
             "test_18900_4_1_2352.xa" => "dcd1bc2dba860d444ca178f194df0c111e8338a7f234e7335694ea8537deaa9e",
-            "test_18900_4_2_2352.xa" => "577a3c4502edbef14beee087db9d4f8541275f77bb67484eb20d9adb68dacc1c",
+            "test_18900_4_2_2352.xa" => "6c63b04a0a84c2530188838f8b4e04dfea6fba50b2b478e5e2899c0cf8c2d37a",
             "test_18900_8_1_2352.xa" => "e48bf59a49b6bdbd5f7d023b84287a032ea93aad225821c45c37f730895494e3",
-            "test_18900_8_2_2352.xa" => "23cbaf82a54f0d65079d35d5c54acb474ac8bd2de5166e796561b7f55cf56474",
+            "test_18900_8_2_2352.xa" => "751ad2f1333e52ebc00d09cf9f1fc13bc6def8d4644ad3c3b52f7fff6553d65d",
             "test_37800_4_1_2352.xa" => "3388ee0f87068acf0acb4b23128ba560bfb3cfc12a86fe5ff1daaed489f5ac83",
-            "test_37800_4_2_2352.xa" => "01bfa41e6892a8938494ec498bd2a676a02398e2b8c748f64265d345219ba48a",
+            "test_37800_4_2_2352.xa" => "42174760a35eb5349ea7c17e2ce177464577d3d2a4bfebd9d08e8788d782a095",
             "test_37800_8_1_2352.xa" => "3183e6b960e4ac1055d7de500dbea4370f9da5117e424ea0dde04f01b5a863e5",
-            "test_37800_8_2_2352.xa" => "92a8603174e5e36e2492a68557aa6d3a57243fa30b1e398fae81cf130fe22bbb",
+            "test_37800_8_2_2352.xa" => "8785fb109d44b464cc339cef5aee4c392a482112172d345890d792bc29ddef08",
             _ => throw new NotSupportedException()
         };
 
