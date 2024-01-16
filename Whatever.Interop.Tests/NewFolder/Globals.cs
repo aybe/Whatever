@@ -1,15 +1,6 @@
 ﻿namespace Whatever.Interop.Tests.NewFolder;
 
 public static unsafe class Globals
-    // BUG test_18900_4_1_2352.raw 108,864 samples
-    // BUG test_18900_4_2_2352.raw 108,864 samples
-    // BUG test_18900_8_1_2352.raw 108,864 samples
-    // BUG test_18900_8_2_2352.raw 107,856 samples
-    // BUG test_37800_4_1_2352.raw 217,728 samples
-    // BUG test_37800_4_2_2352.raw 215,712 samples
-    // BUG test_37800_8_1_2352.raw 215,712 samples
-    // BUG test_37800_8_2_2352.raw 215,712 samples
-    // BUG source is 251,342
 {
     private const uint ChunksPerSector = 18;
 
