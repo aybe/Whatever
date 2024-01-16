@@ -129,16 +129,15 @@ public static unsafe class Globals
         {
             DecodeUnpack(pDataIn, block, out var shl, out var pos, out var neg);
 
-            var right = (block & 1) != 0;
+            var channel = block & 1;
+
+            var right = channel != 0;
 
             for (var sample = 0; sample < DataWordsPerChunk; sample++) // Note: the other channel will be handled by a separate block
             {
                 var unfilteredSample = GetSample(blockScale, sampleMask, sampleShift, words, sample, block);
 
-                ref var last1 = ref right ? ref ctx.History[1][0] : ref ctx.History[0][0];
-                ref var last2 = ref right ? ref ctx.History[1][1] : ref ctx.History[0][1];
-
-                samplesOut[0] = DecodeAdpcmSample(unfilteredSample, ref last1, ref last2, shl, pos, neg);
+                samplesOut[0] = DecodeAdpcmSample(unfilteredSample, ref ctx.History[channel][0], ref ctx.History[channel][1], shl, pos, neg);
 
                 samplesOut += 2;
             }
