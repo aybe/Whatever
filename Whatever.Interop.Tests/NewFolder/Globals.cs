@@ -192,13 +192,13 @@ public static unsafe class Globals
             {
                 if (isStereo)
                 {
-                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_left, ref older_left, output.Samples);
-                    Decode28Nibbles(src, blk, 1, ref dst1, ref old_right, ref older_right, output.Samples);
+                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_left, ref older_left, output.Samples, isStereo);
+                    Decode28Nibbles(src, blk, 1, ref dst1, ref old_right, ref older_right, output.Samples, isStereo);
                 }
                 else
                 {
-                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_mono, ref older_mono, output.Samples);
-                    Decode28Nibbles(src, blk, 1, ref dst0, ref old_mono, ref older_mono, output.Samples);
+                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_mono, ref older_mono, output.Samples, isStereo);
+                    Decode28Nibbles(src, blk, 1, ref dst0, ref old_mono, ref older_mono, output.Samples, isStereo);
                 }
             }
 
@@ -209,7 +209,7 @@ public static unsafe class Globals
     }
 
     private static void Decode28Nibbles(
-        Span<byte> src, int blk, int nibble, ref int dst, ref int old, ref int older, short[] outputSamples)
+        Span<byte> src, int blk, int nibble, ref int dst, ref int old, ref int older, short[] outputSamples, bool isStereo)
     {
         var index = 4 + blk * 2 + nibble;
         var shift = 12 - (src[index] & 0xF);
@@ -222,7 +222,7 @@ public static unsafe class Globals
             var s = (t << shift) + (old * f0 + older * f1 + 32) / 64;
             s = Math.Clamp(s, short.MinValue, short.MaxValue);
             outputSamples[dst] = (short)s;
-            dst += 2;
+            dst += isStereo ? 2 : 1;
             older = old;
             old = s;
         }
@@ -231,7 +231,7 @@ public static unsafe class Globals
     private static int Signed4Bit(int i)
     {
         var j = (i << 28) >> 28;
-        
+
         Console.WriteLine($"{i}, {j}");
         return j;
     }
