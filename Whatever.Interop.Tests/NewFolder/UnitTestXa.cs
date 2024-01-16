@@ -14,6 +14,8 @@ public class UnitTestXa : UnitTestBase
     [DynamicData(nameof(TestData))]
     public void Test(string path)
     {
+        Globals.WriteLine = s => TestContext.WriteLine(s?.ToString());
+
         var sourceFileName = Path.GetFileName(path);
         var targetFileName = Path.ChangeExtension(path, ".wav");
 

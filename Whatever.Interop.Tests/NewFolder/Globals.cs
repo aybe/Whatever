@@ -14,12 +14,14 @@ public static unsafe class Globals
 
     public const uint SectorMaxSamples = ChunksPerSector * ChunkMaxSamples;
 
-    private static readonly short[] PositiveFilters = [0, +60, +115, +98, +122];
+    public static readonly short[] PositiveFilters = [0, +60, +115, +98, +122];
 
-    private static readonly short[] NegativeFilters = [0, 0, -52, -55, -60];
+    public static readonly short[] NegativeFilters = [0, 0, -52, -55, -60];
 
     public static bool Decode(Context ctx, SectorAudio output, Span<byte> sector)
     {
+        XaDecoder.Decode(sector, output);
+        return true;
         DecodeNew(ctx, output, sector);
         return true;
         output.SampleCount = 0;
@@ -188,19 +190,21 @@ public static unsafe class Globals
         var dst1 = 1;
         for (var i = 0; i < 18; i++)
         {
-            for (var blk = 0; blk < 4; blk++)
+            for (var blk = 0; blk < 4 * (is8Bit ? 1 : 1); blk++)
             {
                 if (isStereo)
                 {
-                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_left, ref older_left, output.Samples, isStereo);
-                    Decode28Nibbles(src, blk, 1, ref dst1, ref old_right, ref older_right, output.Samples, isStereo);
+                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_left, ref older_left, output.Samples, isStereo, is8Bit);
+                    Decode28Nibbles(src, blk, 1, ref dst1, ref old_right, ref older_right, output.Samples, isStereo, is8Bit);
                 }
                 else
                 {
-                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_mono, ref older_mono, output.Samples, isStereo);
-                    Decode28Nibbles(src, blk, 1, ref dst0, ref old_mono, ref older_mono, output.Samples, isStereo);
+                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_mono, ref older_mono, output.Samples, isStereo, is8Bit);
+                    Decode28Nibbles(src, blk, 1, ref dst0, ref old_mono, ref older_mono, output.Samples, isStereo, is8Bit);
                 }
             }
+
+            Console.WriteLine();
 
             src = src[128..];
         }
@@ -208,17 +212,20 @@ public static unsafe class Globals
         src = src[24..];
     }
 
+    public static Action<object?> WriteLine { get; set; } = Console.WriteLine;
+
     private static void Decode28Nibbles(
-        Span<byte> src, int blk, int nibble, ref int dst, ref int old, ref int older, short[] outputSamples, bool isStereo)
+        Span<byte> src, int blk, int nibble, ref int dst, ref int old, ref int older, short[] outputSamples, bool isStereo, bool is8Bit)
     {
-        var index = 4 + blk * 2 + nibble;
-        var shift = 12 - (src[index] & 0xF);
+        var index = 4 + blk * (is8Bit ? 1 : 2) + nibble * (!is8Bit ? 1 : 2);
+        Console.WriteLine(index);
+        var shift = (is8Bit ? 8 : 12) - (src[index] & 0xF);
         var filter = (src[index] & 0x30) >> 4;
         var f0 = PositiveFilters[filter];
         var f1 = NegativeFilters[filter];
         for (var j = 0; j < 28; j++)
         {
-            var t = Signed4Bit((src[16 + blk + j * 4] >> (nibble * 4)) & 0x0F);
+            var t = Signed4Bit((src[16 + blk + j * 4] >> (nibble * 4)) & (is8Bit ? 0xFF : 0x0F), is8Bit);
             var s = (t << shift) + (old * f0 + older * f1 + 32) / 64;
             s = Math.Clamp(s, short.MinValue, short.MaxValue);
             outputSamples[dst] = (short)s;
@@ -228,11 +235,11 @@ public static unsafe class Globals
         }
     }
 
-    private static int Signed4Bit(int i)
+    private static int Signed4Bit(int i, bool is8Bit)
     {
-        var j = (i << 28) >> 28;
-
-        Console.WriteLine($"{i}, {j}");
+        var k = is8Bit ? 24 : 28;
+        var j = (i << k) >> k;
+        //Console.WriteLine($"{i}, {j}");
         return j;
     }
 
