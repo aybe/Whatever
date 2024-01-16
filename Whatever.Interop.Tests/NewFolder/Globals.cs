@@ -20,6 +20,8 @@ public static unsafe class Globals
 
     public static bool Decode(Context ctx, SectorAudio output, Span<byte> sector)
     {
+        DecodeNew(ctx, output, sector);
+        return true;
         output.SampleCount = 0;
 
         var isStereo = (sector[19] & 0x3) != 0;
@@ -160,4 +162,79 @@ public static unsafe class Globals
         pos = PositiveFilters[hdrFilterBits];
         neg = NegativeFilters[hdrFilterBits];
     }
+
+    #region temp
+
+    private static int dst_left;
+    private static readonly int dst_right = 1;
+    private static int dst_mono;
+    private static int old_left, old_right, old_mono;
+    private static int older_left, older_right, older_mono;
+
+    private static void DecodeNew(Context ctx, SectorAudio output, Span<byte> sector)
+    {
+        var isStereo = (sector[19] & 0x3) != 0;
+        var is8Bit = (sector[19] & 0x30) != 0;
+        var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37800;
+        var samplesPerChunk = is8Bit
+            ? ChunkMaxSamples / 4
+            : ChunkMaxSamples / 2;
+        output.SampleRate = (uint)sampleRate;
+        output.Channels = (ushort)(isStereo ? 2 : 1);
+        output.SampleCount = samplesPerChunk * ChunksPerSector;
+        var src = sector;
+        src = src[(12 + 4 + 8)..];
+        var dst0 = 0;
+        var dst1 = 1;
+        for (var i = 0; i < 18; i++)
+        {
+            for (var blk = 0; blk < 4; blk++)
+            {
+                if (isStereo)
+                {
+                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_left, ref older_left, output.Samples);
+                    Decode28Nibbles(src, blk, 1, ref dst1, ref old_right, ref older_right, output.Samples);
+                }
+                else
+                {
+                    Decode28Nibbles(src, blk, 0, ref dst0, ref old_mono, ref older_mono, output.Samples);
+                    Decode28Nibbles(src, blk, 1, ref dst0, ref old_mono, ref older_mono, output.Samples);
+                }
+            }
+
+            src = src[128..];
+        }
+
+        src = src[24..];
+    }
+
+    private static void Decode28Nibbles(
+        Span<byte> src, int blk, int nibble, ref int dst, ref int old, ref int older, short[] outputSamples)
+    {
+        var index = 4 + blk * 2 + nibble;
+        var shift = 12 - (src[index] & 0xF);
+        var filter = (src[index] & 0x30) >> 4;
+        var f0 = PositiveFilters[filter];
+        var f1 = NegativeFilters[filter];
+        for (var j = 0; j < 28; j++)
+        {
+            var t = Signed4Bit((src[16 + blk + j * 4] >> (nibble * 4)) & 0x0F);
+            var s = (t << shift) + (old * f0 + older * f1 + 32) / 64;
+            s = Math.Clamp(s, short.MinValue, short.MaxValue);
+            outputSamples[dst] = (short)s;
+            dst += 2;
+            older = old;
+            old = s;
+        }
+    }
+
+    private static int Signed4Bit(int i)
+    {
+        var j = (i << 28) >> 28;
+        
+        Console.WriteLine($"{i}, {j}");
+        return j;
+    }
+
+    #endregion
 }
