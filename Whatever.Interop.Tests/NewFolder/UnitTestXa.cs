@@ -14,6 +14,11 @@ public class UnitTestXa : UnitTestBase
     [DynamicData(nameof(TestData))]
     public void Test(string path)
     {
+        XaDecoder.History[0][0] = 0;
+        XaDecoder.History[0][1] = 0;
+        XaDecoder.History[1][0] = 0;
+        XaDecoder.History[1][1] = 0;
+
         Globals.WriteLine = s => TestContext.WriteLine(s?.ToString());
 
         var sourceFileName = Path.GetFileName(path);

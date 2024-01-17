@@ -2,7 +2,7 @@
 
 public static class XaDecoder
 {
-    private static readonly int[][] History = [[0, 0], [0, 0]];
+    public static readonly int[][] History = [[0, 0], [0, 0]];
 
     public static void Decode(Span<byte> src, SectorAudio output)
     {
