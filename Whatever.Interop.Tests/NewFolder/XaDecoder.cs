@@ -66,30 +66,35 @@ public static class XaDecoder
                 {
                     for (var channel = 0; channel < 1; channel++)
                     {
-                        var k = 16 + block / 2 + sample * 4;
-                        var l = block / 2;
-                        int t = source[k];
-                        var u = (t >> (block * 4)) & 0xF;
+                        var k = 16 + sample * 4 + block / 2;
+                        var t = (int)source[k];
+                        var u = (t >> ((block & 1) * 4)) & 0xF;
                         var v = (u << 28) >> 28;
+
                         ref var old = ref History[channel][0];
                         ref var older = ref History[channel][1];
-                        var w = (v << (12 - sr)) + (old * f0 + older * f1 + 32) / 64;
-                        w = Math.Clamp(w, short.MinValue, short.MaxValue);
+                        var s = (v << (12 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        s = Math.Clamp(s, short.MinValue, short.MaxValue);
                         older = old;
-                        old = w;
-                        target[index++] = (short)w;
+                        old = s;
+                        target[index++] = (short)s;
                         Globals.WriteLine(
+                            $"{nameof(group)}: {group}, " +
+                            $"{nameof(block)}: {block}, " +
                             $"{nameof(sample)}: {sample}, " +
-                            $"{nameof(channel)}: {channel}, " +
+                            //$"{nameof(channel)}: {channel}, " +
                             $"{nameof(k)}: {k}, " +
-                            $"{nameof(l)}: {l}, " +
-                            $"{nameof(t)}: 0x{t:X2}, " +
-                            $"{nameof(u)}: 0x{u:X}, " +
-                            $"{nameof(v)}: {v}, " +
+                            //$"{nameof(t)}: 0x{t:X2}, " +
+                            //$"{nameof(u)}: 0x{u:X}, " +
+                            //$"{nameof(v)}: {v}, " +
                             $"");
                     }
                 }
             }
+
+            Globals.WriteLine(null);
+
+            source = source[128..];
         }
 
         return index;
