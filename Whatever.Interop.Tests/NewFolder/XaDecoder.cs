@@ -36,7 +36,7 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                int i; // TODO
+                output.SampleCount = (uint)Decode42(src, output.Samples);
             }
             else
             {
@@ -46,6 +46,61 @@ public static class XaDecoder
     }
 
     private static int Decode41(Span<byte> source, Span<short> target)
+    {
+        var index = 0;
+
+        for (var group = 0; group < 18; group++)
+        {
+            for (var block = 0; block < 8; block++)
+            {
+                var sp = source[4 + block];
+                var sr = sp & 0xF;
+                var sf = (sp & 0x30) >> 4;
+                var f0 = Globals.PositiveFilters[sf];
+                var f1 = Globals.NegativeFilters[sf];
+
+                Globals.WriteLine(
+                    $"{nameof(block)}: {block}, {nameof(sp)}: 0x{sp:X2}, {nameof(sr)}: {sr}, {nameof(sf)}: {sf}, {nameof(f0)}: {f0,3}, {nameof(f1)}: {f1,3}");
+
+                for (var sample = 0; sample < 28; sample++)
+                {
+                    for (var channel = 0; channel < 1; channel++)
+                    {
+                        var k = 16 + sample * 4 + block / 2;
+                        var t = (int)source[k];
+                        var u = (t >> ((block & 1) * 4)) & 0xF;
+                        var v = (u << 28) >> 28;
+
+                        ref var old = ref History[channel][0];
+                        ref var older = ref History[channel][1];
+                        var s = (v << (12 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        s = Math.Clamp(s, short.MinValue, short.MaxValue);
+                        older = old;
+                        old = s;
+                        target[index++] = (short)s;
+                        Globals.WriteLine(
+                            $"{nameof(group)}: {group}, " +
+                            $"{nameof(block)}: {block}, " +
+                            $"{nameof(sample)}: {sample}, " +
+                            //$"{nameof(channel)}: {channel}, " +
+                            $"{nameof(k)}: {k}, " +
+                            //$"{nameof(t)}: 0x{t:X2}, " +
+                            //$"{nameof(u)}: 0x{u:X}, " +
+                            //$"{nameof(v)}: {v}, " +
+                            $"");
+                    }
+                }
+            }
+
+            Globals.WriteLine(null);
+
+            source = source[128..];
+        }
+
+        return index;
+    }
+
+    private static int Decode42(Span<byte> source, Span<short> target)
     {
         var index = 0;
 
