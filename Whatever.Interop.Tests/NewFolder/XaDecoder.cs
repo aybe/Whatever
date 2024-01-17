@@ -27,7 +27,7 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode82(src, output.Samples, blocks);
+                output.SampleCount = (uint)Decode82(src, output.Samples);
             }
             else
             {
@@ -47,18 +47,15 @@ public static class XaDecoder
         }
     }
 
-    private static int Decode81(Span<byte> source, Span<short> target, int blocks)
+    private static int Decode81(Span<byte> source, Span<short> target)
     {
         var index = 0;
-
-        ref var older = ref History[0][1];
-        ref var old = ref History[0][0];
 
         for (var group = 0; group < 18; group++)
         {
             Globals.WriteLine($"{nameof(group)}: {group}");
 
-            for (var block = 0; block < blocks; block++)
+            for (var block = 0; block < 4; block++)
             {
                 var sp = source[4 + block];
                 var sr = sp & 0xF;
@@ -77,13 +74,20 @@ public static class XaDecoder
 
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    int t = source[16 + block + sample * 4];
-                    t = (t << 24) >> 24;
-                    var s = (t << (8 - sr)) + (old * f0 + older * f1 + 32) / 64;
-                    s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                    older = old;
-                    old = s;
-                    target[index++] = (short)s;
+                    for (var channel = 0; channel < 1; channel++)
+                    {
+                        ref var older = ref History[channel][1];
+                        ref var old = ref History[channel][0];
+
+                        var k = 16 + block * 1 + sample * 4 + channel;
+                        int t = source[k];
+                        t = (t << 24) >> 24;
+                        var s = (t << (8 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        s = Math.Clamp(s, short.MinValue, short.MaxValue);
+                        older = old;
+                        old = s;
+                        target[index++] = (short)s;
+                    }
                 }
             }
 
