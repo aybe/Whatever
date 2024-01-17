@@ -9,7 +9,6 @@ public static class XaDecoder
         var isStereo = (src[19] & 0x3) != 0;
         var is8Bit = (src[19] & 0x30) != 0;
         var sampleRate = (src[19] & 0xC) != 0 ? 18900 : 37800;
-        var blocks = is8Bit ? 4 : 8;
 
         output.Channels = (ushort)(isStereo ? 2 : 1);
         output.SampleRate = (uint)sampleRate;
@@ -17,8 +16,7 @@ public static class XaDecoder
         Globals.WriteLine(
             $"{nameof(isStereo)}: {isStereo}, " +
             $"{nameof(is8Bit)}: {is8Bit}, " +
-            $"{nameof(sampleRate)}: {sampleRate}, " +
-            $"{nameof(blocks)}: {blocks}"
+            $"{nameof(sampleRate)}: {sampleRate}"
         );
 
         src = src[(12 + 4 + 8)..];
