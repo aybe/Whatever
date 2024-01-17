@@ -40,9 +40,59 @@ public static class XaDecoder
             }
             else
             {
-                int i; // TODO
+                output.SampleCount = (uint)Decode41(src, output.Samples);
             }
         }
+    }
+
+    private static int Decode41(Span<byte> source, Span<short> target)
+    {
+        var index = 0;
+
+        for (var group = 0; group < 18; group++)
+        {
+            for (var block = 0; block < 8; block++)
+            {
+                var sp = source[4 + block];
+                var sr = sp & 0xF;
+                var sf = (sp & 0x30) >> 4;
+                var f0 = Globals.PositiveFilters[sf];
+                var f1 = Globals.NegativeFilters[sf];
+
+                Globals.WriteLine(
+                    $"{nameof(block)}: {block}, {nameof(sp)}: 0x{sp:X2}, {nameof(sr)}: {sr}, {nameof(sf)}: {sf}, {nameof(f0)}: {f0,3}, {nameof(f1)}: {f1,3}");
+
+                for (var sample = 0; sample < 28; sample++)
+                {
+                    for (var channel = 0; channel < 1; channel++)
+                    {
+                        var k = 16 + block / 2 + sample * 4;
+                        var l = block / 2;
+                        int t = source[k];
+                        var u = (t >> (block * 4)) & 0xF;
+                        var v = (u << 28) >> 28;
+                        ref var old = ref History[channel][0];
+                        ref var older = ref History[channel][1];
+                        var w = (v << (12 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        w = Math.Clamp(w, short.MinValue, short.MaxValue);
+                        older = old;
+                        old = w;
+                        target[index++] = (short)w;
+                        Globals.WriteLine(
+                            $"{nameof(sample)}: {sample}, " +
+                            $"{nameof(channel)}: {channel}, " +
+                            $"{nameof(k)}: {k}, " +
+                            $"{nameof(l)}: {l}, " +
+                            $"{nameof(t)}: 0x{t:X2}, " +
+                            $"{nameof(u)}: 0x{u:X}, " +
+                            $"{nameof(v)}: {v}, " +
+                            $"");
+                    }
+                }
+            }
+        }
+
+        return index;
     }
 
     private static int Decode81(Span<byte> source, Span<short> target)
