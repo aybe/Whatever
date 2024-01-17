@@ -106,24 +106,24 @@ public static class XaDecoder
 
         for (var group = 0; group < 18; group++)
         {
-            for (var block = 0; block < 8; block++)
+            for (var block = 0; block < 4; block++) // ok, right speed
             {
-                var sp = source[4 + block];
-                var sr = sp & 0xF;
-                var sf = (sp & 0x30) >> 4;
-                var f0 = Globals.PositiveFilters[sf];
-                var f1 = Globals.NegativeFilters[sf];
-
-                Globals.WriteLine(
-                    $"{nameof(block)}: {block}, {nameof(sp)}: 0x{sp:X2}, {nameof(sr)}: {sr}, {nameof(sf)}: {sf}, {nameof(f0)}: {f0,3}, {nameof(f1)}: {f1,3}");
-
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    for (var channel = 0; channel < 1; channel++)
+                    for (var channel = 0; channel < 2; channel++) // ok, obvious
                     {
-                        var k = 16 + sample * 4 + block / 2;
+                        var sp = source[4 + block * 2 + channel];
+                        var sr = sp & 0xF;
+                        var sf = (sp & 0x30) >> 4;
+                        var f0 = Globals.PositiveFilters[sf];
+                        var f1 = Globals.NegativeFilters[sf];
+                        Globals.WriteLine(
+                            $"{nameof(block)}: {block}, {nameof(sp)}: 0x{sp:X2}, {nameof(sr)}: {sr}, {nameof(sf)}: {sf}, {nameof(f0)}: {f0,3}, {nameof(f1)}: {f1,3}");
+
+
+                        var k = 16 + block + sample * 4;
                         var t = (int)source[k];
-                        var u = (t >> ((block & 1) * 4)) & 0xF;
+                        var u = (t >> (channel * 4)) & 0xF;
                         var v = (u << 28) >> 28;
 
                         ref var old = ref History[channel][0];
