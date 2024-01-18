@@ -25,27 +25,27 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode82(src, output.Samples, 2, 2);
+                output.SampleCount = (uint)Decode82(src, output.Samples, 2, 2, 8);
             }
             else
             {
-                output.SampleCount = (uint)Decode81(src, output.Samples, 1, 4);
+                output.SampleCount = (uint)Decode81(src, output.Samples, 1, 4, 8);
             }
         }
         else
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode42(src, output.Samples, 2, 4);
+                output.SampleCount = (uint)Decode42(src, output.Samples, 2, 4, 4);
             }
             else
             {
-                output.SampleCount = (uint)Decode41(src, output.Samples, 1, 8);
+                output.SampleCount = (uint)Decode41(src, output.Samples, 1, 8, 4);
             }
         }
     }
 
-    private static int Decode41(Span<byte> source, Span<short> target, int channels, int blocks)
+    private static int Decode41(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
     {
         var index = 0;
 
@@ -64,7 +64,7 @@ public static class XaDecoder
 
                         Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
 
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel;
+                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
                         var u = (t >> ((block & 1) * 4)) & 0xF;
                         var v = (u << 28) >> 28;
@@ -87,7 +87,7 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode42(Span<byte> source, Span<short> target, int channels, int blocks)
+    private static int Decode42(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
     {
         var index = 0;
 
@@ -106,7 +106,7 @@ public static class XaDecoder
 
                         Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
 
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel;
+                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
                         var u = (t >> (channel * 4)) & 0xF;
                         var v = (u << 28) >> 28;
@@ -129,7 +129,7 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode81(Span<byte> source, Span<short> target, int channels, int blocks)
+    private static int Decode81(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
     {
         var index = 0;
 
@@ -148,7 +148,7 @@ public static class XaDecoder
 
                         Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
 
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel;
+                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
                         int u = t;
                         var v = (u << 24) >> 24;
@@ -171,7 +171,7 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode82(Span<byte> source, Span<short> target, int channels, int blocks)
+    private static int Decode82(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
     {
         var index = 0;
 
@@ -190,7 +190,7 @@ public static class XaDecoder
 
                         Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
 
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel;
+                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
                         int u = t;
                         var v = (u << 24) >> 24;
