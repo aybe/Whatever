@@ -13,12 +13,6 @@ public static class XaDecoder
         output.Channels = (ushort)(isStereo ? 2 : 1);
         output.SampleRate = (uint)sampleRate;
 
-        Globals.WriteLine(
-            $"{nameof(isStereo)}: {isStereo}, " +
-            $"{nameof(is8Bit)}: {is8Bit}, " +
-            $"{nameof(sampleRate)}: {sampleRate}"
-        );
-
         src = src[(12 + 4 + 8)..];
 
         if (is8Bit)
@@ -63,8 +57,6 @@ public static class XaDecoder
 
                         Unpack(sp, out var sr, out var sf, out var f0, out var f1);
 
-                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
-
                         var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
                         var z = ((block & blockMask) | (channel & channelMask)) * 4;
@@ -87,21 +79,6 @@ public static class XaDecoder
         }
 
         return index;
-    }
-
-    private static void Print(int group, int block, int sample, int channel, int si, byte sp, int sr, int sf, short f0, short f1)
-    {
-        Globals.WriteLine(
-            $"{nameof(group)}: {group}, " +
-            $"{nameof(block)}: {block}, " +
-            $"{nameof(sample)}: {sample}, " +
-            $"{nameof(channel)}: {channel}, " +
-            $"{nameof(si)}: {si}, " +
-            $"{nameof(sp)}: 0x{sp:X2}, " +
-            $"{nameof(sr)}: {sr}, " +
-            $"{nameof(sf)}: {sf}, " +
-            $"{nameof(f0)}: {f0,3}, " +
-            $"{nameof(f1)}: {f1,3}");
     }
 
     private static void Unpack(byte sp, out int sr, out int sf, out short f0, out short f1)
