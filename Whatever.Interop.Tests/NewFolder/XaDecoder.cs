@@ -25,28 +25,28 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode82(src, output.Samples, 2, 2, 8, 0, 0, 0xFF);
+                output.SampleCount = (uint)Decode82(src, output.Samples, 2, 2, 8, 0, 0, 0xFF, 24);
             }
             else
             {
-                output.SampleCount = (uint)Decode81(src, output.Samples, 1, 4, 8, 0, 0, 0xFF);
+                output.SampleCount = (uint)Decode81(src, output.Samples, 1, 4, 8, 0, 0, 0xFF, 24);
             }
         }
         else
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode42(src, output.Samples, 2, 4, 4, 0, 1, 0x0F);
+                output.SampleCount = (uint)Decode42(src, output.Samples, 2, 4, 4, 0, 1, 0x0F, 28);
             }
             else
             {
-                output.SampleCount = (uint)Decode41(src, output.Samples, 1, 8, 4, 1, 0, 0x0F);
+                output.SampleCount = (uint)Decode41(src, output.Samples, 1, 8, 4, 1, 0, 0x0F, 28);
             }
         }
     }
 
     private static int Decode41(
-        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift)
     {
         var index = 0;
 
@@ -69,7 +69,7 @@ public static class XaDecoder
                         var t = source[k];
                         var z = ((block & blockMask) | (channel & channelMask)) * 4;
                         var u = (t >> z) & sampleMask;
-                        var v = (u << 28) >> 28;
+                        var v = (u << signShift) >> signShift;
 
                         ref var x = ref History[channel][0];
                         ref var y = ref History[channel][1];
@@ -90,7 +90,7 @@ public static class XaDecoder
     }
 
     private static int Decode42(
-        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift)
     {
         var index = 0;
 
@@ -113,7 +113,7 @@ public static class XaDecoder
                         var t = source[k];
                         var z = ((block & blockMask) | (channel & channelMask)) * 4;
                         var u = (t >> z) & sampleMask;
-                        var v = (u << 28) >> 28;
+                        var v = (u << signShift) >> signShift;
 
                         ref var x = ref History[channel][0];
                         ref var y = ref History[channel][1];
@@ -134,7 +134,7 @@ public static class XaDecoder
     }
 
     private static int Decode81(
-        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift)
     {
         var index = 0;
 
@@ -157,7 +157,7 @@ public static class XaDecoder
                         var t = source[k];
                         var z = ((block & blockMask) | (channel & channelMask)) * 4;
                         var u = (t >> z) & sampleMask;
-                        var v = (u << 24) >> 24;
+                        var v = (u << signShift) >> signShift;
 
                         ref var x = ref History[channel][1];
                         ref var y = ref History[channel][0];
@@ -178,7 +178,7 @@ public static class XaDecoder
     }
 
     private static int Decode82(
-        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift)
     {
         var index = 0;
 
@@ -201,7 +201,7 @@ public static class XaDecoder
                         var t = source[k];
                         var z = ((block & blockMask) | (channel & channelMask)) * 4;
                         var u = (t >> z) & sampleMask;
-                        var v = (u << 24) >> 24;
+                        var v = (u << signShift) >> signShift;
 
                         ref var x = ref History[channel][1];
                         ref var y = ref History[channel][0];
