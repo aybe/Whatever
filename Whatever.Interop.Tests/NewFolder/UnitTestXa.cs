@@ -19,8 +19,6 @@ public class UnitTestXa : UnitTestBase
         XaDecoder.History[1][0] = 0;
         XaDecoder.History[1][1] = 0;
 
-        Globals.WriteLine = s => TestContext.WriteLine(s?.ToString());
-
         var sourceFileName = Path.GetFileName(path);
         var targetFileName = Path.ChangeExtension(path, ".wav");
 
@@ -62,9 +60,7 @@ public class UnitTestXa : UnitTestBase
         {
             source.ReadExactly(buffer);
 
-            var decode = Globals.Decode(context, output, buffer);
-
-            Assert.IsTrue(decode); // TODO delete
+            XaDecoder.Decode(buffer, output);
 
             var sampleCount = output.SampleCount;
 
