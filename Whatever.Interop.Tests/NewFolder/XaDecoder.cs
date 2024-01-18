@@ -18,7 +18,7 @@ public static class XaDecoder
 
     public static readonly short[] NegativeFilters = [0, 0, -52, -55, -60];
 
-    public static void Decode(Span<byte> src, XaDecoderContext ctx)
+    public static void Decode(Span<byte> src, ref XaDecoderContext ctx)
     {
         var isStereo = (src[19] & 0x3) != 0;
         var is8Bit = (src[19] & 0x30) != 0;

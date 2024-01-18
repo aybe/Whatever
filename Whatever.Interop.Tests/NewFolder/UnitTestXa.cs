@@ -58,7 +58,7 @@ public class UnitTestXa : UnitTestBase
         {
             source.ReadExactly(buffer);
 
-            XaDecoder.Decode(buffer, ctx);
+            XaDecoder.Decode(buffer, ref ctx);
 
             var sampleCount = ctx.SampleCount;
 
@@ -68,6 +68,8 @@ public class UnitTestXa : UnitTestBase
 
             target.Write(MemoryMarshal.AsBytes(span));
         }
+
+        ctx.Dispose();
 
         target.Position = 0;
 
