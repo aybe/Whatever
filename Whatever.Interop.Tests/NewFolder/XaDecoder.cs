@@ -25,27 +25,27 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode82(src, output.Samples);
+                output.SampleCount = (uint)Decode82(src, output.Samples, 2);
             }
             else
             {
-                output.SampleCount = (uint)Decode81(src, output.Samples);
+                output.SampleCount = (uint)Decode81(src, output.Samples, 1);
             }
         }
         else
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode42(src, output.Samples);
+                output.SampleCount = (uint)Decode42(src, output.Samples, 2);
             }
             else
             {
-                output.SampleCount = (uint)Decode41(src, output.Samples);
+                output.SampleCount = (uint)Decode41(src, output.Samples, 1);
             }
         }
     }
 
-    private static int Decode41(Span<byte> source, Span<short> target)
+    private static int Decode41(Span<byte> source, Span<short> target, int channels)
     {
         var index = 0;
 
@@ -55,9 +55,9 @@ public static class XaDecoder
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    for (var channel = 0; channel < 1; channel++)
+                    for (var channel = 0; channel < channels; channel++)
                     {
-                        var si = 4 + block;
+                        var si = 4 + block * channels + channel;
                         var sp = source[si];
 
                         Unpack(sp, out var sr, out var sf, out var f0, out var f1);
@@ -87,7 +87,7 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode42(Span<byte> source, Span<short> target)
+    private static int Decode42(Span<byte> source, Span<short> target, int channels)
     {
         var index = 0;
 
@@ -97,9 +97,9 @@ public static class XaDecoder
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    for (var channel = 0; channel < 2; channel++)
+                    for (var channel = 0; channel < channels; channel++)
                     {
-                        var si = 4 + block * 2 + channel;
+                        var si = 4 + block * channels + channel;
                         var sp = source[si];
 
                         Unpack(sp, out var sr, out var sf, out var f0, out var f1);
@@ -129,7 +129,7 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode81(Span<byte> source, Span<short> target)
+    private static int Decode81(Span<byte> source, Span<short> target, int channels)
     {
         var index = 0;
 
@@ -139,9 +139,9 @@ public static class XaDecoder
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    for (var channel = 0; channel < 1; channel++)
+                    for (var channel = 0; channel < channels; channel++)
                     {
-                        var si = 4 + block;
+                        var si = 4 + block * channels + channel;
                         var sp = source[si];
 
                         Unpack(sp, out var sr, out var sf, out var f0, out var f1);
@@ -171,7 +171,7 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode82(Span<byte> source, Span<short> target)
+    private static int Decode82(Span<byte> source, Span<short> target, int channels)
     {
         var index = 0;
 
@@ -181,9 +181,9 @@ public static class XaDecoder
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    for (var channel = 0; channel < 2; channel++)
+                    for (var channel = 0; channel < channels; channel++)
                     {
-                        var si = 4 + block * 2 + channel;
+                        var si = 4 + block * channels + channel;
                         var sp = source[si];
 
                         Unpack(sp, out var sr, out var sf, out var f0, out var f1);
