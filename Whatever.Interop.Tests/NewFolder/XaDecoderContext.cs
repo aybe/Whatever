@@ -4,7 +4,7 @@ public struct XaDecoderContext : IDisposable
 {
     public readonly NativeBuffer2D<int> History = new(2, 2);
     public readonly NativeBuffer1D<byte> Input = new(2352);
-    public readonly short[] Samples = new short[18 * 112 * 4];
+    public readonly NativeBuffer1D<short> Output = new(18 * 112 * 4);
     public ushort Channels;
     public uint SampleCount;
     public uint SampleRate; // TODO use that value
@@ -17,5 +17,6 @@ public struct XaDecoderContext : IDisposable
     {
         History.Dispose();
         Input.Dispose();
+        Output.Dispose();
     }
 }

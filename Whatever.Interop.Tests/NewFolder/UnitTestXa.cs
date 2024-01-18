@@ -55,7 +55,7 @@ public class UnitTestXa : UnitTestBase
 
             var sampleCount = ctx.SampleCount;
 
-            var span = ctx.Samples.AsSpan(0, (int)sampleCount);
+            var span = ctx.Output.Span[..(int)sampleCount];
 
             samples += sampleCount;
 
