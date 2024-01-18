@@ -15,35 +15,35 @@ public static class XaDecoder
         ctx.Channels = (ushort)(isStereo ? 2 : 1);
         ctx.SampleRate = (uint)sampleRate;
 
-        src = src[(12 + 4 + 8)..];
-
         if (is8Bit)
         {
             if (isStereo)
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, src, 2, 2, 8, 0, 0, 0xFF, 24, 8);
+                ctx.SampleCount = (uint)Decode(ref ctx, 2, 2, 8, 0, 0, 0xFF, 24, 8);
             }
             else
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, src, 1, 4, 8, 0, 0, 0xFF, 24, 8);
+                ctx.SampleCount = (uint)Decode(ref ctx, 1, 4, 8, 0, 0, 0xFF, 24, 8);
             }
         }
         else
         {
             if (isStereo)
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, src, 2, 4, 4, 0, 1, 0x0F, 28, 12);
+                ctx.SampleCount = (uint)Decode(ref ctx, 2, 4, 4, 0, 1, 0x0F, 28, 12);
             }
             else
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, src, 1, 8, 4, 1, 0, 0x0F, 28, 12);
+                ctx.SampleCount = (uint)Decode(ref ctx, 1, 8, 4, 1, 0, 0x0F, 28, 12);
             }
         }
     }
 
     private static int Decode(
-        ref XaDecoderContext ctx, Span<byte> source, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
+        ref XaDecoderContext ctx, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
     {
+        var source = ctx.Input.Span[(12 + 4 + 8)..];
+
         var index = 0;
 
         for (var group = 0; group < 18; group++)
