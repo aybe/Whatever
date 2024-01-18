@@ -8,11 +8,15 @@ public struct XaDecoderContext : IDisposable
 
     private readonly NativeBuffer2D<int> Buffer = new(2, 2);
 
-    public readonly NativeBuffer1D<byte> Input = new(2352);
+    public readonly NativeBuffer1D<byte> Sector = new(2352);
+
     public readonly NativeBuffer1D<short> Output = new(18 * 112 * 4);
-    public ushort Channels;
-    public uint SampleCount;
-    public uint SampleRate; // TODO use that value
+
+    public ushort OutputChannels;
+
+    public uint OutputFrequency;
+
+    public uint OutputLength;
 
     public XaDecoderContext()
     {
@@ -21,40 +25,40 @@ public struct XaDecoderContext : IDisposable
     public readonly void Dispose()
     {
         Buffer.Dispose();
-        Input.Dispose();
+        Sector.Dispose();
         Output.Dispose();
     }
 
     public static void Decode(ref XaDecoderContext ctx)
     {
-        var sector = ctx.Input;
+        var sector = ctx.Sector;
         var isStereo = (sector[19] & 0x3) != 0;
         var is8Bit = (sector[19] & 0x30) != 0;
         var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37800;
 
-        ctx.Channels = (ushort)(isStereo ? 2 : 1);
-        ctx.SampleRate = (uint)sampleRate;
+        ctx.OutputChannels = (ushort)(isStereo ? 2 : 1);
+        ctx.OutputFrequency = (uint)sampleRate;
 
         if (is8Bit)
         {
             if (isStereo)
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, 2, 2, 8, 0, 0, 0xFF, 24, 8);
+                ctx.OutputLength = (uint)Decode(ref ctx, 2, 2, 8, 0, 0, 0xFF, 24, 8);
             }
             else
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, 1, 4, 8, 0, 0, 0xFF, 24, 8);
+                ctx.OutputLength = (uint)Decode(ref ctx, 1, 4, 8, 0, 0, 0xFF, 24, 8);
             }
         }
         else
         {
             if (isStereo)
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, 2, 4, 4, 0, 1, 0x0F, 28, 12);
+                ctx.OutputLength = (uint)Decode(ref ctx, 2, 4, 4, 0, 1, 0x0F, 28, 12);
             }
             else
             {
-                ctx.SampleCount = (uint)Decode(ref ctx, 1, 8, 4, 1, 0, 0x0F, 28, 12);
+                ctx.OutputLength = (uint)Decode(ref ctx, 1, 8, 4, 1, 0, 0x0F, 28, 12);
             }
         }
     }
@@ -62,7 +66,7 @@ public struct XaDecoderContext : IDisposable
     private static int Decode(
         ref XaDecoderContext ctx, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
     {
-        var source = ctx.Input.Span[(12 + 4 + 8)..];
+        var source = ctx.Sector.Span[(12 + 4 + 8)..];
 
         var index = 0;
 

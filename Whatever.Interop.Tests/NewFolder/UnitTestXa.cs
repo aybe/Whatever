@@ -49,11 +49,11 @@ public class UnitTestXa : UnitTestBase
 
         while (source.Position < source.Length)
         {
-            source.ReadExactly(ctx.Input);
+            source.ReadExactly(ctx.Sector);
 
             XaDecoderContext.Decode(ref ctx);
 
-            var sampleCount = ctx.SampleCount;
+            var sampleCount = ctx.OutputLength;
 
             var span = ctx.Output.Span[..(int)sampleCount];
 
@@ -66,9 +66,9 @@ public class UnitTestXa : UnitTestBase
 
         target.Position = 0;
 
-        samples /= ctx.Channels; // BUG samples is wrong terminology here since we have to divide by channels...
+        samples /= ctx.OutputChannels; // BUG samples is wrong terminology here since we have to divide by channels...
 
-        WriteWavHeader(target, 16, ctx.Channels, ctx.SampleRate, samples);
+        WriteWavHeader(target, 16, ctx.OutputChannels, ctx.OutputFrequency, samples);
 
         var expectedHash = sourceFileName switch
         {
