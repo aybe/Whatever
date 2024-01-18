@@ -93,7 +93,7 @@ public static class XaDecoder
 
         for (var group = 0; group < 18; group++)
         {
-            for (var block = 0; block < 4; block++)
+            for (var block = 0; block < blocks; block++)
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
@@ -135,7 +135,7 @@ public static class XaDecoder
 
         for (var group = 0; group < 18; group++)
         {
-            for (var block = 0; block < 4; block++)
+            for (var block = 0; block < blocks; block++)
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
