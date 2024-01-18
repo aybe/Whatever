@@ -54,8 +54,10 @@ public static class XaDecoder
                     {
                         var si = 4 + block * channels + channel;
                         var sp = source[si];
-
-                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
+                        var sr = sp & 0xF;
+                        var sf = (sp & 0x30) >> 4;
+                        var f0 = Globals.PositiveFilters[sf];
+                        var f1 = Globals.NegativeFilters[sf];
 
                         var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
@@ -79,13 +81,5 @@ public static class XaDecoder
         }
 
         return index;
-    }
-
-    private static void Unpack(byte sp, out int sr, out int sf, out short f0, out short f1)
-    {
-        sr = sp & 0xF;
-        sf = (sp & 0x30) >> 4;
-        f0 = Globals.PositiveFilters[sf];
-        f1 = Globals.NegativeFilters[sf];
     }
 }
