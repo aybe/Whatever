@@ -25,159 +25,27 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode82(src, output.Samples, 2, 2, 8, 0, 0, 0xFF, 24, 8);
+                output.SampleCount = (uint)Decode(src, output.Samples, 2, 2, 8, 0, 0, 0xFF, 24, 8);
             }
             else
             {
-                output.SampleCount = (uint)Decode81(src, output.Samples, 1, 4, 8, 0, 0, 0xFF, 24, 8);
+                output.SampleCount = (uint)Decode(src, output.Samples, 1, 4, 8, 0, 0, 0xFF, 24, 8);
             }
         }
         else
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode42(src, output.Samples, 2, 4, 4, 0, 1, 0x0F, 28, 12);
+                output.SampleCount = (uint)Decode(src, output.Samples, 2, 4, 4, 0, 1, 0x0F, 28, 12);
             }
             else
             {
-                output.SampleCount = (uint)Decode41(src, output.Samples, 1, 8, 4, 1, 0, 0x0F, 28, 12);
+                output.SampleCount = (uint)Decode(src, output.Samples, 1, 8, 4, 1, 0, 0x0F, 28, 12);
             }
         }
     }
 
-    private static int Decode41(
-        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
-    {
-        var index = 0;
-
-        for (var group = 0; group < 18; group++)
-        {
-            for (var block = 0; block < blocks; block++) // 8
-            {
-                for (var sample = 0; sample < 28; sample++)
-                {
-                    for (var channel = 0; channel < channels; channel++)
-                    {
-                        var si = 4 + block * channels + channel;
-                        var sp = source[si];
-
-                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
-
-                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
-
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
-                        var t = source[k];
-                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
-                        var u = (t >> z) & sampleMask;
-                        var v = (u << signShift) >> signShift;
-
-                        ref var x = ref History[channel][0];
-                        ref var y = ref History[channel][1];
-
-                        var s = (v << (sampleShift - sr)) + (x * f0 + y * f1 + 32) / 64;
-                        s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        y = x;
-                        x = s;
-                        target[index++] = (short)s;
-                    }
-                }
-            }
-
-            source = source[128..];
-        }
-
-        return index;
-    }
-
-    private static int Decode42(
-        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
-    {
-        var index = 0;
-
-        for (var group = 0; group < 18; group++)
-        {
-            for (var block = 0; block < blocks; block++)
-            {
-                for (var sample = 0; sample < 28; sample++)
-                {
-                    for (var channel = 0; channel < channels; channel++)
-                    {
-                        var si = 4 + block * channels + channel;
-                        var sp = source[si];
-
-                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
-
-                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
-
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
-                        var t = source[k];
-                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
-                        var u = (t >> z) & sampleMask;
-                        var v = (u << signShift) >> signShift;
-
-                        ref var x = ref History[channel][0];
-                        ref var y = ref History[channel][1];
-
-                        var s = (v << (sampleShift - sr)) + (x * f0 + y * f1 + 32) / 64;
-                        s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        y = x;
-                        x = s;
-                        target[index++] = (short)s;
-                    }
-                }
-            }
-
-            source = source[128..];
-        }
-
-        return index;
-    }
-
-    private static int Decode81(
-        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
-    {
-        var index = 0;
-
-        for (var group = 0; group < 18; group++)
-        {
-            for (var block = 0; block < blocks; block++)
-            {
-                for (var sample = 0; sample < 28; sample++)
-                {
-                    for (var channel = 0; channel < channels; channel++)
-                    {
-                        var si = 4 + block * channels + channel;
-                        var sp = source[si];
-
-                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
-
-                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
-
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
-                        var t = source[k];
-                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
-                        var u = (t >> z) & sampleMask;
-                        var v = (u << signShift) >> signShift;
-
-                        ref var x = ref History[channel][1];
-                        ref var y = ref History[channel][0];
-
-                        var s = (v << (sampleShift - sr)) + (y * f0 + x * f1 + 32) / 64;
-                        s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        x = y;
-                        y = s;
-                        target[index++] = (short)s;
-                    }
-                }
-            }
-
-            source = source[128..];
-        }
-
-        return index;
-    }
-
-    private static int Decode82(
+    private static int Decode(
         Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
     {
         var index = 0;
