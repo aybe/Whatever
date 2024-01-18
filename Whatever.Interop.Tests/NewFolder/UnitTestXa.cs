@@ -43,7 +43,7 @@ public class UnitTestXa : UnitTestBase
 
         var ctx = new XaDecoderContext();
 
-        var samples = 0u;
+        var samples = 0;
 
         WriteWavHeader(target);
 
@@ -55,7 +55,7 @@ public class UnitTestXa : UnitTestBase
 
             var sampleCount = ctx.OutputLength;
 
-            var span = ctx.Output.Span[..(int)sampleCount];
+            var span = ctx.Output.Span[..sampleCount];
 
             samples += sampleCount;
 
@@ -68,7 +68,7 @@ public class UnitTestXa : UnitTestBase
 
         samples /= ctx.OutputChannels; // BUG samples is wrong terminology here since we have to divide by channels...
 
-        WriteWavHeader(target, 16, ctx.OutputChannels, ctx.OutputFrequency, samples);
+        WriteWavHeader(target, 16, (ushort)ctx.OutputChannels, (uint)ctx.OutputFrequency, (uint)samples);
 
         var expectedHash = sourceFileName switch
         {

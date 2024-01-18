@@ -12,11 +12,11 @@ public struct XaDecoderContext : IDisposable
 
     public readonly NativeBuffer1D<short> Output = new(18 * 112 * 4);
 
-    public ushort OutputChannels;
+    public int OutputChannels;
 
-    public uint OutputFrequency;
+    public int OutputFrequency;
 
-    public uint OutputLength;
+    public int OutputLength;
 
     public XaDecoderContext()
     {
@@ -36,29 +36,29 @@ public struct XaDecoderContext : IDisposable
         var is8Bit = (sector[19] & 0x30) != 0;
         var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37800;
 
-        ctx.OutputChannels = (ushort)(isStereo ? 2 : 1);
-        ctx.OutputFrequency = (uint)sampleRate;
+        ctx.OutputChannels = isStereo ? 2 : 1;
+        ctx.OutputFrequency = sampleRate;
 
         if (is8Bit)
         {
             if (isStereo)
             {
-                ctx.OutputLength = (uint)Decode(ref ctx, 2, 2, 8, 0, 0, 0xFF, 24, 8);
+                ctx.OutputLength = Decode(ref ctx, 2, 2, 8, 0, 0, 0xFF, 24, 8);
             }
             else
             {
-                ctx.OutputLength = (uint)Decode(ref ctx, 1, 4, 8, 0, 0, 0xFF, 24, 8);
+                ctx.OutputLength = Decode(ref ctx, 1, 4, 8, 0, 0, 0xFF, 24, 8);
             }
         }
         else
         {
             if (isStereo)
             {
-                ctx.OutputLength = (uint)Decode(ref ctx, 2, 4, 4, 0, 1, 0x0F, 28, 12);
+                ctx.OutputLength = Decode(ref ctx, 2, 4, 4, 0, 1, 0x0F, 28, 12);
             }
             else
             {
-                ctx.OutputLength = (uint)Decode(ref ctx, 1, 8, 4, 1, 0, 0x0F, 28, 12);
+                ctx.OutputLength = Decode(ref ctx, 1, 8, 4, 1, 0, 0x0F, 28, 12);
             }
         }
     }
