@@ -37,5 +37,10 @@ namespace Whatever.Interop
         {
             NativeBuffer.Dispose(Items);
         }
+
+        public static implicit operator Span<T>(NativeBuffer1D<T> buffer)
+        {
+            return buffer.Span;
+        }
     }
 }
