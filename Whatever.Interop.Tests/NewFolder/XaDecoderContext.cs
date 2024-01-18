@@ -1,6 +1,6 @@
 ﻿namespace Whatever.Interop.Tests.NewFolder;
 
-public class SectorAudio
+public class XaDecoderContext
 {
     public readonly short[] Samples = new short[XaDecoder.SectorMaxSamples  * 4];
     public ushort Channels;

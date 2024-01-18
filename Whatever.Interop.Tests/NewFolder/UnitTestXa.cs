@@ -46,7 +46,7 @@ public class UnitTestXa : UnitTestBase
 
         Assert.IsTrue((offset is 0 && length is 2336) || (offset is 16 && length is 2352)); // TODO delete
 
-        var output = new SectorAudio();
+        var ctx = new XaDecoderContext();
 
         var buffer = new byte[length];
 
@@ -58,11 +58,11 @@ public class UnitTestXa : UnitTestBase
         {
             source.ReadExactly(buffer);
 
-            XaDecoder.Decode(buffer, output);
+            XaDecoder.Decode(buffer, ctx);
 
-            var sampleCount = output.SampleCount;
+            var sampleCount = ctx.SampleCount;
 
-            var span = output.Samples.AsSpan(0, (int)sampleCount);
+            var span = ctx.Samples.AsSpan(0, (int)sampleCount);
 
             samples += sampleCount;
 
@@ -71,9 +71,9 @@ public class UnitTestXa : UnitTestBase
 
         target.Position = 0;
 
-        samples /= output.Channels; // BUG samples is wrong terminology here since we have to divide by channels...
+        samples /= ctx.Channels; // BUG samples is wrong terminology here since we have to divide by channels...
 
-        WriteWavHeader(target, 16, output.Channels, output.SampleRate, samples);
+        WriteWavHeader(target, 16, ctx.Channels, ctx.SampleRate, samples);
 
         var expectedHash = sourceFileName switch
         {

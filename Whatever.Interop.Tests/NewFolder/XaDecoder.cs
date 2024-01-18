@@ -18,14 +18,14 @@ public static class XaDecoder
 
     public static readonly short[] NegativeFilters = [0, 0, -52, -55, -60];
 
-    public static void Decode(Span<byte> src, SectorAudio output)
+    public static void Decode(Span<byte> src, XaDecoderContext ctx)
     {
         var isStereo = (src[19] & 0x3) != 0;
         var is8Bit = (src[19] & 0x30) != 0;
         var sampleRate = (src[19] & 0xC) != 0 ? 18900 : 37800;
 
-        output.Channels = (ushort)(isStereo ? 2 : 1);
-        output.SampleRate = (uint)sampleRate;
+        ctx.Channels = (ushort)(isStereo ? 2 : 1);
+        ctx.SampleRate = (uint)sampleRate;
 
         src = src[(12 + 4 + 8)..];
 
@@ -33,22 +33,22 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode(src, output.Samples, 2, 2, 8, 0, 0, 0xFF, 24, 8);
+                ctx.SampleCount = (uint)Decode(src, ctx.Samples, 2, 2, 8, 0, 0, 0xFF, 24, 8);
             }
             else
             {
-                output.SampleCount = (uint)Decode(src, output.Samples, 1, 4, 8, 0, 0, 0xFF, 24, 8);
+                ctx.SampleCount = (uint)Decode(src, ctx.Samples, 1, 4, 8, 0, 0, 0xFF, 24, 8);
             }
         }
         else
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode(src, output.Samples, 2, 4, 4, 0, 1, 0x0F, 28, 12);
+                ctx.SampleCount = (uint)Decode(src, ctx.Samples, 2, 4, 4, 0, 1, 0x0F, 28, 12);
             }
             else
             {
-                output.SampleCount = (uint)Decode(src, output.Samples, 1, 8, 4, 1, 0, 0x0F, 28, 12);
+                ctx.SampleCount = (uint)Decode(src, ctx.Samples, 1, 8, 4, 1, 0, 0x0F, 28, 12);
             }
         }
     }
