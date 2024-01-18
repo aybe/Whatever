@@ -25,33 +25,34 @@ public static class XaDecoder
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode82(src, output.Samples, 2, 2, 8);
+                output.SampleCount = (uint)Decode82(src, output.Samples, 2, 2, 8, 0, 0, 0xFF);
             }
             else
             {
-                output.SampleCount = (uint)Decode81(src, output.Samples, 1, 4, 8);
+                output.SampleCount = (uint)Decode81(src, output.Samples, 1, 4, 8, 0, 0, 0xFF);
             }
         }
         else
         {
             if (isStereo)
             {
-                output.SampleCount = (uint)Decode42(src, output.Samples, 2, 4, 4);
+                output.SampleCount = (uint)Decode42(src, output.Samples, 2, 4, 4, 0, 1, 0x0F);
             }
             else
             {
-                output.SampleCount = (uint)Decode41(src, output.Samples, 1, 8, 4);
+                output.SampleCount = (uint)Decode41(src, output.Samples, 1, 8, 4, 1, 0, 0x0F);
             }
         }
     }
 
-    private static int Decode41(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
+    private static int Decode41(
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
     {
         var index = 0;
 
         for (var group = 0; group < 18; group++)
         {
-            for (var block = 0; block < blocks; block++)
+            for (var block = 0; block < blocks; block++) // 8
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
@@ -66,7 +67,8 @@ public static class XaDecoder
 
                         var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
-                        var u = (t >> ((block & 1) * 4)) & 0xF;
+                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
+                        var u = (t >> z) & sampleMask;
                         var v = (u << 28) >> 28;
 
                         ref var x = ref History[channel][0];
@@ -87,7 +89,8 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode42(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
+    private static int Decode42(
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
     {
         var index = 0;
 
@@ -108,7 +111,8 @@ public static class XaDecoder
 
                         var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
-                        var u = (t >> (channel * 4)) & 0xF;
+                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
+                        var u = (t >> z) & sampleMask;
                         var v = (u << 28) >> 28;
 
                         ref var x = ref History[channel][0];
@@ -129,7 +133,8 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode81(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
+    private static int Decode81(
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
     {
         var index = 0;
 
@@ -150,7 +155,8 @@ public static class XaDecoder
 
                         var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
-                        int u = t;
+                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
+                        var u = (t >> z) & sampleMask;
                         var v = (u << 24) >> 24;
 
                         ref var x = ref History[channel][1];
@@ -171,7 +177,8 @@ public static class XaDecoder
         return index;
     }
 
-    private static int Decode82(Span<byte> source, Span<short> target, int channels, int blocks, int bits)
+    private static int Decode82(
+        Span<byte> source, Span<short> target, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask)
     {
         var index = 0;
 
@@ -192,7 +199,8 @@ public static class XaDecoder
 
                         var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
-                        int u = t;
+                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
+                        var u = (t >> z) & sampleMask;
                         var v = (u << 24) >> 24;
 
                         ref var x = ref History[channel][1];
