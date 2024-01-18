@@ -6,11 +6,12 @@ public static class XaDecoder
 
     public static readonly short[] NegativeFilters = [0, 0, -52, -55, -60];
 
-    public static void Decode(Span<byte> src, ref XaDecoderContext ctx)
+    public static void Decode(ref XaDecoderContext ctx)
     {
-        var isStereo = (src[19] & 0x3) != 0;
-        var is8Bit = (src[19] & 0x30) != 0;
-        var sampleRate = (src[19] & 0xC) != 0 ? 18900 : 37800;
+        var sector = ctx.Input;
+        var isStereo = (sector[19] & 0x3) != 0;
+        var is8Bit = (sector[19] & 0x30) != 0;
+        var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37800;
 
         ctx.Channels = (ushort)(isStereo ? 2 : 1);
         ctx.SampleRate = (uint)sampleRate;
