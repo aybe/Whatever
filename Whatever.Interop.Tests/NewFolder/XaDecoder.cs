@@ -53,46 +53,33 @@ public static class XaDecoder
         {
             for (var block = 0; block < 8; block++)
             {
-                var sp = source[4 + block];
-                var sr = sp & 0xF;
-                var sf = (sp & 0x30) >> 4;
-                var f0 = Globals.PositiveFilters[sf];
-                var f1 = Globals.NegativeFilters[sf];
-
-                Globals.WriteLine(
-                    $"{nameof(block)}: {block}, {nameof(sp)}: 0x{sp:X2}, {nameof(sr)}: {sr}, {nameof(sf)}: {sf}, {nameof(f0)}: {f0,3}, {nameof(f1)}: {f1,3}");
-
                 for (var sample = 0; sample < 28; sample++)
                 {
                     for (var channel = 0; channel < 1; channel++)
                     {
+                        var si = 4 + block;
+                        var sp = source[si];
+
+                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
+
+                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
+
                         var k = 16 + sample * 4 + block / 2;
-                        var t = (int)source[k];
+                        var t = source[k];
                         var u = (t >> ((block & 1) * 4)) & 0xF;
                         var v = (u << 28) >> 28;
 
-                        ref var old = ref History[channel][0];
-                        ref var older = ref History[channel][1];
-                        var s = (v << (12 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        ref var x = ref History[channel][0];
+                        ref var y = ref History[channel][1];
+
+                        var s = (v << (12 - sr)) + (x * f0 + y * f1 + 32) / 64;
                         s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        older = old;
-                        old = s;
+                        y = x;
+                        x = s;
                         target[index++] = (short)s;
-                        Globals.WriteLine(
-                            $"{nameof(group)}: {group}, " +
-                            $"{nameof(block)}: {block}, " +
-                            $"{nameof(sample)}: {sample}, " +
-                            //$"{nameof(channel)}: {channel}, " +
-                            $"{nameof(k)}: {k}, " +
-                            //$"{nameof(t)}: 0x{t:X2}, " +
-                            //$"{nameof(u)}: 0x{u:X}, " +
-                            //$"{nameof(v)}: {v}, " +
-                            $"");
                     }
                 }
             }
-
-            Globals.WriteLine(null);
 
             source = source[128..];
         }
@@ -106,48 +93,35 @@ public static class XaDecoder
 
         for (var group = 0; group < 18; group++)
         {
-            for (var block = 0; block < 4; block++) // ok, right speed
+            for (var block = 0; block < 4; block++)
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    for (var channel = 0; channel < 2; channel++) // ok, obvious
+                    for (var channel = 0; channel < 2; channel++)
                     {
-                        var sp = source[4 + block * 2 + channel];
-                        var sr = sp & 0xF;
-                        var sf = (sp & 0x30) >> 4;
-                        var f0 = Globals.PositiveFilters[sf];
-                        var f1 = Globals.NegativeFilters[sf];
-                        Globals.WriteLine(
-                            $"{nameof(block)}: {block}, {nameof(sp)}: 0x{sp:X2}, {nameof(sr)}: {sr}, {nameof(sf)}: {sf}, {nameof(f0)}: {f0,3}, {nameof(f1)}: {f1,3}");
+                        var si = 4 + block * 2 + channel;
+                        var sp = source[si];
 
+                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
 
-                        var k = 16 + block + sample * 4;
-                        var t = (int)source[k];
+                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
+
+                        var k = 16 + sample * 4 + block;
+                        var t = source[k];
                         var u = (t >> (channel * 4)) & 0xF;
                         var v = (u << 28) >> 28;
 
-                        ref var old = ref History[channel][0];
-                        ref var older = ref History[channel][1];
-                        var s = (v << (12 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        ref var x = ref History[channel][0];
+                        ref var y = ref History[channel][1];
+
+                        var s = (v << (12 - sr)) + (x * f0 + y * f1 + 32) / 64;
                         s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        older = old;
-                        old = s;
+                        y = x;
+                        x = s;
                         target[index++] = (short)s;
-                        Globals.WriteLine(
-                            $"{nameof(group)}: {group}, " +
-                            $"{nameof(block)}: {block}, " +
-                            $"{nameof(sample)}: {sample}, " +
-                            //$"{nameof(channel)}: {channel}, " +
-                            $"{nameof(k)}: {k}, " +
-                            //$"{nameof(t)}: 0x{t:X2}, " +
-                            //$"{nameof(u)}: 0x{u:X}, " +
-                            //$"{nameof(v)}: {v}, " +
-                            $"");
                     }
                 }
             }
-
-            Globals.WriteLine(null);
 
             source = source[128..];
         }
@@ -161,39 +135,31 @@ public static class XaDecoder
 
         for (var group = 0; group < 18; group++)
         {
-            Globals.WriteLine($"{nameof(group)}: {group}");
-
             for (var block = 0; block < 4; block++)
             {
-                var sp = source[4 + block];
-                var sr = sp & 0xF;
-                var sf = (sp & 0x30) >> 4;
-                var f0 = Globals.PositiveFilters[sf];
-                var f1 = Globals.NegativeFilters[sf];
-
-                Globals.WriteLine(
-                    $"\t{nameof(block)}: {block}, " +
-                    $"{nameof(sp)}: 0x{sp:X2}, " +
-                    $"{nameof(sr)}: {sr}, " +
-                    $"{nameof(sf)}: {sf}, " +
-                    $"{nameof(f0)}: {f0,3}, " +
-                    $"{nameof(f1)}: {f1,3}"
-                );
-
                 for (var sample = 0; sample < 28; sample++)
                 {
                     for (var channel = 0; channel < 1; channel++)
                     {
-                        ref var older = ref History[channel][1];
-                        ref var old = ref History[channel][0];
+                        var si = 4 + block;
+                        var sp = source[si];
 
-                        var k = 16 + block * 1 + sample * 4 + channel;
-                        int t = source[k];
-                        t = (t << 24) >> 24;
-                        var s = (t << (8 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
+
+                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
+
+                        var k = 16 + sample * 4 + block * 1 + channel;
+                        var t = source[k];
+                        int u = t;
+                        var v = (u << 24) >> 24;
+
+                        ref var x = ref History[channel][1];
+                        ref var y = ref History[channel][0];
+
+                        var s = (v << (8 - sr)) + (y * f0 + x * f1 + 32) / 64;
                         s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        older = old;
-                        old = s;
+                        x = y;
+                        y = s;
                         target[index++] = (short)s;
                     }
                 }
@@ -217,30 +183,25 @@ public static class XaDecoder
                 {
                     for (var channel = 0; channel < 2; channel++)
                     {
-                        var parameter = 4 + block * 2 + channel;
-                        Globals.WriteLine(
-                            $"{nameof(group)}: {group}, " +
-                            $"{nameof(block)}: {block}, " +
-                            $"{nameof(channel)}: {channel}, " +
-                            $"{nameof(sample)}: {sample}, " +
-                            $"{nameof(parameter)}: {parameter}, " +
-                            $"");
-                        var sp = source[parameter];
-                        var sr = sp & 0xF;
-                        var sf = (sp & 0x30) >> 4;
-                        var f0 = Globals.PositiveFilters[sf];
-                        var f1 = Globals.NegativeFilters[sf];
+                        var si = 4 + block * 2 + channel;
+                        var sp = source[si];
 
-                        ref var older = ref History[channel][1];
-                        ref var old = ref History[channel][0];
+                        Unpack(sp, out var sr, out var sf, out var f0, out var f1);
 
-                        var k = 16 + block * 2 + sample * 4 + channel;
-                        int t = source[k];
-                        t = (t << 24) >> 24;
-                        var s = (t << (8 - sr)) + (old * f0 + older * f1 + 32) / 64;
+                        Print(group, block, sample, channel, si, sp, sr, sf, f0, f1);
+
+                        var k = 16 + sample * 4 + block * 2 + channel;
+                        var t = source[k];
+                        int u = t;
+                        var v = (u << 24) >> 24;
+
+                        ref var x = ref History[channel][1];
+                        ref var y = ref History[channel][0];
+
+                        var s = (v << (8 - sr)) + (y * f0 + x * f1 + 32) / 64;
                         s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        older = old;
-                        old = s;
+                        x = y;
+                        y = s;
                         target[index++] = (short)s;
                     }
                 }
@@ -250,5 +211,28 @@ public static class XaDecoder
         }
 
         return index;
+    }
+
+    private static void Print(int group, int block, int sample, int channel, int si, byte sp, int sr, int sf, short f0, short f1)
+    {
+        Globals.WriteLine(
+            $"{nameof(group)}: {group}, " +
+            $"{nameof(block)}: {block}, " +
+            $"{nameof(sample)}: {sample}, " +
+            $"{nameof(channel)}: {channel}, " +
+            $"{nameof(si)}: {si}, " +
+            $"{nameof(sp)}: 0x{sp:X2}, " +
+            $"{nameof(sr)}: {sr}, " +
+            $"{nameof(sf)}: {sf}, " +
+            $"{nameof(f0)}: {f0,3}, " +
+            $"{nameof(f1)}: {f1,3}");
+    }
+
+    private static void Unpack(byte sp, out int sr, out int sf, out short f0, out short f1)
+    {
+        sr = sp & 0xF;
+        sf = (sp & 0x30) >> 4;
+        f0 = Globals.PositiveFilters[sf];
+        f1 = Globals.NegativeFilters[sf];
     }
 }
