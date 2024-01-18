@@ -2,7 +2,7 @@
 
 public struct XaDecoderContext : IDisposable
 {
-    public readonly short[] Samples = new short[XaDecoder.SectorMaxSamples  * 4];
+    public readonly short[] Samples = new short[18 * 112 * 4];
     public ushort Channels;
     public uint SampleCount;
     public uint SampleRate; // TODO use that value

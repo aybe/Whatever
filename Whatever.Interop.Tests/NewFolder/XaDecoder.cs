@@ -2,16 +2,6 @@
 
 public static class XaDecoder
 {
-    public const uint ChunksPerSector = 18;
-
-    private const uint DataWordSize = sizeof(uint);
-
-    public const uint DataWordsPerChunk = 28;
-
-    public const uint ChunkMaxSamples = 2 * DataWordSize * DataWordsPerChunk * 2;
-
-    public const uint SectorMaxSamples = ChunksPerSector * ChunkMaxSamples;
-
     public static readonly int[][] History = [[0, 0], [0, 0]];
 
     public static readonly short[] PositiveFilters = [0, +60, +115, +98, +122];
