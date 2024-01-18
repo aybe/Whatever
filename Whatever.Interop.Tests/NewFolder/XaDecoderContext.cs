@@ -2,9 +2,12 @@
 
 public struct XaDecoderContext : IDisposable
 {
-    public static readonly short[] PositiveFilters = [0, +60, +115, +98, +122];
-    public static readonly short[] NegativeFilters = [0, 0, -52, -55, -60];
-    public readonly NativeBuffer2D<int> History = new(2, 2);
+    private static readonly short[] Filter1 = [0, +60, +115, +98, +122];
+
+    private static readonly short[] Filter2 = [0, 0, -52, -55, -60];
+
+    private readonly NativeBuffer2D<int> Buffer = new(2, 2);
+
     public readonly NativeBuffer1D<byte> Input = new(2352);
     public readonly NativeBuffer1D<short> Output = new(18 * 112 * 4);
     public ushort Channels;
@@ -17,7 +20,7 @@ public struct XaDecoderContext : IDisposable
 
     public readonly void Dispose()
     {
-        History.Dispose();
+        Buffer.Dispose();
         Input.Dispose();
         Output.Dispose();
     }
@@ -75,8 +78,8 @@ public struct XaDecoderContext : IDisposable
                         var sp = source[si];
                         var sr = sp & 0xF;
                         var sf = (sp & 0x30) >> 4;
-                        var f0 = PositiveFilters[sf];
-                        var f1 = NegativeFilters[sf];
+                        var f0 = Filter1[sf];
+                        var f1 = Filter2[sf];
 
                         var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
                         var t = source[k];
@@ -84,8 +87,8 @@ public struct XaDecoderContext : IDisposable
                         var u = (t >> z) & sampleMask;
                         var v = (u << signShift) >> signShift;
 
-                        ref var x = ref ctx.History[channel][1];
-                        ref var y = ref ctx.History[channel][0];
+                        ref var x = ref ctx.Buffer[channel][1];
+                        ref var y = ref ctx.Buffer[channel][0];
 
                         var s = (v << (sampleShift - sr)) + (y * f0 + x * f1 + 32) / 64;
                         s = Math.Clamp(s, short.MinValue, short.MaxValue);
