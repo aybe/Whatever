@@ -43,17 +43,15 @@ public class UnitTestXa : UnitTestBase
 
         var ctx = new XaDecoderContext();
 
-        var buffer = new byte[length];
-
         var samples = 0u;
 
         WriteWavHeader(target);
 
         while (source.Position < source.Length)
         {
-            source.ReadExactly(buffer);
+            source.ReadExactly(ctx.Input);
 
-            XaDecoder.Decode(buffer, ref ctx);
+            XaDecoder.Decode(ctx.Input, ref ctx);
 
             var sampleCount = ctx.SampleCount;
 
