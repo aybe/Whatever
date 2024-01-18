@@ -46,8 +46,6 @@ public class UnitTestXa : UnitTestBase
 
         Assert.IsTrue((offset is 0 && length is 2336) || (offset is 16 && length is 2352)); // TODO delete
 
-        using var context = new Context();
-
         var output = new SectorAudio();
 
         var buffer = new byte[length];
