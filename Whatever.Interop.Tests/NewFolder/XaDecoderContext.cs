@@ -6,11 +6,11 @@ public struct XaDecoderContext : IDisposable
 
     private static readonly short[] Filter2 = [0, 0, -52, -55, -60];
 
-    private readonly NativeBuffer2D<int> Buffer = new(2, 2);
+    private readonly NativeBuffer2D<int> Buffer;
 
-    public readonly NativeBuffer1D<byte> Sector = new(2352);
+    public readonly NativeBuffer1D<byte> Sector;
 
-    public readonly NativeBuffer1D<short> Output = new(18 * 112 * 4);
+    public readonly NativeBuffer1D<short> Output;
 
     public int OutputChannels;
 
@@ -20,6 +20,9 @@ public struct XaDecoderContext : IDisposable
 
     public XaDecoderContext()
     {
+        Buffer = new NativeBuffer2D<int>(2, 2);
+        Sector = new NativeBuffer1D<byte>(2352);
+        Output = new NativeBuffer1D<short>(18 * 112 * 4);
     }
 
     public readonly void Dispose()
