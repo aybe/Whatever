@@ -14,11 +14,6 @@ public class UnitTestXa : UnitTestBase
     [DynamicData(nameof(TestData))]
     public void Test(string path)
     {
-        XaDecoder.History[0][0] = 0;
-        XaDecoder.History[0][1] = 0;
-        XaDecoder.History[1][0] = 0;
-        XaDecoder.History[1][1] = 0;
-
         var sourceFileName = Path.GetFileName(path);
         var targetFileName = Path.ChangeExtension(path, ".wav");
 

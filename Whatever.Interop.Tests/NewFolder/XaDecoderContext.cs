@@ -2,6 +2,7 @@
 
 public struct XaDecoderContext : IDisposable
 {
+    public readonly NativeBuffer2D<int> History = new(2, 2);
     public readonly short[] Samples = new short[18 * 112 * 4];
     public ushort Channels;
     public uint SampleCount;
@@ -11,7 +12,8 @@ public struct XaDecoderContext : IDisposable
     {
     }
 
-    public void Dispose()
+    public readonly void Dispose()
     {
+        History.Dispose();
     }
 }

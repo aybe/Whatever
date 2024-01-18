@@ -2,8 +2,6 @@
 
 public static class XaDecoder
 {
-    public static readonly int[][] History = [[0, 0], [0, 0]];
-
     public static readonly short[] PositiveFilters = [0, +60, +115, +98, +122];
 
     public static readonly short[] NegativeFilters = [0, 0, -52, -55, -60];
@@ -69,8 +67,8 @@ public static class XaDecoder
                         var u = (t >> z) & sampleMask;
                         var v = (u << signShift) >> signShift;
 
-                        ref var x = ref History[channel][1];
-                        ref var y = ref History[channel][0];
+                        ref var x = ref ctx.History[channel][1];
+                        ref var y = ref ctx.History[channel][0];
 
                         var s = (v << (sampleShift - sr)) + (y * f0 + x * f1 + 32) / 64;
                         s = Math.Clamp(s, short.MinValue, short.MaxValue);
