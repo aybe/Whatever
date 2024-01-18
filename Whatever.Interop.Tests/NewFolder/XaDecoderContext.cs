@@ -94,8 +94,8 @@ public struct XaDecoderContext : IDisposable
                         var u = (t >> z) & sampleMask;
                         var v = (u << signShift) >> signShift;
 
-                        ref var x = ref ctx.Buffer[channel][1];
-                        ref var y = ref ctx.Buffer[channel][0];
+                        ref var x = ref ctx.Buffer[channel][0];
+                        ref var y = ref ctx.Buffer[channel][1];
 
                         var s = (v << (sampleShift - sr)) + (y * f0 + x * f1 + 32) / 64;
                         s = Math.Clamp(s, short.MinValue, short.MaxValue);
