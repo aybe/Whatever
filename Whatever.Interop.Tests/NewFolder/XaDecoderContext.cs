@@ -2,9 +2,9 @@
 
 public struct XaDecoderContext : IDisposable
 {
-    private static readonly short[] Filter1 = [0, +60, +115, +98, +122];
+    private static readonly int[] Filter1 = [0, +60, +115, +98, +122];
 
-    private static readonly short[] Filter2 = [0, 0, -52, -55, -60];
+    private static readonly int[] Filter2 = [0, 0, -52, -55, -60];
 
     private readonly NativeBuffer2D<int> Buffer;
 
