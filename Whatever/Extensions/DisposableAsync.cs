@@ -10,7 +10,8 @@ namespace Whatever.Extensions
     public abstract class DisposableAsync : Disposable, IAsyncDisposable
     {
         /// <inheritdoc />
-        [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "https://github.com/dotnet/roslyn-analyzers/issues/3675")]
+        [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize",
+            Justification = "https://github.com/dotnet/roslyn-analyzers/issues/3675")]
         public async ValueTask DisposeAsync()
         {
             await DisposeAsyncCore().ConfigureAwait(false);
