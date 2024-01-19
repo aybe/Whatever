@@ -61,9 +61,10 @@ public struct XaDecoderContext : IDisposable
         ref XaDecoderContext ctx,
         int bits, int blockCount, int blockMask, int channelCount, int channelMask, int sampleMask, int sampleShift, int signedShift)
     {
-        var source = ctx.Sector.Span[(12 + 4 + 8)..];
-
-        var index = 0;
+        var buffer = ctx.Buffer;
+        var output = ctx.Output;
+        var sector = ctx.Sector.Span[(12 + 4 + 8)..];
+        var offset = 0;
 
         for (var group = 0; group < 18; group++)
         {
@@ -73,34 +74,43 @@ public struct XaDecoderContext : IDisposable
                 {
                     for (var channel = 0; channel < channelCount; channel++)
                     {
-                        var si = 4 + block * channelCount + channel;
-                        var sp = source[si];
-                        var sr = sp & 0xF;
-                        var sf = (sp & 0x30) >> 4;
-                        var f0 = Filter1[sf];
-                        var f1 = Filter2[sf];
+                        var pi = 4 + block * channelCount + channel;
+                        var pb = sector[pi];
+                        var pr = (pb >> 0) & 0xF;
+                        var pf = (pb >> 4) & 0xF;
 
-                        var k = 16 + sample * 4 + block * 4 / blockCount + channel * bits / 8;
-                        var t = source[k];
-                        var z = ((block & blockMask) | (channel & channelMask)) * 4;
-                        var u = (t >> z) & sampleMask;
-                        var v = (u << signedShift) >> signedShift;
+                        var f0 = Filter1[pf];
+                        var f1 = Filter2[pf];
 
-                        ref var x = ref ctx.Buffer[channel][0];
-                        ref var y = ref ctx.Buffer[channel][1];
+                        var si = 16 + sample * 4 + block * 4 / blockCount + channel * bits / 8;
+                        var sj = sector[si];
+                        var sk = ((block & blockMask) | (channel & channelMask)) * 4;
+                        var sl = (sj >> sk) & sampleMask;
+                        var sm = (sl << signedShift) >> signedShift;
 
-                        var s = (v << (sampleShift - sr)) + (y * f0 + x * f1 + 32) / 64;
-                        s = Math.Clamp(s, short.MinValue, short.MaxValue);
-                        x = y;
-                        y = s;
-                        ctx.Output[index++] = (short)s;
+                        var sh = buffer[channel];
+
+                        ref var h1 = ref sh[0];
+                        ref var h2 = ref sh[1];
+
+                        var sx = (sm << (sampleShift - pr)) + (h2 * f0 + h1 * f1 + 32) / 64;
+                        var sy = (short)Math.Clamp(sx, short.MinValue, short.MaxValue);
+
+                        h1 = h2;
+                        h2 = sy;
+
+                        output[offset] = sy;
+
+                        offset++;
                     }
                 }
             }
 
-            source = source[128..];
+            sector = sector[128..];
         }
 
-        return index / channelCount;
+        var samples = offset / channelCount;
+
+        return samples;
     }
 }
