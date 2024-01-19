@@ -14,9 +14,9 @@ public struct XaDecoderContext : IDisposable
 
     public int OutputChannels;
 
-    public int OutputFrequency;
+    public int OutputSampleRate;
 
-    public int OutputSamples;
+    public int OutputSampleCount;
 
     public XaDecoderContext()
     {
@@ -44,11 +44,11 @@ public struct XaDecoderContext : IDisposable
             ? 2
             : 1;
 
-        ctx.OutputFrequency = sampleRate
+        ctx.OutputSampleRate = sampleRate
             ? 18900
             : 37800;
 
-        ctx.OutputSamples = is8Bit
+        ctx.OutputSampleCount = is8Bit
             ? isStereo
                 ? Decode(ref ctx, 8, 2, 0, 2, 0, 0xFF, 8, 24)
                 : Decode(ref ctx, 8, 4, 0, 1, 0, 0xFF, 8, 24)

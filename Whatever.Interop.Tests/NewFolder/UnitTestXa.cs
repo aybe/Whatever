@@ -53,11 +53,11 @@ public class UnitTestXa : UnitTestBase
 
             XaDecoderContext.Decode(ref ctx);
 
-            var outputSamples = ctx.OutputSamples;
+            var outputSampleCount = ctx.OutputSampleCount;
 
-            var span = ctx.Output.Span[..(outputSamples * ctx.OutputChannels)];
+            var span = ctx.Output.Span[..(outputSampleCount * ctx.OutputChannels)];
 
-            samples += outputSamples;
+            samples += outputSampleCount;
 
             target.Write(MemoryMarshal.AsBytes(span));
         }
@@ -66,7 +66,7 @@ public class UnitTestXa : UnitTestBase
 
         target.Position = 0;
 
-        WriteWavHeader(target, 16, (ushort)ctx.OutputChannels, (uint)ctx.OutputFrequency, (uint)samples);
+        WriteWavHeader(target, 16, (ushort)ctx.OutputChannels, (uint)ctx.OutputSampleRate, (uint)samples);
 
         var expectedHash = sourceFileName switch
         {
