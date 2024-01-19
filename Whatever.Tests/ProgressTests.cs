@@ -77,6 +77,50 @@ public sealed class ProgressTests
         };
     }
 
+    [TestMethod]
+    public void TestTextProgressBar()
+    {
+        var bar = new TextProgressBar
+        {
+            Options = // customize
+            {
+                Width = 20
+            }
+        };
+
+        const int steps = 10;
+
+        for (var i = 0; i < steps; i++)
+        {
+            bar.Update((i + 1.0) / steps); // normalized value
+
+            // TODO optionally add stuff to string builder
+
+            var text = bar.Builder.ToString();
+
+            bar.Clear(); // clear builder for next step
+
+            TestContext.WriteLine(text);
+
+            var expected = i switch
+            {
+                0 => "██░░░░░░░░░░░░░░░░░░ 10.00 %",
+                1 => "████░░░░░░░░░░░░░░░░ 20.00 %",
+                2 => "██████░░░░░░░░░░░░░░ 30.00 %",
+                3 => "████████░░░░░░░░░░░░ 40.00 %",
+                4 => "██████████░░░░░░░░░░ 50.00 %",
+                5 => "████████████░░░░░░░░ 60.00 %",
+                6 => "██████████████░░░░░░ 70.00 %",
+                7 => "████████████████░░░░ 80.00 %",
+                8 => "██████████████████░░ 90.00 %",
+                9 => "████████████████████ 100.00 %",
+                _ => throw new NotImplementedException()
+            };
+
+            Assert.AreEqual(expected, text);
+        }
+    }
+
     private sealed class MyCustomProgress
     {
         public int Counter;
