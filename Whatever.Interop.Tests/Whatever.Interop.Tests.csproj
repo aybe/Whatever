@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Whatever.Interop\Whatever.Interop.csproj" />
+    <ProjectReference Include="..\Whatever\Whatever.csproj" />
   </ItemGroup>
 
 </Project>
