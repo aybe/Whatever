@@ -34,36 +34,27 @@ public struct XaDecoderContext : IDisposable
 
     public static void Decode(ref XaDecoderContext ctx)
     {
-        var sector = ctx.Sector;
-        var isStereo = (sector[19] & 0x3) != 0;
-        var is8Bit = (sector[19] & 0x30) != 0;
-        var sampleRate = (sector[19] & 0xC) != 0 ? 18900 : 37800;
+        var info = ctx.Sector[19];
 
-        ctx.OutputChannels = isStereo ? 2 : 1;
-        ctx.OutputFrequency = sampleRate;
+        var is8Bit = (info & 0x30) != 0;
+        var isStereo = (info & 0x03) != 0;
+        var sampleRate = (info & 0x0C) != 0;
 
-        if (is8Bit)
-        {
-            if (isStereo)
-            {
-                ctx.OutputLength = Decode(ref ctx, 8, 2, 0, 2, 0, 0xFF, 8, 24);
-            }
-            else
-            {
-                ctx.OutputLength = Decode(ref ctx, 8, 4, 0, 1, 0, 0xFF, 8, 24);
-            }
-        }
-        else
-        {
-            if (isStereo)
-            {
-                ctx.OutputLength = Decode(ref ctx, 4, 4, 0, 2, 1, 0x0F, 12, 28);
-            }
-            else
-            {
-                ctx.OutputLength = Decode(ref ctx, 4, 8, 1, 1, 0, 0x0F, 12, 28);
-            }
-        }
+        ctx.OutputChannels = isStereo
+            ? 2
+            : 1;
+
+        ctx.OutputFrequency = sampleRate
+            ? 18900
+            : 37800;
+
+        ctx.OutputLength = is8Bit
+            ? isStereo
+                ? Decode(ref ctx, 8, 2, 0, 2, 0, 0xFF, 8, 24)
+                : Decode(ref ctx, 8, 4, 0, 1, 0, 0xFF, 8, 24)
+            : isStereo
+                ? Decode(ref ctx, 4, 4, 0, 2, 1, 0xF, 12, 28)
+                : Decode(ref ctx, 4, 8, 1, 1, 0, 0xF, 12, 28);
     }
 
     private static int Decode(
