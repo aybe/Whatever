@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Whatever.Extensions
+namespace Whatever.Progress
 {
     /// <summary>
     ///     Event args for <see cref="SparseProgress{T}" />.

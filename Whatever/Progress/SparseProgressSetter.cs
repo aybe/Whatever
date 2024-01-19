@@ -1,4 +1,4 @@
-﻿namespace Whatever.Extensions
+﻿namespace Whatever.Progress
 {
     /// <summary>
     ///     Defines a method to set a progress change.

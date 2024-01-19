@@ -1,4 +1,4 @@
-﻿namespace Whatever.Extensions
+﻿namespace Whatever.Progress
 {
     /// <summary>
     ///     Options for <see cref="TextProgressBar" />.

@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 
-namespace Whatever.Extensions
+namespace Whatever.Progress
 {
     /// <summary>
     ///     <see cref="IProgress{T}" /> that reports progress changes sparingly.

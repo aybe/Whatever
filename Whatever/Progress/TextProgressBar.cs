@@ -2,7 +2,7 @@
 using System.Globalization;
 using System.Text;
 
-namespace Whatever.Extensions
+namespace Whatever.Progress
 {
     /// <summary>
     ///     Text-mode progress bar.
