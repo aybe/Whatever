@@ -46,28 +46,29 @@ public struct XaDecoderContext : IDisposable
         {
             if (isStereo)
             {
-                ctx.OutputLength = Decode(ref ctx, 2, 2, 8, 0, 0, 0xFF, 24, 8);
+                ctx.OutputLength = Decode(ref ctx, 8, 2, 0, 2, 0, 0xFF, 8, 24);
             }
             else
             {
-                ctx.OutputLength = Decode(ref ctx, 1, 4, 8, 0, 0, 0xFF, 24, 8);
+                ctx.OutputLength = Decode(ref ctx, 8, 4, 0, 1, 0, 0xFF, 8, 24);
             }
         }
         else
         {
             if (isStereo)
             {
-                ctx.OutputLength = Decode(ref ctx, 2, 4, 4, 0, 1, 0x0F, 28, 12);
+                ctx.OutputLength = Decode(ref ctx, 4, 4, 0, 2, 1, 0x0F, 12, 28);
             }
             else
             {
-                ctx.OutputLength = Decode(ref ctx, 1, 8, 4, 1, 0, 0x0F, 28, 12);
+                ctx.OutputLength = Decode(ref ctx, 4, 8, 1, 1, 0, 0x0F, 12, 28);
             }
         }
     }
 
     private static int Decode(
-        ref XaDecoderContext ctx, int channels, int blocks, int bits, int blockMask, int channelMask, int sampleMask, int signShift, int sampleShift)
+        ref XaDecoderContext ctx,
+        int bits, int blockCount, int blockMask, int channelCount, int channelMask, int sampleMask, int sampleShift, int signedShift)
     {
         var source = ctx.Sector.Span[(12 + 4 + 8)..];
 
@@ -75,24 +76,24 @@ public struct XaDecoderContext : IDisposable
 
         for (var group = 0; group < 18; group++)
         {
-            for (var block = 0; block < blocks; block++)
+            for (var block = 0; block < blockCount; block++)
             {
                 for (var sample = 0; sample < 28; sample++)
                 {
-                    for (var channel = 0; channel < channels; channel++)
+                    for (var channel = 0; channel < channelCount; channel++)
                     {
-                        var si = 4 + block * channels + channel;
+                        var si = 4 + block * channelCount + channel;
                         var sp = source[si];
                         var sr = sp & 0xF;
                         var sf = (sp & 0x30) >> 4;
                         var f0 = Filter1[sf];
                         var f1 = Filter2[sf];
 
-                        var k = 16 + sample * 4 + block * 4 / blocks + channel * bits / 8;
+                        var k = 16 + sample * 4 + block * 4 / blockCount + channel * bits / 8;
                         var t = source[k];
                         var z = ((block & blockMask) | (channel & channelMask)) * 4;
                         var u = (t >> z) & sampleMask;
-                        var v = (u << signShift) >> signShift;
+                        var v = (u << signedShift) >> signedShift;
 
                         ref var x = ref ctx.Buffer[channel][0];
                         ref var y = ref ctx.Buffer[channel][1];
