@@ -16,7 +16,7 @@ public struct XaDecoderContext : IDisposable
 
     public int OutputFrequency;
 
-    public int OutputLength;
+    public int OutputSamples;
 
     public XaDecoderContext()
     {
@@ -48,7 +48,7 @@ public struct XaDecoderContext : IDisposable
             ? 18900
             : 37800;
 
-        ctx.OutputLength = is8Bit
+        ctx.OutputSamples = is8Bit
             ? isStereo
                 ? Decode(ref ctx, 8, 2, 0, 2, 0, 0xFF, 8, 24)
                 : Decode(ref ctx, 8, 4, 0, 1, 0, 0xFF, 8, 24)
@@ -101,6 +101,6 @@ public struct XaDecoderContext : IDisposable
             source = source[128..];
         }
 
-        return index;
+        return index / channelCount;
     }
 }
