@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace Whatever.Interop
+﻿namespace Whatever.Interop
 {
     public readonly unsafe struct NativeBuffer2D<T>
         : IDisposable

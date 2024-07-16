@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Whatever.Interop
+﻿namespace Whatever.Interop
 {
     public static unsafe class NativeBuffer
     {
