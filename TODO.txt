@@ -1,0 +1,34 @@
+General:
+	region members by access level
+	use ToInt extensions
+	try make EDC as HashAlgorithm
+	NativeMarshaller|Memory.DisposeCore
+	extract 2352 to const
+	push extensions to library/pull package
+	fix ndepend warnings
+	docs
+
+Disc:
+	see if we can have ioctl async class
+		to make async
+			OpenRawWindows
+			GetDeviceAlignmentMaskWindows
+		then merge DeviceIoControl externs
+
+ISOFS:
+	???
+
+CDRWIN:
+	???
+
+CLI:
+	???
+
+Tests:
+	move extensions
+	???
+
+Extensions:
+	check DisposableAsync
+		https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync#implement-both-dispose-and-async-dispose-patterns
+		https://learn.microsoft.com/en-us/dotnet/standard/garbage-collection/implementing-disposeasync#unacceptable-pattern
