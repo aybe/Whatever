@@ -2,11 +2,12 @@
 using System.CommandLine.Builder;
 using System.CommandLine.Parsing;
 using System.Diagnostics.CodeAnalysis;
-using ISO9660.Logical;
-using ISO9660.Physical;
 using Whatever.Extensions;
+using Whatever.ISO9660.Logical;
+using Whatever.ISO9660.Physical;
+using Whatever.Progress;
 
-namespace ISO9660.CLI;
+namespace Whatever.ISO9660.CLI;
 
 internal static partial class Program
     // https://learn.microsoft.com/en-us/dotnet/standard/commandline/handle-termination

@@ -1,8 +1,8 @@
-﻿using ISO9660.Logical;
-using ISO9660.Physical;
-using Whatever.Extensions;
+﻿using Whatever.Extensions;
+using Whatever.ISO9660.Logical;
+using Whatever.ISO9660.Physical;
 
-namespace ISO9660.CLI;
+namespace Whatever.ISO9660.CLI;
 
 internal sealed class Workspace : Disposable
 {
