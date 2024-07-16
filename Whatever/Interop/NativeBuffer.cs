@@ -1,24 +1,23 @@
-﻿namespace Whatever.Interop
+﻿namespace Whatever.Interop;
+
+public static unsafe class NativeBuffer
 {
-    public static unsafe class NativeBuffer
+    private static readonly Dictionary<IntPtr, NativeAllocator> Dictionary =
+        new Dictionary<IntPtr, NativeAllocator>();
+
+    public static void Register(void* pointer, NativeAllocator allocator)
     {
-        private static readonly Dictionary<IntPtr, NativeAllocator> Dictionary =
-            new Dictionary<IntPtr, NativeAllocator>();
+        Dictionary.Add(new IntPtr(pointer), allocator);
+    }
 
-        public static void Register(void* pointer, NativeAllocator allocator)
-        {
-            Dictionary.Add(new IntPtr(pointer), allocator);
-        }
+    public static void Dispose(void* pointer)
+    {
+        var key = new IntPtr(pointer);
 
-        public static void Dispose(void* pointer)
-        {
-            var key = new IntPtr(pointer);
+        var allocator = Dictionary[key];
 
-            var allocator = Dictionary[key];
+        allocator.Free(pointer);
 
-            allocator.Free(pointer);
-
-            Dictionary.Remove(key);
-        }
+        Dictionary.Remove(key);
     }
 }

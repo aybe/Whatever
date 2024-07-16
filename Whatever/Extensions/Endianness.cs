@@ -1,21 +1,20 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Whatever.Extensions
+namespace Whatever.Extensions;
+
+/// <summary>
+///     Specifies the endianness.
+/// </summary>
+[SuppressMessage("ReSharper", "InconsistentNaming")]
+public enum Endianness
 {
     /// <summary>
-    ///     Specifies the endianness.
+    ///     Big-endian, i.e. MSB.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public enum Endianness
-    {
-        /// <summary>
-        ///     Big-endian, i.e. MSB.
-        /// </summary>
-        BE = 0,
+    BE = 0,
 
-        /// <summary>
-        ///     Little-endian, i.e. LSB.
-        /// </summary>
-        LE = 1
-    }
+    /// <summary>
+    ///     Little-endian, i.e. LSB.
+    /// </summary>
+    LE = 1
 }

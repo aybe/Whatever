@@ -1,79 +1,78 @@
 ﻿using System.Globalization;
 using System.Text;
 
-namespace Whatever.Progress
+namespace Whatever.Progress;
+
+/// <summary>
+///     Text-mode progress bar.
+/// </summary>
+public sealed class TextProgressBar
 {
+    private readonly object Lock = new();
+
     /// <summary>
-    ///     Text-mode progress bar.
+    ///     Gets the <see cref="StringBuilder" /> used by this instance.
     /// </summary>
-    public sealed class TextProgressBar
+    public StringBuilder Builder { get; } = new();
+
+    /// <summary>
+    ///     Gets or sets the options for this instance.
+    /// </summary>
+    public TextProgressBarOptions Options { get; set; } = new();
+
+    /// <summary>
+    ///     Clears the underlying <see cref="StringBuilder" />.
+    /// </summary>
+    public void Clear()
     {
-        private readonly object Lock = new();
+        Builder.Clear();
+    }
 
-        /// <summary>
-        ///     Gets the <see cref="StringBuilder" /> used by this instance.
-        /// </summary>
-        public StringBuilder Builder { get; } = new();
-
-        /// <summary>
-        ///     Gets or sets the options for this instance.
-        /// </summary>
-        public TextProgressBarOptions Options { get; set; } = new();
-
-        /// <summary>
-        ///     Clears the underlying <see cref="StringBuilder" />.
-        /// </summary>
-        public void Clear()
+    /// <summary>
+    ///     Updates the progress bar.
+    /// </summary>
+    /// <param name="value">
+    ///     The progress value.
+    /// </param>
+    /// <exception cref="ArgumentOutOfRangeException">
+    ///     <paramref name="value" /> is not between 0 and 1.
+    /// </exception>
+    public void Update(double value)
+    {
+        if (value is < 0.0d or > 1.0d)
         {
-            Builder.Clear();
+            throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 1.");
         }
 
-        /// <summary>
-        ///     Updates the progress bar.
-        /// </summary>
-        /// <param name="value">
-        ///     The progress value.
-        /// </param>
-        /// <exception cref="ArgumentOutOfRangeException">
-        ///     <paramref name="value" /> is not between 0 and 1.
-        /// </exception>
-        public void Update(double value)
+        lock (Lock)
         {
-            if (value is < 0.0d or > 1.0d)
+            var width = Options.Width;
+
+            var state = (int)Math.Floor(value * width);
+
+            for (var j = 0; j < state; j++)
             {
-                throw new ArgumentOutOfRangeException(nameof(value), value, "Value must be between 0 and 1.");
+                Builder.Append(Options.Foreground);
             }
 
-            lock (Lock)
+            for (var j = state; j < width; j++)
             {
-                var width = Options.Width;
+                Builder.Append(Options.Background);
+            }
 
-                var state = (int)Math.Floor(value * width);
-
-                for (var j = 0; j < state; j++)
-                {
-                    Builder.Append(Options.Foreground);
-                }
-
-                for (var j = state; j < width; j++)
-                {
-                    Builder.Append(Options.Background);
-                }
-
-                if (Options.Text)
-                {
-                    Builder.Append($" {value.ToString($"P{Options.TextDigits}", CultureInfo.InvariantCulture)}");
-                }
+            if (Options.Text)
+            {
+                Builder.Append($" {value.ToString($"P{Options.TextDigits}", CultureInfo.InvariantCulture)}");
             }
         }
+    }
 
-        /// <inheritdoc />
-        public override string ToString()
+    /// <inheritdoc />
+    public override string ToString()
+    {
+        lock (Lock)
         {
-            lock (Lock)
-            {
-                return Builder.ToString();
-            }
+            return Builder.ToString();
         }
     }
 }

@@ -1,93 +1,92 @@
-﻿namespace Whatever.Interop
+﻿namespace Whatever.Interop;
+
+public readonly unsafe struct NativeBuffer2D<T>
+    : IDisposable
+    where T : unmanaged
 {
-    public readonly unsafe struct NativeBuffer2D<T>
-        : IDisposable
-        where T : unmanaged
+    private readonly (int X, int Y) Count;
+
+    private readonly T** Items;
+
+    public NativeBuffer2D(int ySize, int xSize, NativeAllocator? allocator = null)
     {
-        private readonly (int X, int Y) Count;
-
-        private readonly T** Items;
-
-        public NativeBuffer2D(int ySize, int xSize, NativeAllocator? allocator = null)
+        if (ySize <= 0)
         {
-            if (ySize <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(ySize), ySize, null);
-            }
-
-            if (xSize <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(xSize), xSize, null);
-            }
-
-            allocator ??= NativeAllocator.Default;
-
-            var items = (T**)allocator.Alloc<IntPtr>(ySize);
-
-            NativeBuffer.Register(items, allocator);
-
-            for (var i = 0; i < xSize; i++)
-            {
-                var item = allocator.Alloc<T>(xSize);
-
-                allocator.Clear(item, xSize);
-
-                NativeBuffer.Register(item, allocator);
-
-                items[i] = item;
-            }
-
-            Count = (xSize, ySize);
-            Items = items;
+            throw new ArgumentOutOfRangeException(nameof(ySize), ySize, null);
         }
 
-        public ref T this[int y, int x]
+        if (xSize <= 0)
         {
-            get
-            {
-                if (y < 0 || y >= Count.Y)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(y), y, null);
-                }
-
-                if (x < 0 || x >= Count.X)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(x), x, null);
-                }
-
-                ref var item = ref Items[y][x];
-
-                return ref item;
-            }
+            throw new ArgumentOutOfRangeException(nameof(xSize), xSize, null);
         }
 
-        public Span<T> this[int y]
+        allocator ??= NativeAllocator.Default;
+
+        var items = (T**)allocator.Alloc<IntPtr>(ySize);
+
+        NativeBuffer.Register(items, allocator);
+
+        for (var i = 0; i < xSize; i++)
         {
-            get
-            {
-                if (y < 0 || y >= Count.Y)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(y), y, null);
-                }
+            var item = allocator.Alloc<T>(xSize);
 
-                var item = Items[y];
+            allocator.Clear(item, xSize);
 
-                var span = new Span<T>(item, Count.X);
+            NativeBuffer.Register(item, allocator);
 
-                return span;
-            }
+            items[i] = item;
         }
 
-        public void Dispose()
-        {
-            for (var i = 0; i < Count.Y; i++)
-            {
-                var item = Items[i];
+        Count = (xSize, ySize);
+        Items = items;
+    }
 
-                NativeBuffer.Dispose(item);
+    public ref T this[int y, int x]
+    {
+        get
+        {
+            if (y < 0 || y >= Count.Y)
+            {
+                throw new ArgumentOutOfRangeException(nameof(y), y, null);
             }
 
-            NativeBuffer.Dispose(Items);
+            if (x < 0 || x >= Count.X)
+            {
+                throw new ArgumentOutOfRangeException(nameof(x), x, null);
+            }
+
+            ref var item = ref Items[y][x];
+
+            return ref item;
         }
+    }
+
+    public Span<T> this[int y]
+    {
+        get
+        {
+            if (y < 0 || y >= Count.Y)
+            {
+                throw new ArgumentOutOfRangeException(nameof(y), y, null);
+            }
+
+            var item = Items[y];
+
+            var span = new Span<T>(item, Count.X);
+
+            return span;
+        }
+    }
+
+    public void Dispose()
+    {
+        for (var i = 0; i < Count.Y; i++)
+        {
+            var item = Items[i];
+
+            NativeBuffer.Dispose(item);
+        }
+
+        NativeBuffer.Dispose(Items);
     }
 }

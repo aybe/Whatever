@@ -1,66 +1,65 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Whatever.Extensions
+namespace Whatever.Extensions;
+
+/// <summary>
+///     Base class for a disposable object.
+/// </summary>
+public abstract class Disposable : IDisposable
 {
     /// <summary>
-    ///     Base class for a disposable object.
+    ///     Gets or sets whether this instance has been disposed.
     /// </summary>
-    public abstract class Disposable : IDisposable
+    protected bool IsDisposed { get; set; }
+
+    /// <inheritdoc />
+    public void Dispose()
     {
-        /// <summary>
-        ///     Gets or sets whether this instance has been disposed.
-        /// </summary>
-        protected bool IsDisposed { get; set; }
+        Dispose(true);
+        GC.SuppressFinalize(this);
+    }
 
-        /// <inheritdoc />
-        public void Dispose()
+    /// <summary>
+    ///     Override to manually control dispose strategy.
+    /// </summary>
+    protected virtual void Dispose(bool disposing)
+    {
+        if (IsDisposed)
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
+            return;
         }
 
-        /// <summary>
-        ///     Override to manually control dispose strategy.
-        /// </summary>
-        protected virtual void Dispose(bool disposing)
+        DisposeNative();
+
+        if (disposing)
         {
-            if (IsDisposed)
-            {
-                return;
-            }
-
-            DisposeNative();
-
-            if (disposing)
-            {
-                DisposeManaged();
-            }
-
-            IsDisposed = true;
+            DisposeManaged();
         }
 
-        /// <summary>
-        ///     Override to dispose managed objects.
-        /// </summary>
-        [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
-        protected virtual void DisposeManaged()
-        {
-        }
+        IsDisposed = true;
+    }
 
-        /// <summary>
-        ///     Override to dispose native objects.
-        /// </summary>
-        [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
-        protected virtual void DisposeNative()
-        {
-        }
+    /// <summary>
+    ///     Override to dispose managed objects.
+    /// </summary>
+    [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
+    protected virtual void DisposeManaged()
+    {
+    }
 
-        /// <summary>
-        ///     Finalizer.
-        /// </summary>
-        ~Disposable()
-        {
-            Dispose(false);
-        }
+    /// <summary>
+    ///     Override to dispose native objects.
+    /// </summary>
+    [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
+    protected virtual void DisposeNative()
+    {
+    }
+
+    /// <summary>
+    ///     Finalizer.
+    /// </summary>
+    ~Disposable()
+    {
+        Dispose(false);
     }
 }

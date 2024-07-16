@@ -1,44 +1,43 @@
-﻿namespace Whatever.Interop
+﻿namespace Whatever.Interop;
+
+public readonly unsafe struct NativeBuffer1D<T>
+    : IDisposable
+    where T : unmanaged
 {
-    public readonly unsafe struct NativeBuffer1D<T>
-        : IDisposable
-        where T : unmanaged
+    private readonly int Count;
+
+    private readonly T* Items;
+
+    public NativeBuffer1D(int count, NativeAllocator? allocator = null)
     {
-        private readonly int Count;
-
-        private readonly T* Items;
-
-        public NativeBuffer1D(int count, NativeAllocator? allocator = null)
+        if (count <= 0)
         {
-            if (count <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(count), count, null);
-            }
-
-            allocator ??= NativeAllocator.Default;
-
-            var items = allocator.Alloc<T>(count);
-
-            allocator.Clear(items, count);
-
-            NativeBuffer.Register(items, allocator);
-
-            Count = count;
-            Items = items;
+            throw new ArgumentOutOfRangeException(nameof(count), count, null);
         }
 
-        public ref T this[int x] => ref Items[x];
+        allocator ??= NativeAllocator.Default;
 
-        public Span<T> Span => new Span<T>(Items, Count);
+        var items = allocator.Alloc<T>(count);
 
-        public void Dispose()
-        {
-            NativeBuffer.Dispose(Items);
-        }
+        allocator.Clear(items, count);
 
-        public static implicit operator Span<T>(NativeBuffer1D<T> buffer)
-        {
-            return buffer.Span;
-        }
+        NativeBuffer.Register(items, allocator);
+
+        Count = count;
+        Items = items;
+    }
+
+    public ref T this[int x] => ref Items[x];
+
+    public Span<T> Span => new Span<T>(Items, Count);
+
+    public void Dispose()
+    {
+        NativeBuffer.Dispose(Items);
+    }
+
+    public static implicit operator Span<T>(NativeBuffer1D<T> buffer)
+    {
+        return buffer.Span;
     }
 }
