@@ -23,4 +23,10 @@
 		<ProjectReference Include="..\Whatever\Whatever.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+		<None Update="ISO9660\Templates\*.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
+	</ItemGroup>
+
 </Project>
