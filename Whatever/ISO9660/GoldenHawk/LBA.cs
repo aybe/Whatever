@@ -1,7 +1,7 @@
 using System.Globalization;
 using JetBrains.Annotations;
 
-namespace ISO9660.GoldenHawk;
+namespace Whatever.ISO9660.GoldenHawk;
 
 public readonly struct LBA : IComparable<LBA>, IEquatable<LBA>
 {

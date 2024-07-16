@@ -1,4 +1,4 @@
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 public enum SectorMode : byte
 {

@@ -1,9 +1,7 @@
-﻿using System.IO;
-using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
+﻿using System.Runtime.CompilerServices;
 using Whatever.Extensions;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 public abstract class Track(bool audio, int index, int length, int position, ISector sector)
     : DisposableAsync

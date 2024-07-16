@@ -1,10 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
 using System.Text;
 using Whatever.Extensions;
 
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 public static class StreamExtensions
 {

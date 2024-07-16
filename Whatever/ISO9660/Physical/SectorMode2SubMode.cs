@@ -1,4 +1,4 @@
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 [Flags]
 public enum SectorMode2SubMode : byte

@@ -1,11 +1,8 @@
-﻿using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
-using ISO9660.Logical;
-using Microsoft.Extensions.ObjectPool;
+﻿using Microsoft.Extensions.ObjectPool;
 using Whatever.Extensions;
+using Whatever.ISO9660.Logical;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 public static class DiscExtensions
 {

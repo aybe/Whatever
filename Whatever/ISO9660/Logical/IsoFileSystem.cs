@@ -1,11 +1,9 @@
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
 using System.Text;
-using ISO9660.Physical;
 using Whatever.Extensions;
+using Whatever.ISO9660.Physical;
 
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 public sealed class IsoFileSystem : Disposable
 {

@@ -1,6 +1,6 @@
 using JetBrains.Annotations;
 
-namespace ISO9660.GoldenHawk;
+namespace Whatever.ISO9660.GoldenHawk;
 
 public readonly struct MSF : IComparable<MSF>, IEquatable<MSF>
 {

@@ -1,6 +1,6 @@
 ﻿using System.Buffers;
 
-namespace ISO9660.Extensions;
+namespace Whatever.ISO9660.Extensions;
 
 public sealed unsafe class NativeMemoryManager<T>(T* pointer, int length)
     : MemoryManager<T> where T : unmanaged

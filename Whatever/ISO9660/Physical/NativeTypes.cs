@@ -1,7 +1,7 @@
 ﻿using System.Buffers.Binary;
 using System.Runtime.InteropServices;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 internal static class NativeTypes
 {

@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 public sealed partial class IsoFileSystemEntryFile : IsoFileSystemEntry
 {

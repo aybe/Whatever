@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace ISO9660.GoldenHawk;
+﻿namespace Whatever.ISO9660.GoldenHawk;
 
 public sealed class CueSheetFile(CueSheet sheet, string name, CueSheetFileType type)
     : CueSheetElement

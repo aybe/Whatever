@@ -1,15 +1,12 @@
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
-using System.IO;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using ISO9660.Extensions;
-using ISO9660.GoldenHawk;
 using Whatever.Extensions;
+using Whatever.ISO9660.Extensions;
+using Whatever.ISO9660.GoldenHawk;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 /// <summary>
 ///     Base interface for a CD-ROM sector.

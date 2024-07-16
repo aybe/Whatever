@@ -1,6 +1,6 @@
 ﻿using System.Buffers.Binary;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 public struct EDC
 // https://github.dev/claunia/edccchk

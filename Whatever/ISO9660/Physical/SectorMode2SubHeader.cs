@@ -1,6 +1,6 @@
 using System.Runtime.InteropServices;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 [StructLayout(LayoutKind.Sequential, Pack = 1, Size = 4)]
 public readonly struct SectorMode2SubHeader : IEquatable<SectorMode2SubHeader>

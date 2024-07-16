@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using JetBrains.Annotations;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 [StructLayout(LayoutKind.Explicit, Pack = 1, Size = 2336)]
 public unsafe struct SectorCooked2336 : ISector

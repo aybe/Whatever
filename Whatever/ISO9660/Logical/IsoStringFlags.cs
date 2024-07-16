@@ -1,4 +1,4 @@
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 [Flags]
 public enum IsoStringFlags

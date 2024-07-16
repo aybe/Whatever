@@ -1,7 +1,7 @@
 ﻿using System.Linq.Expressions;
 using JetBrains.Annotations;
 
-namespace ISO9660.Tests;
+namespace Whatever.Tests.ISO9660;
 
 public abstract class UnitTestBase
 {

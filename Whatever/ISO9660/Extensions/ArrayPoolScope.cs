@@ -1,6 +1,6 @@
 using System.Buffers;
 
-namespace ISO9660.Extensions;
+namespace Whatever.ISO9660.Extensions;
 
 public readonly struct ArrayPoolScope<T> : IDisposable // TODO move to Whatever.Extensions
 {

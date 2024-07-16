@@ -1,9 +1,6 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using Whatever.Extensions;
+﻿using Whatever.Extensions;
 
-namespace ISO9660.GoldenHawk;
+namespace Whatever.ISO9660.GoldenHawk;
 
 public sealed class CueSheetTrack(CueSheetFile file, int index, CueSheetTrackType type)
     : CueSheetElement

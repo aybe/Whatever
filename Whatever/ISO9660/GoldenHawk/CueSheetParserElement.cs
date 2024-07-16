@@ -1,4 +1,4 @@
-﻿namespace ISO9660.GoldenHawk;
+﻿namespace Whatever.ISO9660.GoldenHawk;
 
 internal sealed class CueSheetParserElement(int indent, CueSheetElement target)
 {

@@ -1,7 +1,4 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-
-namespace ISO9660.Physical;
+﻿namespace Whatever.ISO9660.Physical;
 
 internal sealed class TrackBin(bool audio, int index, int length, int position, ISector sector, Stream stream)
     : Track(audio, index, length, position, sector)

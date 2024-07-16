@@ -1,7 +1,6 @@
 using System.Globalization;
-using System.IO;
 
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 public sealed class DirectoryRecordDateTime(Stream stream)
 {

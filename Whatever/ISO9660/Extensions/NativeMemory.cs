@@ -1,8 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Whatever.Extensions;
 
-namespace ISO9660.Extensions;
+namespace Whatever.ISO9660.Extensions;
 
 public sealed class NativeMemory<T> : DisposableAsync where T : unmanaged
 {

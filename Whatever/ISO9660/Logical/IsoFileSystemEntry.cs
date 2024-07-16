@@ -1,9 +1,8 @@
-using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 using JetBrains.Annotations;
 
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
 {

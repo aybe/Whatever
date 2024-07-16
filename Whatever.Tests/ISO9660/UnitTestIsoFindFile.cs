@@ -1,8 +1,8 @@
-﻿using ISO9660.Logical;
-using ISO9660.Physical;
-using ISO9660.Tests.Templates;
+﻿using Whatever.ISO9660.Logical;
+using Whatever.ISO9660.Physical;
+using Whatever.Tests.ISO9660.Templates;
 
-namespace ISO9660.Tests;
+namespace Whatever.Tests.ISO9660;
 
 [TestClass]
 public sealed class UnitTestIsoFindFile : UnitTestBase

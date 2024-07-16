@@ -1,18 +1,14 @@
 ﻿using System.Buffers.Binary;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
-using System.Threading.Tasks;
-using ISO9660.Extensions;
-using ISO9660.GoldenHawk;
 using Microsoft.Win32.SafeHandles;
 using Whatever.Extensions;
+using Whatever.ISO9660.Extensions;
+using Whatever.ISO9660.GoldenHawk;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 public sealed class Disc : DisposableAsync
 {

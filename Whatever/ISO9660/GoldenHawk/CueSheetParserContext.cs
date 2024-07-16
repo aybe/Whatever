@@ -1,8 +1,6 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 
-namespace ISO9660.GoldenHawk;
+namespace Whatever.ISO9660.GoldenHawk;
 
 internal sealed class CueSheetParserContext
 {

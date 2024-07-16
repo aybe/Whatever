@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
-using ISO9660.Logical;
-using ISO9660.Physical;
+using Whatever.ISO9660.Logical;
+using Whatever.ISO9660.Physical;
 
-namespace ISO9660.Tests;
+namespace Whatever.Tests.ISO9660;
 
 [TestClass]
 public sealed class UnitTestRealDevice : UnitTestBase

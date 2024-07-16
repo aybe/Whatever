@@ -1,7 +1,7 @@
-﻿using ISO9660.GoldenHawk;
-using ISO9660.Tests.Templates;
+﻿using Whatever.ISO9660.GoldenHawk;
+using Whatever.Tests.ISO9660.Templates;
 
-namespace ISO9660.Tests;
+namespace Whatever.Tests.ISO9660;
 
 [TestClass]
 public class UnitTestCueSheet : UnitTestBase

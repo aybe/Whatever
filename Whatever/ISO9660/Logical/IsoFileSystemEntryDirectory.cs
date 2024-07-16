@@ -1,6 +1,4 @@
-using System.Collections.Generic;
-
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 public sealed class IsoFileSystemEntryDirectory(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
     : IsoFileSystemEntry(parent, record)

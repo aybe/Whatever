@@ -1,4 +1,4 @@
-﻿namespace ISO9660.GoldenHawk;
+﻿namespace Whatever.ISO9660.GoldenHawk;
 
 [Flags]
 public enum CueSheetTrackFlags

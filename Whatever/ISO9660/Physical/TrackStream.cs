@@ -1,8 +1,7 @@
-﻿using System.IO;
-using System.Runtime.CompilerServices;
+﻿using System.Runtime.CompilerServices;
 using Whatever.Extensions;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 /// <summary>
 ///     Track stream over user data, i.e. cooked stream.

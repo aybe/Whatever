@@ -1,8 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using System.Threading;
 using Microsoft.Win32.SafeHandles;
 
-namespace ISO9660.Physical;
+namespace Whatever.ISO9660.Physical;
 
 internal static class NativeMethods
 {

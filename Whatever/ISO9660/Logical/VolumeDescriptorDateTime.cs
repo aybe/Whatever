@@ -1,8 +1,7 @@
 using System.Globalization;
-using System.IO;
 using Whatever.Extensions;
 
-namespace ISO9660.Logical;
+namespace Whatever.ISO9660.Logical;
 
 public sealed class VolumeDescriptorDateTime(Stream stream)
 {

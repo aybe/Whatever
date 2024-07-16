@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 
-namespace ISO9660.GoldenHawk;
+namespace Whatever.ISO9660.GoldenHawk;
 
 [SuppressMessage("ReSharper", "IdentifierTypo")]
 public enum CueSheetFileType
