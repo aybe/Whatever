@@ -22,6 +22,7 @@ public abstract class Disposable : IDisposable
     /// <summary>
     ///     Override to manually control dispose strategy.
     /// </summary>
+    [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     protected virtual void Dispose(bool disposing)
     {
         if (IsDisposed)
