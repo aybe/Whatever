@@ -49,4 +49,7 @@ Global
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B84F7E2-FC62-4338-82C3-FE11FE30DD81}
 	EndGlobalSection
+	GlobalSection(NDepend) = preSolution
+		Project = ".\Whatever.ndproj"
+	EndGlobalSection
 EndGlobal
