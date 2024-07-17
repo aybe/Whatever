@@ -62,4 +62,9 @@ public abstract class Disposable : IDisposable
     {
         Dispose(false);
     }
+
+    protected void ThrowIfDisposed()
+    {
+        ObjectDisposedException.ThrowIf(IsDisposed, this);
+    }
 }

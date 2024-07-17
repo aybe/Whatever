@@ -30,13 +30,13 @@ public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
     {
         get
         {
-            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            ThrowIfDisposed();
 
             return Marshal.PtrToStructure<T>(Pointer);
         }
         set
         {
-            ObjectDisposedException.ThrowIf(IsDisposed, this);
+            ThrowIfDisposed();
 
             Marshal.StructureToPtr(value, Pointer, true);
         }
