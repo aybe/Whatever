@@ -1,10 +1,11 @@
 ﻿using System.Runtime.InteropServices;
-using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Extensions;
 
-public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
+public sealed class NativeMarshaller<T> : IDisposable, IAsyncDisposable where T : struct
 {
+    private bool Disposed;
+
     public NativeMarshaller(T structure = default)
     {
         Length = Marshal.SizeOf<T>();
@@ -42,20 +43,42 @@ public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
         }
     }
 
-    protected override ValueTask DisposeAsyncCore()
+    public ValueTask DisposeAsync()
     {
-        DisposeNative();
-
+        Dispose();
         return ValueTask.CompletedTask;
     }
 
-    protected override void DisposeNative()
+    public void Dispose()
     {
-        DisposePointer();
+        Dispose(true);
+        GC.SuppressFinalize(this);
     }
 
-    private void DisposePointer()
+    private void ThrowIfDisposed()
     {
+        ObjectDisposedException.ThrowIf(Disposed, this);
+    }
+
+    ~NativeMarshaller()
+    {
+        Dispose(false);
+    }
+
+    private void Dispose(bool disposing)
+    {
+        if (Disposed)
+        {
+            return;
+        }
+
         Marshal.FreeHGlobal(Pointer);
+
+        if (disposing)
+        {
+            // NOP
+        }
+
+        Disposed = true;
     }
 }
