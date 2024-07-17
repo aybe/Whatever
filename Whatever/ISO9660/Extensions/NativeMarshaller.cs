@@ -1,8 +1,9 @@
 ﻿using System.Runtime.InteropServices;
+using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Extensions;
 
-public sealed class NativeMarshaller<T> : IDisposable, IAsyncDisposable where T : struct
+public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
 {
     private bool Disposed;
 
@@ -43,21 +44,16 @@ public sealed class NativeMarshaller<T> : IDisposable, IAsyncDisposable where T 
         }
     }
 
-    public ValueTask DisposeAsync()
+    public override ValueTask DisposeAsync()
     {
         Dispose();
         return ValueTask.CompletedTask;
     }
 
-    public void Dispose()
+    public override void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
-    }
-
-    private void ThrowIfDisposed()
-    {
-        ObjectDisposedException.ThrowIf(Disposed, this);
     }
 
     ~NativeMarshaller()
@@ -65,7 +61,7 @@ public sealed class NativeMarshaller<T> : IDisposable, IAsyncDisposable where T 
         Dispose(false);
     }
 
-    private void Dispose(bool disposing)
+    protected override void Dispose(bool disposing)
     {
         if (Disposed)
         {

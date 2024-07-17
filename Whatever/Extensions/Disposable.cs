@@ -13,7 +13,7 @@ public abstract class Disposable : IDisposable
     protected bool IsDisposed { get; set; }
 
     /// <inheritdoc />
-    public void Dispose()
+    public virtual void Dispose()
     {
         Dispose(true);
         GC.SuppressFinalize(this);
