@@ -37,5 +37,17 @@ internal static class NativeMethods
         [Out] out uint lpBytesReturned,
         [In] [Out] [Optional] NativeOverlapped* lpOverlapped);
 
+    /// <summary>
+    ///     https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-getoverlappedresult
+    /// </summary>
+    [return: MarshalAs(UnmanagedType.Bool)]
+    [DllImport("kernel32.dll", SetLastError = true)]
+    public static extern unsafe bool GetOverlappedResult(
+        [In] SafeFileHandle hFile,
+        [In] NativeOverlapped* lpOverlapped,
+        [Out] out uint lpNumberOfBytesTransferred,
+        [In] [MarshalAs(UnmanagedType.Bool)] bool bWait
+    );
+
     #endregion
 }
