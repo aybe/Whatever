@@ -3,10 +3,19 @@ General:
 	use ToInt extensions
 	try make EDC as HashAlgorithm
 	extract 2352 to const
-	push extensions to library/pull package
 	fix ndepend warnings
 	docs
-
+	DRY DeviceIoControl
+		Disc.GetDeviceAlignmentMaskWindows
+			NativeMarshaller<STORAGE_PROPERTY_QUERY>
+			NativeMarshaller<STORAGE_ADAPTER_DESCRIPTOR>
+		Disc.OpenRawWindows
+			NativeMarshaller<CDROM_READ_TOC_EX>
+			NativeMarshaller<CDROM_TOC>
+		Disc.ReadSectorWindows
+		Track.ReadSectorWindowsAsync
+			NativeMarshaller<SCSI_PASS_THROUGH_DIRECT>
+			NativeMarshaller<SCSI_PASS_THROUGH_DIRECT>
 Disc:
 	see if we can have ioctl async class
 		to make async
@@ -27,3 +36,5 @@ Tests:
 	move extensions
 	???
 
+Directory.Build.props:
+	???
