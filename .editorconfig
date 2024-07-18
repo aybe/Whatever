@@ -6,6 +6,7 @@ dotnet_remove_unnecessary_suppression_exclusions=category:ReSharper
 # ReSharper properties
 resharper_blank_lines_around_single_line_auto_property=1
 resharper_blank_lines_around_single_line_field=0
+resharper_braces_for_foreach=required
 resharper_braces_for_ifelse=required
 resharper_csharp_int_align_comments=true
 resharper_int_align_assignments=true
