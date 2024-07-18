@@ -24,19 +24,7 @@ public sealed class NativeMemory<T> : DisposableAsync where T : unmanaged
 
     public nint Pointer { get; }
 
-    protected override ValueTask DisposeAsyncCore()
-    {
-        DisposeNative();
-
-        return ValueTask.CompletedTask;
-    }
-
-    protected override void DisposeNative()
-    {
-        DisposePointer();
-    }
-
-    private unsafe void DisposePointer()
+    protected override unsafe void DisposeNative()
     {
         NativeMemory.AlignedFree(Pointer.ToPointer());
     }

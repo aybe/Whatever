@@ -24,20 +24,9 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
         throw new PlatformNotSupportedException();
     }
 
-    private void DisposeCore()
-    {
-        Buffer.Dispose();
-    }
-
-    protected override ValueTask DisposeAsyncCore()
-    {
-        DisposeCore();
-        return ValueTask.CompletedTask;
-    }
-
     protected override void DisposeManaged()
     {
-        DisposeCore();
+        Buffer.Dispose();
     }
 
     public override Task<ISector> ReadSectorAsync(int index)
@@ -153,21 +142,9 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
     {
         public readonly ManualResetEvent Event = new(false);
 
-        private void DisposeCore()
-        {
-            Event.Dispose();
-        }
-
         protected override void DisposeManaged()
         {
-            DisposeCore();
-        }
-
-        protected override ValueTask DisposeAsyncCore()
-        {
-            DisposeCore();
-
-            return ValueTask.CompletedTask;
+            Event.Dispose();
         }
     }
 }
