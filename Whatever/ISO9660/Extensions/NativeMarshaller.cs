@@ -5,8 +5,6 @@ namespace Whatever.ISO9660.Extensions;
 
 public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
 {
-    private bool Disposed;
-
     public NativeMarshaller(T structure = default)
     {
         Length = Marshal.SizeOf<T>();
@@ -44,37 +42,8 @@ public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
         }
     }
 
-    public override ValueTask DisposeAsync()
+    protected override void DisposeNative()
     {
-        Dispose();
-        return ValueTask.CompletedTask;
-    }
-
-    public override void Dispose()
-    {
-        Dispose(true);
-        GC.SuppressFinalize(this);
-    }
-
-    ~NativeMarshaller()
-    {
-        Dispose(false);
-    }
-
-    protected override void Dispose(bool disposing)
-    {
-        if (Disposed)
-        {
-            return;
-        }
-
         Marshal.FreeHGlobal(Pointer);
-
-        if (disposing)
-        {
-            // NOP
-        }
-
-        Disposed = true;
     }
 }

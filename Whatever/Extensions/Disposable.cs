@@ -7,10 +7,7 @@ namespace Whatever.Extensions;
 /// </summary>
 public abstract class Disposable : IDisposable
 {
-    /// <summary>
-    ///     Gets or sets whether this instance has been disposed.
-    /// </summary>
-    protected bool IsDisposed { get; set; }
+    private bool IsDisposed { get; set; }
 
     /// <inheritdoc />
     public virtual void Dispose()
@@ -20,8 +17,11 @@ public abstract class Disposable : IDisposable
     }
 
     /// <summary>
-    ///     Override to manually control dispose strategy.
+    ///     Performs cleanup of managed and unmanaged resources.
     /// </summary>
+    /// <remarks>
+    ///     Current implementation calls <see cref="DisposeManaged" />, <see cref="DisposeNative" />.
+    /// </remarks>
     [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     protected virtual void Dispose(bool disposing)
     {
@@ -41,7 +41,7 @@ public abstract class Disposable : IDisposable
     }
 
     /// <summary>
-    ///     Override to dispose managed objects.
+    ///     Performs cleanup of managed resources.
     /// </summary>
     [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     protected virtual void DisposeManaged()
@@ -49,16 +49,14 @@ public abstract class Disposable : IDisposable
     }
 
     /// <summary>
-    ///     Override to dispose native objects.
+    ///     Performs cleanup of unmanaged resources.
     /// </summary>
     [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     protected virtual void DisposeNative()
     {
     }
 
-    /// <summary>
-    ///     Finalizer.
-    /// </summary>
+    /// <inheritdoc />
     ~Disposable()
     {
         Dispose(false);

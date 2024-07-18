@@ -8,22 +8,29 @@ namespace Whatever.Extensions;
 public abstract class DisposableAsync : Disposable, IAsyncDisposable
 {
     /// <inheritdoc />
-    [SuppressMessage("Usage", "CA1816:Dispose methods should call SuppressFinalize", Justification = "https://github.com/dotnet/roslyn-analyzers/issues/3675")]
+    /// <remarks>
+    ///     Current implementation calls <see cref="DisposeAsyncCore" />, <see cref="Disposable.Dispose(bool)" />.
+    /// </remarks>
+    [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     public virtual async ValueTask DisposeAsync()
     {
         await DisposeAsyncCore().ConfigureAwait(false);
 
+        Dispose(false);
         GC.SuppressFinalize(this);
     }
 
     /// <summary>
-    ///     Override to control dispose strategy.
+    ///     Performs asynchronous cleanup of managed resources.
     /// </summary>
     /// <remarks>
-    ///     Currently, method is a no-operation.
+    ///     Current implementation calls <see cref="Disposable.DisposeManaged" />.
     /// </remarks>
+    [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
     protected virtual async ValueTask DisposeAsyncCore()
     {
-        await new ValueTask().ConfigureAwait(false);
+        DisposeManaged();
+
+        await ValueTask.CompletedTask.ConfigureAwait(false);
     }
 }
