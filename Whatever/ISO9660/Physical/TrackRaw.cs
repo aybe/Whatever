@@ -56,9 +56,10 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
     {
         var query = Disc.ReadSectorWindowsQuery((uint)index, 1u, timeout, Buffer.Pointer, Buffer.Length);
 
+        await using var y = query.ConfigureAwait(false);
+
         var state = new ReadSectorWindowsAsyncState();
 
-        await using var y = query.ConfigureAwait(false);
         await using var z = state.ConfigureAwait(false);
 
         var source = new TaskCompletionSource();
