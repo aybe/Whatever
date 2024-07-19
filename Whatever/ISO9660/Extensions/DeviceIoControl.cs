@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
+using JetBrains.Annotations;
 using Microsoft.Win32.SafeHandles;
 using Whatever.ISO9660.Physical;
 
@@ -9,6 +10,8 @@ namespace Whatever.ISO9660.Extensions;
 
 public static class DeviceIoControl
 {
+    [MustUseReturnValue]
+    [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
     public static uint Send<TSource, TTarget>(
         SafeFileHandle handle, uint code, NativeMarshaller<TSource> source, NativeMarshaller<TTarget> target
     )
@@ -48,6 +51,7 @@ public static class DeviceIoControl
         return length;
     }
 
+    [MustUseReturnValue]
     [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
     public static async Task<uint> SendAsync<TSource, TTarget>(
         SafeFileHandle handle,
