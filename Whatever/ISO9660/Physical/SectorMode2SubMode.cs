@@ -1,7 +1,9 @@
 namespace Whatever.ISO9660.Physical;
 
 [Flags]
+#pragma warning disable CA1028 // Enum Storage should be Int32
 public enum SectorMode2SubMode : byte
+#pragma warning restore CA1028 // Enum Storage should be Int32
 {
     EndOfRecord = 1 << 0,
     VideoBlock = 1 << 1,

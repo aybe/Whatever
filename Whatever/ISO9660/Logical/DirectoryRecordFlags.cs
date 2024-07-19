@@ -1,7 +1,9 @@
 namespace Whatever.ISO9660.Logical;
 
 [Flags]
+#pragma warning disable CA1028 // Enum Storage should be Int32
 public enum DirectoryRecordFlags : byte
+#pragma warning restore CA1028 // Enum Storage should be Int32
 {
     None = 0,
     Existence = 1 << 0,
