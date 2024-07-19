@@ -143,14 +143,14 @@ public static class DeviceIoControl
         else
         {
             rwh = ThreadPool.RegisterWaitForSingleObject(
-                evt, Callback, new WindowsState(handle, overlapped, tcs), timeout, true
+                evt, SendWindowsAsyncCallback, new WindowsState(handle, overlapped, tcs), timeout, true
             );
         }
 
         return new Result(rwh, len);
     }
 
-    private static unsafe void Callback(object? state, bool timedOut)
+    private static unsafe void SendWindowsAsyncCallback(object? state, bool timedOut)
     {
         if (state is not WindowsState ws)
         {
