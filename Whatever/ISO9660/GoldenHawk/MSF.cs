@@ -11,7 +11,9 @@ public readonly struct MSF : IComparable<MSF>, IEquatable<MSF>
     public static MSF Max { get; } = new(99, 59, 74);
 
     [PublicAPI]
+#pragma warning disable CA1051 // Do not declare visible instance fields
     public readonly byte M, S, F;
+#pragma warning restore CA1051 // Do not declare visible instance fields
 
     public MSF(int m, int s, int f)
     {
