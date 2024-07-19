@@ -100,48 +100,6 @@ public class UnitTest1
             Assert.AreEqual(0x04030201, read);
         }
 
-#if NETSTANDARD2_1
-        {
-            stream.Position = 0;
-
-            var buffer = new byte[4];
-
-            StreamExtensions.ReadExactly(stream, buffer, 0, buffer.Length);
-
-            CollectionAssert.AreEqual(pattern, buffer);
-        }
-
-        {
-            stream.Position = 0;
-
-            var buffer = new byte[4];
-
-            StreamExtensions.ReadExactly(stream, buffer);
-
-            CollectionAssert.AreEqual(pattern, buffer);
-        }
-
-        {
-            stream.Position = 0;
-
-            var buffer = new byte[4];
-
-            await StreamExtensions.ReadExactlyAsync(stream, buffer, 0, buffer.Length);
-
-            CollectionAssert.AreEqual(pattern, buffer);
-        }
-
-        {
-            stream.Position = 0;
-
-            var buffer = new byte[4];
-
-            await StreamExtensions.ReadExactlyAsync(stream, buffer);
-
-            CollectionAssert.AreEqual(pattern, buffer);
-        }
-#endif
-
         {
             stream.Position = 0;
 

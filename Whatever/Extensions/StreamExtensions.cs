@@ -243,42 +243,6 @@ public static class StreamExtensions
         return buffer;
     }
 
-#if NETSTANDARD2_1
-        /// <summary>
-        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
-        /// </summary>
-        public static void ReadExactly(
-            this Stream stream, byte[] buffer, int offset, int count)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
-            var read = stream.Read(buffer, offset, count);
-
-            ThrowIfNotEqual(read, count, () => new EndOfStreamException());
-        }
-#endif
-
-#if NETSTANDARD2_1
-        /// <summary>
-        ///     Reads an exact number of bytes.
-        /// </summary>
-        public static void ReadExactly(
-            this Stream stream, Span<byte> buffer)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
-            var read = stream.Read(buffer);
-
-            ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
-        }
-#endif
-
     /// <summary>
     ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
     /// </summary>
@@ -291,46 +255,6 @@ public static class StreamExtensions
 
         return buffer;
     }
-
-#if NETSTANDARD2_1
-        /// <summary>
-        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
-        /// </summary>
-        public static async Task ReadExactlyAsync(
-            this Stream stream, byte[] buffer, int offset, int count, CancellationToken cancellationToken = default)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
-            var read = await stream
-                .ReadAsync(buffer.AsMemory(offset, count), cancellationToken)
-                .ConfigureAwait(false);
-
-            ThrowIfNotEqual(read, count, () => new EndOfStreamException());
-        }
-#endif
-
-#if NETSTANDARD2_1
-        /// <summary>
-        ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
-        /// </summary>
-        public static async ValueTask ReadExactlyAsync(
-            this Stream stream, Memory<byte> buffer, CancellationToken cancellationToken = default)
-        {
-            if (stream == null)
-            {
-                throw new ArgumentNullException(nameof(stream));
-            }
-
-            var read = await stream
-                .ReadAsync(buffer, cancellationToken)
-                .ConfigureAwait(false);
-
-            ThrowIfNotEqual(read, buffer.Length, () => new EndOfStreamException());
-        }
-#endif
 
     /// <summary>
     ///     Reads an ASCII string.
