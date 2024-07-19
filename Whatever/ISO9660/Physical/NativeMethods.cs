@@ -3,7 +3,7 @@ using Microsoft.Win32.SafeHandles;
 
 namespace Whatever.ISO9660.Physical;
 
-internal static class NativeMethods
+internal static partial class NativeMethods
 {
     #region ioapiset.h
 
@@ -11,27 +11,27 @@ internal static class NativeMethods
     ///     https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-deviceiocontrol
     /// </summary>
     [return: MarshalAs(UnmanagedType.Bool)]
-    [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern unsafe bool DeviceIoControl(
-        [In] SafeFileHandle hDevice,
-        [In] uint dwIoControlCode,
-        [In] [Optional] nint lpInBuffer,
-        [In] uint nInBufferSize,
-        [Out] [Optional] nint lpOutBuffer,
-        [In] uint nOutBufferSize,
-        [Out] out uint lpBytesReturned,
-        [In] [Out] [Optional] NativeOverlapped* lpOverlapped);
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    public static unsafe partial bool DeviceIoControl(
+        SafeFileHandle hDevice,
+        uint dwIoControlCode,
+        [Optional] nint lpInBuffer,
+        uint nInBufferSize,
+        [Optional] nint lpOutBuffer,
+        uint nOutBufferSize,
+        out uint lpBytesReturned,
+        [Optional] NativeOverlapped* lpOverlapped);
 
     /// <summary>
     ///     https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-getoverlappedresult
     /// </summary>
     [return: MarshalAs(UnmanagedType.Bool)]
-    [DllImport("kernel32.dll", SetLastError = true)]
-    public static extern unsafe bool GetOverlappedResult(
-        [In] SafeFileHandle hFile,
-        [In] NativeOverlapped* lpOverlapped,
-        [Out] out uint lpNumberOfBytesTransferred,
-        [In] [MarshalAs(UnmanagedType.Bool)] bool bWait
+    [LibraryImport("kernel32.dll", SetLastError = true)]
+    public static unsafe partial bool GetOverlappedResult(
+        SafeFileHandle hFile,
+        NativeOverlapped* lpOverlapped,
+        out uint lpNumberOfBytesTransferred,
+        [MarshalAs(UnmanagedType.Bool)] bool bWait
     );
 
     #endregion
