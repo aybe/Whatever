@@ -58,7 +58,7 @@ public sealed class Disc : DisposableAsync
                 throw new Win32Exception();
             }
 
-            var send = DeviceIoControl.Send(handle, NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT, query, query);
+            DeviceIoControl.Send(handle, NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT, query, query);
         }
     }
 
@@ -213,7 +213,7 @@ public sealed class Disc : DisposableAsync
 
         using var tgt = new NativeMarshaller<NativeTypes.CDROM_TOC>();
 
-        var send = DeviceIoControl.Send(handle, NativeConstants.IOCTL_CDROM_READ_TOC_EX, src, tgt);
+        DeviceIoControl.Send(handle, NativeConstants.IOCTL_CDROM_READ_TOC_EX, src, tgt);
      
         var toc = tgt.Structure;
 
