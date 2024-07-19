@@ -78,14 +78,14 @@ public sealed class Disc : DisposableAsync
 
     internal static NativeMemory<byte> GetDeviceAlignedBuffer(uint byteCount, SafeFileHandle? handle)
     {
-        var alignment = handle is null ? 1 : GetDeviceAlignmentMask(handle.DangerousGetHandle()) + 1;
+        var alignment = handle is null ? 1 : GetDeviceAlignmentMask(handle) + 1;
 
         var memory = new NativeMemory<byte>(byteCount, alignment);
 
         return memory;
     }
 
-    private static uint GetDeviceAlignmentMask(nint handle)
+    private static uint GetDeviceAlignmentMask(SafeFileHandle handle)
     {
         if (OperatingSystem.IsWindows())
         {
@@ -96,7 +96,7 @@ public sealed class Disc : DisposableAsync
     }
 
     [SupportedOSPlatform("windows")]
-    private static uint GetDeviceAlignmentMaskWindows(nint handle)
+    private static uint GetDeviceAlignmentMaskWindows(SafeFileHandle handle)
     {
         using var src = new NativeMarshaller<NativeTypes.STORAGE_PROPERTY_QUERY>(
             new NativeTypes.STORAGE_PROPERTY_QUERY
@@ -108,18 +108,8 @@ public sealed class Disc : DisposableAsync
 
         using var tgt = new NativeMarshaller<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>();
 
-        var ioctl = NativeMethods.DeviceIoControl(
-            handle,
-            NativeConstants.IOCTL_STORAGE_QUERY_PROPERTY,
-            src.Pointer, (uint)src.Length, tgt.Pointer, (uint)tgt.Length,
-            out _
-        );
-
-        if (ioctl is false)
-        {
-            throw new Win32Exception();
-        }
-
+        var send = DeviceIoControl.Send(handle, NativeConstants.IOCTL_STORAGE_QUERY_PROPERTY, src, tgt);
+        
         var alignmentMask = tgt.Structure.AlignmentMask;
 
         return alignmentMask;
