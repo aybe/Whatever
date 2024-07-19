@@ -150,6 +150,7 @@ public static class DeviceIoControl
         return new Result(rwh, len);
     }
 
+    [SupportedOSPlatform("windows")]
     private static unsafe void SendWindowsAsyncCallback(object? state, bool timedOut)
     {
         if (state is not WindowsState ws)
