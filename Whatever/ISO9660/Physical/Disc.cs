@@ -19,7 +19,7 @@ public sealed class Disc : DisposableAsync
 
     public IReadOnlyList<Track> Tracks { get; }
 
-    internal static void ReadSector(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
+    internal static void ReadSector(SafeFileHandle handle, uint position, Span<byte> buffer, uint timeout = 3)
     {
         if (OperatingSystem.IsWindows())
         {
@@ -32,7 +32,7 @@ public sealed class Disc : DisposableAsync
     }
 
     [SupportedOSPlatform("windows")]
-    private static unsafe void ReadSectorWindows(nint handle, uint position, Span<byte> buffer, uint timeout = 3)
+    private static unsafe void ReadSectorWindows(SafeFileHandle handle, uint position, Span<byte> buffer, uint timeout = 3)
     {
         if (buffer.Length < 2352)
         {
@@ -57,6 +57,8 @@ public sealed class Disc : DisposableAsync
             {
                 throw new Win32Exception();
             }
+
+            var send = DeviceIoControl.Send(handle, NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT, query, query);
         }
     }
 
@@ -258,7 +260,7 @@ public sealed class Disc : DisposableAsync
             {
                 var buffer = memory.Manager.Memory.Span;
 
-                ReadSector(handle.DangerousGetHandle(), (uint)address1, buffer);
+                ReadSector(handle, (uint)address1, buffer);
 
                 sector = ISector.GetSectorTypeRaw(buffer);
             }

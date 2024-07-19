@@ -41,7 +41,7 @@ internal sealed class TrackRaw(int index, int position, int length, bool audio, 
     {
         var buffer = Buffer.Manager.Memory.Span;
 
-        Disc.ReadSector(Handle.DangerousGetHandle(), (uint)index, buffer);
+        Disc.ReadSector(Handle, (uint)index, buffer);
 
         var sector = ISector.Read(Sector, buffer);
 
