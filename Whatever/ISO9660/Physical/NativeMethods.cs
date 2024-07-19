@@ -11,6 +11,7 @@ internal static partial class NativeMethods
     ///     https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-deviceiocontrol
     /// </summary>
     [return: MarshalAs(UnmanagedType.Bool)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [LibraryImport("kernel32.dll", SetLastError = true)]
     public static unsafe partial bool DeviceIoControl(
         SafeFileHandle hDevice,
@@ -26,6 +27,7 @@ internal static partial class NativeMethods
     ///     https://learn.microsoft.com/en-us/windows/win32/api/ioapiset/nf-ioapiset-getoverlappedresult
     /// </summary>
     [return: MarshalAs(UnmanagedType.Bool)]
+    [DefaultDllImportSearchPaths(DllImportSearchPath.System32)]
     [LibraryImport("kernel32.dll", SetLastError = true)]
     public static unsafe partial bool GetOverlappedResult(
         SafeFileHandle hFile,
