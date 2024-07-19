@@ -232,7 +232,7 @@ public static class StreamExtensions
     }
 
     /// <summary>
-    ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
+    ///     See <see cref="Stream.ReadExactly(Span{byte})" />.
     /// </summary>
     public static byte[] ReadExactly(this Stream stream, int count)
     {
@@ -244,7 +244,7 @@ public static class StreamExtensions
     }
 
     /// <summary>
-    ///     See <see cref="ReadExactly(System.IO.Stream,Span{byte})" />.
+    ///     See <see cref="Stream.ReadExactly(Span{byte})" />.
     /// </summary>
     public static async Task<byte[]> ReadExactlyAsync(
         this Stream stream, int count, CancellationToken cancellationToken = default)
