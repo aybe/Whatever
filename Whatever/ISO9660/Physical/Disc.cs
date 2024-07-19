@@ -110,7 +110,7 @@ public sealed class Disc : DisposableAsync
 
         using var tgt = new NativeMarshaller<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>();
 
-        var send = DeviceIoControl.Send(handle, NativeConstants.IOCTL_STORAGE_QUERY_PROPERTY, src, tgt);
+        DeviceIoControl.Send(handle, NativeConstants.IOCTL_STORAGE_QUERY_PROPERTY, src, tgt);
         
         var alignmentMask = tgt.Structure.AlignmentMask;
 
@@ -213,18 +213,8 @@ public sealed class Disc : DisposableAsync
 
         using var tgt = new NativeMarshaller<NativeTypes.CDROM_TOC>();
 
-        var ioctl = NativeMethods.DeviceIoControl(
-            handle.DangerousGetHandle(),
-            NativeConstants.IOCTL_CDROM_READ_TOC_EX,
-            src.Pointer, (uint)src.Length, tgt.Pointer, (uint)tgt.Length,
-            out _
-        );
-
-        if (ioctl is false)
-        {
-            throw new Win32Exception();
-        }
-
+        var send = DeviceIoControl.Send(handle, NativeConstants.IOCTL_CDROM_READ_TOC_EX, src, tgt);
+     
         var toc = tgt.Structure;
 
         var datas = toc.TrackData;
