@@ -167,14 +167,6 @@ public static class StreamExtensions
         return sizeOf;
     }
 
-    private static void ThrowIfNotEqual<TValue>(TValue value1, TValue value2, Func<Exception> exception)
-    {
-        if (!EqualityComparer<TValue>.Default.Equals(value1, value2))
-        {
-            throw exception();
-        }
-    }
-
     private static void TryReverseEndianness(Endianness? endianness, Span<byte> buffer)
     {
         var actual = EnvironmentEndianness;
