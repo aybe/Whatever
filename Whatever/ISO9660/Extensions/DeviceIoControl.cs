@@ -10,6 +10,21 @@ namespace Whatever.ISO9660.Extensions;
 
 public static class DeviceIoControl
 {
+    private static void CheckLastError(bool flag)
+    {
+        if (flag)
+        {
+            return;
+        }
+
+        var error = Marshal.GetLastPInvokeError();
+
+        if (error is not (NativeConstants.ERROR_SUCCESS or NativeConstants.ERROR_IO_PENDING))
+        {
+            throw new Win32Exception(error);
+        }
+    }
+
     [MustUseReturnValue]
     [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
     public static uint Send<TSource, TTarget>(
@@ -43,10 +58,7 @@ public static class DeviceIoControl
             handle, code, source.Pointer, (uint)source.Length, target.Pointer, (uint)target.Length, out var length, null
         );
 
-        if (ioctl is false && Marshal.GetLastPInvokeError() is var error and not NativeConstants.ERROR_SUCCESS)
-        {
-            throw new Win32Exception(error);
-        }
+        CheckLastError(ioctl);
 
         return length;
     }
@@ -94,13 +106,6 @@ public static class DeviceIoControl
         if (result.Handle is null)
         {
             return result.Length;
-        }
-
-        var error = Marshal.GetLastWin32Error();
-
-        if (error is not (NativeConstants.ERROR_SUCCESS or NativeConstants.ERROR_IO_PENDING))
-        {
-            throw new Win32Exception(error);
         }
 
         var bytes = await tcs.Task.ConfigureAwait(false);
@@ -164,10 +169,7 @@ public static class DeviceIoControl
             {
                 var result = NativeMethods.GetOverlappedResult(ws.Handle, ws.Overlapped, out var length, true);
 
-                if (result is false)
-                {
-                    throw new Win32Exception();
-                }
+                CheckLastError(result);
 
                 tcs.SetResult(length);
             }
