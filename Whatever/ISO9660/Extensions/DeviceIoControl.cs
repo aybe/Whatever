@@ -9,6 +9,45 @@ namespace Whatever.ISO9660.Extensions;
 
 public static class DeviceIoControl
 {
+    public static uint Send<TSource, TTarget>(
+        SafeFileHandle handle, uint code, NativeMarshaller<TSource> source, NativeMarshaller<TTarget> target
+    )
+        where TSource : struct
+        where TTarget : struct
+    {
+        if (OperatingSystem.IsWindows())
+        {
+            return SendWindows(handle, code, source, target);
+        }
+
+        throw new PlatformNotSupportedException();
+    }
+
+    [SupportedOSPlatform("windows")]
+    private static unsafe uint SendWindows<TSource, TTarget>(
+        SafeFileHandle handle,
+        uint code,
+        NativeMarshaller<TSource> source,
+        NativeMarshaller<TTarget> target
+    )
+        where TSource : struct
+        where TTarget : struct
+    {
+        ArgumentNullException.ThrowIfNull(source);
+        ArgumentNullException.ThrowIfNull(target);
+
+        var ioctl = NativeMethods.DeviceIoControl(
+            handle, code, source.Pointer, (uint)source.Length, target.Pointer, (uint)target.Length, out var length, null
+        );
+
+        if (ioctl is false && Marshal.GetLastPInvokeError() is var error and not NativeConstants.ERROR_SUCCESS)
+        {
+            throw new Win32Exception(error);
+        }
+
+        return length;
+    }
+
     [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
     public static async Task<uint> SendAsync<TSource, TTarget>(
         SafeFileHandle handle,
