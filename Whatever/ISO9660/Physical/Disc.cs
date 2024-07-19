@@ -46,18 +46,6 @@ public sealed class Disc : DisposableAsync
 
             using var query = ReadSectorWindowsQuery(position, transfer, timeout, (nint)data, (uint)buffer.Length);
 
-            var ioctl = NativeMethods.DeviceIoControl(
-                handle,
-                NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT,
-                query.Pointer, (uint)query.Length, query.Pointer, (uint)query.Length,
-                out _
-            );
-
-            if (ioctl is false)
-            {
-                throw new Win32Exception();
-            }
-
             DeviceIoControl.Send(handle, NativeConstants.IOCTL_SCSI_PASS_THROUGH_DIRECT, query, query);
         }
     }
