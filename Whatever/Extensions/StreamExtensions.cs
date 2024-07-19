@@ -118,15 +118,8 @@ public static class StreamExtensions
     /// </summary>
     public static T Peek<T>(this Stream stream, Func<Stream, T> reader)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
-
-        if (reader == null)
-        {
-            throw new ArgumentNullException(nameof(reader));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
+        ArgumentNullException.ThrowIfNull(reader);
 
         var position = stream.Position;
 
@@ -199,10 +192,7 @@ public static class StreamExtensions
         this Stream stream, Endianness? endianness = null)
         where T : unmanaged
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var length = SizeOf<T>();
 
@@ -224,10 +214,7 @@ public static class StreamExtensions
         this Stream stream, Endianness? endianness = null, CancellationToken cancellationToken = default)
         where T : unmanaged
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var length = SizeOf<T>();
 
@@ -384,10 +371,7 @@ public static class StreamExtensions
         this Stream stream, T value, Endianness? endianness = null)
         where T : unmanaged
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         using var buffer = ToBuffer(ref value, endianness ?? stream.GetEndianness());
 
@@ -401,10 +385,7 @@ public static class StreamExtensions
         this Stream stream, T value, Endianness? endianness = null)
         where T : unmanaged
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         using var buffer = ToBuffer(ref value, endianness ?? stream.GetEndianness());
 
@@ -416,15 +397,7 @@ public static class StreamExtensions
     /// </summary>
     public static void WriteStringAscii(this Stream stream, string value)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
-
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var buffer = Encoding.ASCII.GetBytes(value);
 
@@ -436,15 +409,7 @@ public static class StreamExtensions
     /// </summary>
     public static async Task WriteStringAsciiAsync(this Stream stream, string value)
     {
-        if (stream == null)
-        {
-            throw new ArgumentNullException(nameof(stream));
-        }
-
-        if (value == null)
-        {
-            throw new ArgumentNullException(nameof(value));
-        }
+        ArgumentNullException.ThrowIfNull(stream);
 
         var buffer = Encoding.ASCII.GetBytes(value);
 

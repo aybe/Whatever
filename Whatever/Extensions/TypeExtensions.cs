@@ -20,10 +20,7 @@ public static class TypeExtensions
     /// </summary>
     public static string GetNiceName(this Type type, bool qualified)
     {
-        if (type == null)
-        {
-            throw new ArgumentNullException(nameof(type));
-        }
+        ArgumentNullException.ThrowIfNull(type);
 
         var name = type.ToString();
 

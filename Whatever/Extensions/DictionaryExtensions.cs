@@ -12,20 +12,9 @@ public static class DictionaryExtensions
     /// </summary>
     public static TValue GetOrAdd<TKey, TValue>(this IDictionary<TKey, TValue> dictionary, [DisallowNull] TKey key, Func<TValue> valueFactory)
     {
-        if (dictionary == null)
-        {
-            throw new ArgumentNullException(nameof(dictionary));
-        }
-
-        if (key == null)
-        {
-            throw new ArgumentNullException(nameof(key));
-        }
-
-        if (valueFactory == null)
-        {
-            throw new ArgumentNullException(nameof(valueFactory));
-        }
+        ArgumentNullException.ThrowIfNull(dictionary);
+        ArgumentNullException.ThrowIfNull(key);
+        ArgumentNullException.ThrowIfNull(valueFactory);
 
         if (dictionary.TryGetValue(key, out var value))
         {
