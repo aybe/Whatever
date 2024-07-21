@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using JetBrains.Annotations;
@@ -135,7 +136,7 @@ public static class DeviceIoControl
             state = new WindowsAsyncState(handle, overlapped, e, timeout);
         }
 
-        return await state.Source.Task.ConfigureAwait(false);
+        return await state.ConfigureAwait(ConfigureAwaitOptions.None);
     }
 
     [SupportedOSPlatform("windows")]
@@ -159,7 +160,7 @@ public static class DeviceIoControl
             WaitHandle = ThreadPool.RegisterWaitForSingleObject(waitHandle, Callback, this, timeout, true);
         }
 
-        public TaskCompletionSource<uint> Source { get; } = new();
+        private TaskCompletionSource<uint> Source { get; } = new();
 
         private void Callback(object? state, bool timedOut)
         {
@@ -188,6 +189,11 @@ public static class DeviceIoControl
             {
                 WaitHandle.Unregister(null);
             }
+        }
+
+        public ConfiguredTaskAwaitable<uint> ConfigureAwait(ConfigureAwaitOptions options)
+        {
+            return Source.Task.ConfigureAwait(options);
         }
     }
 }
