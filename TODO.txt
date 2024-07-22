@@ -17,7 +17,6 @@ General:
 	remove native allocator/buffers
 	remove dictionary extensions
 	merge array pool scope/shared buffer
-	remove singleton?
 	merge span memory manager/native memory manager
 	remove is external init
 	remove global usings
