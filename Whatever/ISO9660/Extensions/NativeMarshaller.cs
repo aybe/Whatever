@@ -3,7 +3,7 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Extensions;
 
-public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
+public sealed class NativeMarshaller<T> : Disposable where T : struct
 {
     public NativeMarshaller(T structure = default)
     {

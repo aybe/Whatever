@@ -10,8 +10,6 @@ General:
 		2. ???
 	rename native marshaller to marshal
 	make track getstream public
-	make async disposables non async
-	remove async disposable class?
 	rename native memory to aligned memory
 	rename native memory manager
 	remove native allocator/buffers
