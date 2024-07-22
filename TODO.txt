@@ -4,6 +4,31 @@ General:
 	extract 2352 to const
 	fix ndepend warnings
 	docs
+	go full async
+		track raw: 2 read sector methods
+		1. track stream -> read async
+		2. ???
+	rename native marshaller to marshal
+	make track getstream public
+	make async disposables non async
+	remove async disposable class?
+	rename native memory to aligned memory
+	rename native memory manager
+	remove native allocator/buffers
+	redo convert extensions
+	remove dictionary extensions
+	merge array pool scope/shared buffer
+	remove singleton?
+	merge span memory manager/native memory manager
+	remove is external init
+	remove global usings
+	fix/merge tests
+		merge stream extensions/scope
+	XA
+	fix CLI app
+	disposable async: make core abstract
+	track: pass aligned buffer
+	
 
 ISOFS:
 	???
