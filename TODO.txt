@@ -19,7 +19,6 @@ General:
 	merge array pool scope/shared buffer
 	merge span memory manager/native memory manager
 	remove is external init
-	remove global usings
 	fix/merge tests
 		merge stream extensions/scope
 	XA
