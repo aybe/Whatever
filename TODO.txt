@@ -18,7 +18,6 @@ General:
 	remove dictionary extensions
 	merge array pool scope/shared buffer
 	merge span memory manager/native memory manager
-	remove is external init
 	fix/merge tests
 		merge stream extensions/scope
 	XA
