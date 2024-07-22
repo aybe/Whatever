@@ -32,8 +32,35 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <None Include="Extensions\ConvertExtensions.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>ConvertExtensions.tt</DependentUpon>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
 		<PackageReference Include="JetBrains.Annotations" Version="2023.3.0" />
 		<PackageReference Include="Microsoft.Extensions.ObjectPool" Version="8.0.7" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Extensions\ConvertExtensions.tt">
+	    <Generator>TextTemplatingFileGenerator</Generator>
+	    <LastGenOutput>ConvertExtensions.g.cs</LastGenOutput>
+	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Compile Update="Extensions\ConvertExtensions.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>ConvertExtensions.tt</DependentUpon>
+	  </Compile>
 	</ItemGroup>
 
 </Project>

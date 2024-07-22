@@ -15,7 +15,6 @@ General:
 	rename native memory to aligned memory
 	rename native memory manager
 	remove native allocator/buffers
-	redo convert extensions
 	remove dictionary extensions
 	merge array pool scope/shared buffer
 	remove singleton?
