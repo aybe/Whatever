@@ -1,4 +1,5 @@
 using System.Buffers;
+using System.Diagnostics.CodeAnalysis;
 using JetBrains.Annotations;
 
 namespace Whatever.Extensions;
@@ -63,21 +64,45 @@ public readonly struct ArrayPoolScope<T> : IDisposable, IEquatable<ArrayPoolScop
 
     public static implicit operator Memory<T>(ArrayPoolScope<T> scope)
     {
-        return scope.Memory;
+        return scope.ToMemory();
     }
 
     public static implicit operator ReadOnlyMemory<T>(ArrayPoolScope<T> scope)
     {
-        return scope.Memory;
+        return scope.ToReadOnlyMemory();
     }
 
     public static implicit operator Span<T>(ArrayPoolScope<T> scope)
     {
-        return scope.Span;
+        return scope.ToSpan();
     }
 
     public static implicit operator ReadOnlySpan<T>(ArrayPoolScope<T> scope)
     {
-        return scope.Span;
+        return scope.ToReadOnlySpan();
+    }
+
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    public Memory<T> ToMemory()
+    {
+        return Memory;
+    }
+
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    public Span<T> ToSpan()
+    {
+        return Span;
+    }
+
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    public ReadOnlyMemory<T> ToReadOnlyMemory()
+    {
+        return Memory;
+    }
+
+    [SuppressMessage("ReSharper", "MemberCanBePrivate.Global")]
+    public ReadOnlySpan<T> ToReadOnlySpan()
+    {
+        return Span;
     }
 }
