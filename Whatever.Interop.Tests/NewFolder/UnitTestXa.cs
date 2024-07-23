@@ -51,7 +51,7 @@ public class UnitTestXa : UnitTestBase
         {
             source.ReadExactly(ctx.Sector);
 
-            XaDecoderContext.Decode(ref ctx);
+            ctx.Decode();
 
             var outputSampleCount = ctx.OutputSampleCount;
 

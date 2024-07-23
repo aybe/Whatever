@@ -1,6 +1,6 @@
 ﻿namespace Whatever.Interop.Tests.NewFolder;
 
-public struct XaDecoderContext()
+public sealed class XaDecoderContext
 {
     private static readonly int[] Filter1 = [0, +60, +115, +98, +122];
 
