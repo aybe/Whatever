@@ -10,11 +10,20 @@ public sealed class XaDecoderContext
 
     private short[] Output { get; } = new short[18 * 112 * 4];
 
-    public int OutputChannels { get; private set; }
+    /// <summary>
+    ///     Gets the number of channels decoded by last <see cref="Decode" />.
+    /// </summary>
+    public int Channels { get; private set; }
 
-    public int OutputSampleRate { get; private set; }
+    /// <summary>
+    ///     Gets the frequency decoded by last <see cref="Decode" />.
+    /// </summary>
+    public int Frequency { get; private set; }
 
-    public int OutputSampleCount { get; private set; }
+    /// <summary>
+    ///     Gets the number of samples decoded by last <see cref="Decode" />.
+    /// </summary>
+    public int Samples { get; private set; }
 
     public Span<short> Decode(Span<byte> sector)
     {
@@ -26,15 +35,15 @@ public sealed class XaDecoderContext
         var isStereo = (info & 0x03) != 0;
         var sampleRate = (info & 0x0C) != 0;
 
-        OutputChannels = isStereo
+        Channels = isStereo
             ? 2
             : 1;
 
-        OutputSampleRate = sampleRate
+        Frequency = sampleRate
             ? 18900
             : 37800;
 
-        OutputSampleCount = is8Bit
+        Samples = is8Bit
             ? isStereo
                 ? Decode(sector, 8, 2, 0, 2, 0, 0xFF, 8, 24)
                 : Decode(sector, 8, 4, 0, 1, 0, 0xFF, 8, 24)
@@ -42,7 +51,7 @@ public sealed class XaDecoderContext
                 ? Decode(sector, 4, 4, 0, 2, 1, 0xF, 12, 28)
                 : Decode(sector, 4, 8, 1, 1, 0, 0xF, 12, 28);
 
-        var span = Output.AsSpan(0, OutputSampleCount * OutputChannels);
+        var span = Output.AsSpan(0, Samples * Channels);
 
         return span;
     }

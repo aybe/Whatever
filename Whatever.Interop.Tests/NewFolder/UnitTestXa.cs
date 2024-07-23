@@ -55,7 +55,7 @@ public class UnitTestXa : UnitTestBase
 
             var decode = ctx.Decode(sector);
 
-            var outputSampleCount = ctx.OutputSampleCount;
+            var outputSampleCount = ctx.Samples;
 
             samples += outputSampleCount;
 
@@ -64,7 +64,7 @@ public class UnitTestXa : UnitTestBase
 
         target.Position = 0;
 
-        WriteWavHeader(target, 16, (ushort)ctx.OutputChannels, (uint)ctx.OutputSampleRate, (uint)samples);
+        WriteWavHeader(target, 16, (ushort)ctx.Channels, (uint)ctx.Frequency, (uint)samples);
 
         var expectedHash = sourceFileName switch
         {
