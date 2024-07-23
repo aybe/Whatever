@@ -53,15 +53,13 @@ public class UnitTestXa : UnitTestBase
         {
             source.ReadExactly(sector);
 
-            ctx.Decode(sector);
+            var decode = ctx.Decode(sector);
 
             var outputSampleCount = ctx.OutputSampleCount;
 
-            var span = ctx.Output.AsSpan(0, outputSampleCount * ctx.OutputChannels);
-
             samples += outputSampleCount;
 
-            target.Write(MemoryMarshal.AsBytes(span));
+            target.Write(MemoryMarshal.AsBytes(decode));
         }
 
         target.Position = 0;

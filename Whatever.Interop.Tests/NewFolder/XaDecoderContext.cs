@@ -8,7 +8,7 @@ public sealed class XaDecoderContext
 
     private int[][] Buffer { get; } = [[0, 0], [0, 0]];
 
-    public short[] Output { get; } = new short[18 * 112 * 4];
+    private short[] Output { get; } = new short[18 * 112 * 4];
 
     public int OutputChannels { get; private set; }
 
@@ -16,7 +16,7 @@ public sealed class XaDecoderContext
 
     public int OutputSampleCount { get; private set; }
 
-    public void Decode(Span<byte> sector)
+    public Span<short> Decode(Span<byte> sector)
     {
         ArgumentOutOfRangeException.ThrowIfNotEqual(sector.Length, 2352);
 
@@ -41,6 +41,10 @@ public sealed class XaDecoderContext
             : isStereo
                 ? Decode(sector, 4, 4, 0, 2, 1, 0xF, 12, 28)
                 : Decode(sector, 4, 8, 1, 1, 0, 0xF, 12, 28);
+
+        var span = Output.AsSpan(0, OutputSampleCount * OutputChannels);
+
+        return span;
     }
 
     private int Decode(
