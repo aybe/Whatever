@@ -2,21 +2,21 @@
 
 public sealed class XaDecoderContext
 {
-    private static readonly int[] Filter1 = [0, +60, +115, +98, +122];
+    private static int[] Filter1 { get; } = [0, +60, +115, +98, +122];
 
-    private static readonly int[] Filter2 = [0, 0, -52, -55, -60];
+    private static int[] Filter2 { get; } = [0, 0, -52, -55, -60];
 
-    private readonly int[][] Buffer = [[0, 0], [0, 0]];
+    private int[][] Buffer { get; } = [[0, 0], [0, 0]];
 
-    public readonly byte[] Sector = new byte[2352];
+    public byte[] Sector { get; } = new byte[2352];
 
-    public readonly short[] Output = new short[18 * 112 * 4];
+    public short[] Output { get; } = new short[18 * 112 * 4];
 
-    public int OutputChannels;
+    public int OutputChannels { get; private set; }
 
-    public int OutputSampleRate;
+    public int OutputSampleRate { get; private set; }
 
-    public int OutputSampleCount;
+    public int OutputSampleCount { get; private set; }
 
     public void Decode()
     {
