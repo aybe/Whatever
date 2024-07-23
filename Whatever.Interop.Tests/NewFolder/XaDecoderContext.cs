@@ -18,38 +18,37 @@ public sealed class XaDecoderContext
 
     public int OutputSampleCount;
 
-    public static void Decode(ref XaDecoderContext ctx)
+    public void Decode()
     {
-        var info = ctx.Sector[19];
+        var info = Sector[19];
 
         var is8Bit = (info & 0x30) != 0;
         var isStereo = (info & 0x03) != 0;
         var sampleRate = (info & 0x0C) != 0;
 
-        ctx.OutputChannels = isStereo
+        OutputChannels = isStereo
             ? 2
             : 1;
 
-        ctx.OutputSampleRate = sampleRate
+        OutputSampleRate = sampleRate
             ? 18900
             : 37800;
 
-        ctx.OutputSampleCount = is8Bit
+        OutputSampleCount = is8Bit
             ? isStereo
-                ? Decode(ref ctx, 8, 2, 0, 2, 0, 0xFF, 8, 24)
-                : Decode(ref ctx, 8, 4, 0, 1, 0, 0xFF, 8, 24)
+                ? Decode(8, 2, 0, 2, 0, 0xFF, 8, 24)
+                : Decode(8, 4, 0, 1, 0, 0xFF, 8, 24)
             : isStereo
-                ? Decode(ref ctx, 4, 4, 0, 2, 1, 0xF, 12, 28)
-                : Decode(ref ctx, 4, 8, 1, 1, 0, 0xF, 12, 28);
+                ? Decode(4, 4, 0, 2, 1, 0xF, 12, 28)
+                : Decode(4, 8, 1, 1, 0, 0xF, 12, 28);
     }
 
-    private static int Decode(
-        ref XaDecoderContext ctx,
+    private int Decode(
         int bits, int blockCount, int blockMask, int channelCount, int channelMask, int sampleMask, int sampleShift, int signedShift)
     {
-        var buffer = ctx.Buffer;
-        var output = ctx.Output;
-        var sector = ctx.Sector[(12 + 4 + 8)..];
+        var buffer = Buffer;
+        var output = Output;
+        var sector = Sector[(12 + 4 + 8)..];
         var offset = 0;
 
         for (var group = 0; group < 18; group++)
