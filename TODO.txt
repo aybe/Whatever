@@ -13,7 +13,6 @@ General:
 	rename native memory to aligned memory
 	rename native memory manager
 	remove native allocator/buffers
-	merge span memory manager/native memory manager
 	fix/merge tests
 		merge stream extensions/scope
 	XA
