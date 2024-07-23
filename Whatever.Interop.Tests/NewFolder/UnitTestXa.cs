@@ -1,4 +1,6 @@
-﻿using System.Runtime.InteropServices;
+﻿using System.IO;
+using System.Runtime.InteropServices;
+using System.Security.Cryptography;
 
 namespace Whatever.Interop.Tests.NewFolder;
 
@@ -79,9 +81,11 @@ public class UnitTestXa : UnitTestBase
             _ => throw new NotSupportedException()
         };
 
-        var actualHash = target.GetSha256Hash();
-
         File.WriteAllBytes(targetFileName, target.ToArray());
+
+        target.Position = 0;
+
+        var actualHash = string.Concat(SHA256.HashData(target).Select(s => s.ToString("x2")));
 
         Assert.AreEqual(expectedHash, actualHash);
     }
