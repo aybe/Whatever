@@ -8,8 +8,6 @@ public sealed class XaDecoderContext
 
     private int[][] Buffer { get; } = [[0, 0], [0, 0]];
 
-    public byte[] Sector { get; } = new byte[2352];
-
     public short[] Output { get; } = new short[18 * 112 * 4];
 
     public int OutputChannels { get; private set; }
@@ -18,9 +16,11 @@ public sealed class XaDecoderContext
 
     public int OutputSampleCount { get; private set; }
 
-    public void Decode()
+    public void Decode(Span<byte> sector)
     {
-        var info = Sector[19];
+        ArgumentOutOfRangeException.ThrowIfNotEqual(sector.Length, 2352);
+
+        var info = sector[19];
 
         var is8Bit = (info & 0x30) != 0;
         var isStereo = (info & 0x03) != 0;
@@ -36,19 +36,19 @@ public sealed class XaDecoderContext
 
         OutputSampleCount = is8Bit
             ? isStereo
-                ? Decode(8, 2, 0, 2, 0, 0xFF, 8, 24)
-                : Decode(8, 4, 0, 1, 0, 0xFF, 8, 24)
+                ? Decode(sector, 8, 2, 0, 2, 0, 0xFF, 8, 24)
+                : Decode(sector, 8, 4, 0, 1, 0, 0xFF, 8, 24)
             : isStereo
-                ? Decode(4, 4, 0, 2, 1, 0xF, 12, 28)
-                : Decode(4, 8, 1, 1, 0, 0xF, 12, 28);
+                ? Decode(sector, 4, 4, 0, 2, 1, 0xF, 12, 28)
+                : Decode(sector, 4, 8, 1, 1, 0, 0xF, 12, 28);
     }
 
     private int Decode(
-        int bits, int blockCount, int blockMask, int channelCount, int channelMask, int sampleMask, int sampleShift, int signedShift)
+        Span<byte> span, int bits, int blockCount, int blockMask, int channelCount, int channelMask, int sampleMask, int sampleShift, int signedShift)
     {
         var buffer = Buffer;
         var output = Output;
-        var sector = Sector[(12 + 4 + 8)..];
+        var sector = span[(12 + 4 + 8)..];
         var offset = 0;
 
         for (var group = 0; group < 18; group++)

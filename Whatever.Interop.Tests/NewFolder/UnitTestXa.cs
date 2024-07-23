@@ -47,11 +47,13 @@ public class UnitTestXa : UnitTestBase
 
         WriteWavHeader(target);
 
+        var sector = new byte[2352];
+
         while (source.Position < source.Length)
         {
-            source.ReadExactly(ctx.Sector);
+            source.ReadExactly(sector);
 
-            ctx.Decode();
+            ctx.Decode(sector);
 
             var outputSampleCount = ctx.OutputSampleCount;
 
