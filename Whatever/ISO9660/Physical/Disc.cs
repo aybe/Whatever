@@ -88,7 +88,7 @@ public sealed class Disc : DisposableAsync
     [SupportedOSPlatform("windows")]
     private static uint GetDeviceAlignmentMaskWindows(SafeFileHandle handle)
     {
-        using var src = new NativeMarshaller<NativeTypes.STORAGE_PROPERTY_QUERY>(
+        using var src = new NativeMarshal<NativeTypes.STORAGE_PROPERTY_QUERY>(
             new NativeTypes.STORAGE_PROPERTY_QUERY
             {
                 QueryType  = NativeTypes.STORAGE_QUERY_TYPE.PropertyStandardQuery,
@@ -96,7 +96,7 @@ public sealed class Disc : DisposableAsync
             }
         );
 
-        using var tgt = new NativeMarshaller<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>();
+        using var tgt = new NativeMarshal<NativeTypes.STORAGE_ADAPTER_DESCRIPTOR>();
 
         DeviceIoControl.Send(handle, NativeConstants.IOCTL_STORAGE_QUERY_PROPERTY, src, tgt);
         
@@ -191,7 +191,7 @@ public sealed class Disc : DisposableAsync
     {
         var handle = File.OpenHandle($@"\\.\{info.Name[..2]}", FileMode.Open, FileAccess.ReadWrite, FileShare.Read, FileOptions.Asynchronous);
 
-        using var src = new NativeMarshaller<NativeTypes.CDROM_READ_TOC_EX>(
+        using var src = new NativeMarshal<NativeTypes.CDROM_READ_TOC_EX>(
             new NativeTypes.CDROM_READ_TOC_EX
             {
                 Format       = NativeConstants.CDROM_READ_TOC_EX_FORMAT_TOC,
@@ -199,7 +199,7 @@ public sealed class Disc : DisposableAsync
             }
         );
 
-        using var tgt = new NativeMarshaller<NativeTypes.CDROM_TOC>();
+        using var tgt = new NativeMarshal<NativeTypes.CDROM_TOC>();
 
         DeviceIoControl.Send(handle, NativeConstants.IOCTL_CDROM_READ_TOC_EX, src, tgt);
      
@@ -250,10 +250,10 @@ public sealed class Disc : DisposableAsync
     }
 
     [SupportedOSPlatform("windows")]
-    internal static NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT> ReadSectorWindowsQuery(
+    internal static NativeMarshal<NativeTypes.SCSI_PASS_THROUGH_DIRECT> ReadSectorWindowsQuery(
         uint position, uint transfer, uint timeOut, nint buffer, uint bufferLength)
     {
-        return new NativeMarshaller<NativeTypes.SCSI_PASS_THROUGH_DIRECT>
+        return new NativeMarshal<NativeTypes.SCSI_PASS_THROUGH_DIRECT>
         {
             Structure = new NativeTypes.SCSI_PASS_THROUGH_DIRECT(12)
             {

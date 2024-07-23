@@ -3,9 +3,9 @@ using Whatever.Extensions;
 
 namespace Whatever.Interop;
 
-public sealed class NativeMarshaller<T> : Disposable where T : struct
+public sealed class NativeMarshal<T> : Disposable where T : struct
 {
-    public NativeMarshaller(T structure = default)
+    public NativeMarshal(T structure = default)
     {
         Length = Marshal.SizeOf<T>();
 
