@@ -2,9 +2,9 @@
 
 namespace Whatever.ISO9660.Logical;
 
-public sealed class VolumeDescriptorPartition : VolumeDescriptor
+public sealed class IsoVolumeDescriptorPartition : IsoVolumeDescriptor
 {
-    public VolumeDescriptorPartition(VolumeDescriptor descriptor, Stream stream)
+    public IsoVolumeDescriptorPartition(IsoVolumeDescriptor descriptor, Stream stream)
         : base(descriptor)
     {
         stream.Seek(1, SeekOrigin.Current);

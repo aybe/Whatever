@@ -1,6 +1,6 @@
 namespace Whatever.ISO9660.Logical;
 
-public sealed class IsoFileSystemEntryDirectory(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
+public sealed class IsoFileSystemEntryDirectory(IsoFileSystemEntryDirectory? parent, IsoDirectoryRecord record)
     : IsoFileSystemEntry(parent, record)
 {
     public IList<IsoFileSystemEntryDirectory> Directories { get; } = new List<IsoFileSystemEntryDirectory>();

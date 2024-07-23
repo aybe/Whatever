@@ -3,7 +3,7 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Logical;
 
-public sealed class VolumeDescriptorDateTime(Stream stream)
+public sealed class IsoVolumeDescriptorDateTime(Stream stream)
 {
     public string Year { get; } = stream.ReadStringAscii(4);
 

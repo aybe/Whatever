@@ -1,7 +1,7 @@
 namespace Whatever.ISO9660.Logical;
 
 #pragma warning disable CA1028 // Enum Storage should be Int32
-public enum VolumeDescriptorType : byte
+public enum IsoVolumeDescriptorType : byte
 #pragma warning restore CA1028 // Enum Storage should be Int32
 {
     BootRecord = 0,

@@ -2,8 +2,8 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Logical;
 
-public sealed class VolumeDescriptorBootRecord(VolumeDescriptor descriptor, Stream stream)
-    : VolumeDescriptor(descriptor)
+public sealed class IsoVolumeDescriptorBootRecord(IsoVolumeDescriptor descriptor, Stream stream)
+    : IsoVolumeDescriptor(descriptor)
 {
     public string BootSystemIdentifier { get; } = stream.ReadIsoString(32, IsoStringFlags.ACharacters);
 

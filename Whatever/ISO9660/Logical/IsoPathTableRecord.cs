@@ -2,9 +2,9 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Logical;
 
-public sealed class PathTableRecord
+public sealed class IsoPathTableRecord
 {
-    public PathTableRecord(Stream stream)
+    public IsoPathTableRecord(Stream stream)
     {
         LengthOfDirectoryIdentifier = stream.ReadIso711();
 

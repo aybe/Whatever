@@ -7,13 +7,13 @@ namespace Whatever.ISO9660.Logical;
 
 public sealed class IsoFileSystem : Disposable
 {
-    private IsoFileSystem(VolumeDescriptorSet descriptorSet, IsoFileSystemEntryDirectory rootDirectory)
+    private IsoFileSystem(IsoVolumeDescriptorSet descriptorSet, IsoFileSystemEntryDirectory rootDirectory)
     {
         DescriptorSet = descriptorSet;
         RootDirectory = rootDirectory;
     }
 
-    public VolumeDescriptorSet DescriptorSet { get; }
+    public IsoVolumeDescriptorSet DescriptorSet { get; }
 
     public IsoFileSystemEntryDirectory RootDirectory { get; }
 
@@ -71,11 +71,11 @@ public sealed class IsoFileSystem : Disposable
         return false;
     }
 
-    private static VolumeDescriptorSet ReadVolumeDescriptors(Disc disc)
+    private static IsoVolumeDescriptorSet ReadVolumeDescriptors(Disc disc)
     {
         var sectorIndex = 16;
 
-        var descriptors = new VolumeDescriptorSet();
+        var descriptors = new IsoVolumeDescriptorSet();
 
         while (true)
         {
@@ -83,7 +83,7 @@ public sealed class IsoFileSystem : Disposable
 
             using var stream = disc.Tracks.First().GetStream(sectorIndex);
 
-            var descriptor = new VolumeDescriptor(stream);
+            var descriptor = new IsoVolumeDescriptor(stream);
 
             if (Enum.IsDefined(descriptor.VolumeDescriptorType) == false)
             {
@@ -97,17 +97,17 @@ public sealed class IsoFileSystem : Disposable
 
             descriptor = descriptor.VolumeDescriptorType switch
             {
-                VolumeDescriptorType.BootRecord                    => new VolumeDescriptorBootRecord(descriptor, stream),
-                VolumeDescriptorType.PrimaryVolumeDescriptor       => new VolumeDescriptorPrimary(descriptor, stream),
-                VolumeDescriptorType.SupplementaryVolumeDescriptor => new VolumeDescriptorSupplementary(descriptor, stream),
-                VolumeDescriptorType.VolumePartitionDescriptor     => new VolumeDescriptorPartition(descriptor, stream),
-                VolumeDescriptorType.VolumeDescriptorSetTerminator => new VolumeDescriptorSetTerminator(descriptor, stream),
+                IsoVolumeDescriptorType.BootRecord                    => new IsoVolumeDescriptorBootRecord(descriptor, stream),
+                IsoVolumeDescriptorType.PrimaryVolumeDescriptor       => new IsoVolumeDescriptorPrimary(descriptor, stream),
+                IsoVolumeDescriptorType.SupplementaryVolumeDescriptor => new IsoVolumeDescriptorSupplementary(descriptor, stream),
+                IsoVolumeDescriptorType.VolumePartitionDescriptor     => new IsoVolumeDescriptorPartition(descriptor, stream),
+                IsoVolumeDescriptorType.VolumeDescriptorSetTerminator => new IsoVolumeDescriptorSetTerminator(descriptor, stream),
                 _                                                  => throw new NotSupportedException(descriptor.VolumeDescriptorType.ToString())
             };
 
             descriptors.Add(descriptor);
 
-            if (descriptor is VolumeDescriptorSetTerminator)
+            if (descriptor is IsoVolumeDescriptorSetTerminator)
             {
                 break;
             }
@@ -118,7 +118,7 @@ public sealed class IsoFileSystem : Disposable
         return descriptors;
     }
 
-    private static IsoFileSystemEntryDirectory ReadRootDirectory(Disc disc, VolumeDescriptorPrimary pvd)
+    private static IsoFileSystemEntryDirectory ReadRootDirectory(Disc disc, IsoVolumeDescriptorPrimary pvd)
     {
         var pathTableRecords = ReadPathTableRecords(disc, pvd);
         var directoryRecords = ReadDirectoryRecords(disc, pathTableRecords);
@@ -130,7 +130,7 @@ public sealed class IsoFileSystem : Disposable
 
         var firstDirectory = new IsoFileSystemEntryDirectory(null, directory1);
 
-        var stack = new Stack<(IsoFileSystemEntryDirectory, PathTableRecord)>();
+        var stack = new Stack<(IsoFileSystemEntryDirectory, IsoPathTableRecord)>();
 
         stack.Push((firstDirectory, pathTable1));
 
@@ -142,7 +142,7 @@ public sealed class IsoFileSystem : Disposable
 
             foreach (var record in list)
             {
-                if (record.FileFlags.HasFlags(DirectoryRecordFlags.Directory))
+                if (record.FileFlags.HasFlags(IsoDirectoryRecordFlags.Directory))
                 {
                     switch (record.FileIdentifier) // ignore . and .. or infinite loop
                     {
@@ -170,9 +170,9 @@ public sealed class IsoFileSystem : Disposable
         return firstDirectory;
     }
 
-    private static IList<PathTableRecord> ReadPathTableRecords(Disc disc, VolumeDescriptorPrimary pvd)
+    private static IList<IsoPathTableRecord> ReadPathTableRecords(Disc disc, IsoVolumeDescriptorPrimary pvd)
     {
-        var records = new List<PathTableRecord>();
+        var records = new List<IsoPathTableRecord>();
 
         var pathTableRead = 0L;
 
@@ -186,7 +186,7 @@ public sealed class IsoFileSystem : Disposable
         {
             var recordPosition = stream.Position;
 
-            var record = new PathTableRecord(stream);
+            var record = new IsoPathTableRecord(stream);
 
             var recordLength = stream.Position - recordPosition;
 
@@ -198,13 +198,13 @@ public sealed class IsoFileSystem : Disposable
         return records;
     }
 
-    private static void ReadDirectoryRecords(Disc disc, ICollection<DirectoryRecord> records, uint extent)
+    private static void ReadDirectoryRecords(Disc disc, ICollection<IsoDirectoryRecord> records, uint extent)
     {
         using var stream = disc.Tracks.First().GetStream(Convert.ToInt32(extent));
 
         while (true)
         {
-            var record = new DirectoryRecord(stream);
+            var record = new IsoDirectoryRecord(stream);
 
             if (record.LengthOfDirectoryRecord == 0)
             {
@@ -215,15 +215,15 @@ public sealed class IsoFileSystem : Disposable
         }
     }
 
-    private static IDictionary<PathTableRecord, IList<DirectoryRecord>> ReadDirectoryRecords(Disc disc, IEnumerable<PathTableRecord> pathTableRecords)
+    private static IDictionary<IsoPathTableRecord, IList<IsoDirectoryRecord>> ReadDirectoryRecords(Disc disc, IEnumerable<IsoPathTableRecord> pathTableRecords)
     {
-        var dictionary = new Dictionary<PathTableRecord, IList<DirectoryRecord>>();
+        var dictionary = new Dictionary<IsoPathTableRecord, IList<IsoDirectoryRecord>>();
 
         foreach (var pathTableRecord in pathTableRecords)
         {
             if (dictionary.TryGetValue(pathTableRecord, out var records) is false)
             {
-                dictionary.Add(pathTableRecord, records = new List<DirectoryRecord>());
+                dictionary.Add(pathTableRecord, records = new List<IsoDirectoryRecord>());
             }
 
             var extent = pathTableRecord.LocationOfExtent;

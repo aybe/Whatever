@@ -4,12 +4,12 @@ using JetBrains.Annotations;
 
 namespace Whatever.ISO9660.Logical;
 
-public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
+public abstract partial class IsoFileSystemEntry(IsoFileSystemEntryDirectory? parent, IsoDirectoryRecord record)
 {
     [PublicAPI]
     public const char DirectorySeparator = '/';
 
-    protected DirectoryRecord Record { get; } = record;
+    protected IsoDirectoryRecord Record { get; } = record;
 
     [PublicAPI]
     public IsoFileSystemEntryDirectory? Parent { get; } = parent;

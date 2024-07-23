@@ -2,23 +2,23 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Logical;
 
-public class VolumeDescriptor
+public class IsoVolumeDescriptor
 {
-    internal VolumeDescriptor(Stream stream)
+    internal IsoVolumeDescriptor(Stream stream)
     {
-        VolumeDescriptorType    = stream.Read<VolumeDescriptorType>(); // 711
+        VolumeDescriptorType    = stream.Read<IsoVolumeDescriptorType>(); // 711
         StandardIdentifier      = stream.ReadStringAscii(5);
         VolumeDescriptorVersion = stream.ReadIso711();
     }
 
-    protected VolumeDescriptor(VolumeDescriptor descriptor)
+    protected IsoVolumeDescriptor(IsoVolumeDescriptor descriptor)
     {
         VolumeDescriptorType    = descriptor.VolumeDescriptorType;
         StandardIdentifier      = descriptor.StandardIdentifier;
         VolumeDescriptorVersion = descriptor.VolumeDescriptorVersion;
     }
 
-    public VolumeDescriptorType VolumeDescriptorType { get; }
+    public IsoVolumeDescriptorType VolumeDescriptorType { get; }
 
     public string StandardIdentifier { get; }
 

@@ -4,7 +4,7 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Logical;
 
-public static class StreamExtensions
+public static class IsoStreamExtensions
 {
     public static byte ReadIso711(this Stream stream)
     {

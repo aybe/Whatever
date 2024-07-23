@@ -2,9 +2,9 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Logical;
 
-public sealed class VolumeDescriptorPrimary : VolumeDescriptor
+public sealed class IsoVolumeDescriptorPrimary : IsoVolumeDescriptor
 {
-    public VolumeDescriptorPrimary(VolumeDescriptor descriptor, Stream stream)
+    public IsoVolumeDescriptorPrimary(IsoVolumeDescriptor descriptor, Stream stream)
         : base(descriptor)
     {
         stream.Seek(1, SeekOrigin.Current);
@@ -35,7 +35,7 @@ public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 
         LocationOfOptionalOccurrenceOfTypeMPathTable = stream.ReadIso732();
 
-        DirectoryRecordForRootDirectory = new DirectoryRecord(stream);
+        DirectoryRecordForRootDirectory = new IsoDirectoryRecord(stream);
 
         VolumeSetIdentifier = stream.ReadIsoString(128, IsoStringFlags.DCharacters);
 
@@ -51,13 +51,13 @@ public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 
         BibliographicFileIdentifier = stream.ReadIsoString(37, IsoStringFlags.DCharacters | IsoStringFlags.Separator1 | IsoStringFlags.Separator2);
 
-        VolumeCreationDateAndTime = new VolumeDescriptorDateTime(stream);
+        VolumeCreationDateAndTime = new IsoVolumeDescriptorDateTime(stream);
 
-        VolumeModificationDateAndTime = new VolumeDescriptorDateTime(stream);
+        VolumeModificationDateAndTime = new IsoVolumeDescriptorDateTime(stream);
 
-        VolumeExpirationDateAndTime = new VolumeDescriptorDateTime(stream);
+        VolumeExpirationDateAndTime = new IsoVolumeDescriptorDateTime(stream);
 
-        VolumeEffectiveDateAndTime = new VolumeDescriptorDateTime(stream);
+        VolumeEffectiveDateAndTime = new IsoVolumeDescriptorDateTime(stream);
 
         FileStructureVersion = stream.ReadIso711();
 
@@ -90,7 +90,7 @@ public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 
     public uint LocationOfOptionalOccurrenceOfTypeMPathTable { get; }
 
-    public DirectoryRecord DirectoryRecordForRootDirectory { get; }
+    public IsoDirectoryRecord DirectoryRecordForRootDirectory { get; }
 
     public string VolumeSetIdentifier { get; }
 
@@ -106,13 +106,13 @@ public sealed class VolumeDescriptorPrimary : VolumeDescriptor
 
     public string BibliographicFileIdentifier { get; }
 
-    public VolumeDescriptorDateTime VolumeCreationDateAndTime { get; }
+    public IsoVolumeDescriptorDateTime VolumeCreationDateAndTime { get; }
 
-    public VolumeDescriptorDateTime VolumeModificationDateAndTime { get; }
+    public IsoVolumeDescriptorDateTime VolumeModificationDateAndTime { get; }
 
-    public VolumeDescriptorDateTime VolumeExpirationDateAndTime { get; }
+    public IsoVolumeDescriptorDateTime VolumeExpirationDateAndTime { get; }
 
-    public VolumeDescriptorDateTime VolumeEffectiveDateAndTime { get; }
+    public IsoVolumeDescriptorDateTime VolumeEffectiveDateAndTime { get; }
 
     public byte FileStructureVersion { get; }
 

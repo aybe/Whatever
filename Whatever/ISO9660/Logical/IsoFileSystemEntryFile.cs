@@ -4,7 +4,7 @@ namespace Whatever.ISO9660.Logical;
 
 public sealed partial class IsoFileSystemEntryFile : IsoFileSystemEntry
 {
-    public IsoFileSystemEntryFile(IsoFileSystemEntryDirectory? parent, DirectoryRecord record)
+    public IsoFileSystemEntryFile(IsoFileSystemEntryDirectory? parent, IsoDirectoryRecord record)
         : base(parent, record)
     {
         var regex = VersionRegex();

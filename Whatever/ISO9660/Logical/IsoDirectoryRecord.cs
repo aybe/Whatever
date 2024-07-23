@@ -2,9 +2,9 @@ using Whatever.Extensions;
 
 namespace Whatever.ISO9660.Logical;
 
-public sealed class DirectoryRecord
+public sealed class IsoDirectoryRecord
 {
-    public DirectoryRecord(Stream stream)
+    public IsoDirectoryRecord(Stream stream)
     {
         var position = stream.Position;
 
@@ -21,9 +21,9 @@ public sealed class DirectoryRecord
 
         DataLength = stream.ReadIso733();
 
-        RecordingDateAndTime = new DirectoryRecordDateTime(stream);
+        RecordingDateAndTime = new IsoDirectoryRecordDateTime(stream);
 
-        FileFlags = stream.Read<DirectoryRecordFlags>();
+        FileFlags = stream.Read<IsoDirectoryRecordFlags>();
 
         FileUnitSize = stream.ReadIso711();
 
@@ -54,9 +54,9 @@ public sealed class DirectoryRecord
 
     public uint DataLength { get; }
 
-    public DirectoryRecordDateTime RecordingDateAndTime { get; } = null!;
+    public IsoDirectoryRecordDateTime RecordingDateAndTime { get; } = null!;
 
-    public DirectoryRecordFlags FileFlags { get; }
+    public IsoDirectoryRecordFlags FileFlags { get; }
 
     public byte FileUnitSize { get; }
 

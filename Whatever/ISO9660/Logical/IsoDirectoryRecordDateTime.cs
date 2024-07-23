@@ -2,7 +2,7 @@ using System.Globalization;
 
 namespace Whatever.ISO9660.Logical;
 
-public sealed class DirectoryRecordDateTime(Stream stream)
+public sealed class IsoDirectoryRecordDateTime(Stream stream)
 {
     public byte NumberOfYearsSince1900 { get; } = stream.ReadIso711();
 
