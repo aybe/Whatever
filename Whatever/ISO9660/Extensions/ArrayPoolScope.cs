@@ -20,6 +20,8 @@ public readonly struct ArrayPoolScope<T> : IDisposable // TODO move to Whatever.
     public ArrayPoolScope(int length, ArrayPool<T>? pool = null)
     {
         Array = (Pool = pool ?? ArrayPool<T>.Shared).Rent(Length = length);
+
+        Span.Clear();
     }
 
     public Memory<T> Memory => Array.AsMemory(0, Length);
