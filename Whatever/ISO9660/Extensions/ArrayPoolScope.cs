@@ -1,4 +1,5 @@
 using System.Buffers;
+using JetBrains.Annotations;
 
 namespace Whatever.ISO9660.Extensions;
 
@@ -9,6 +10,12 @@ public readonly struct ArrayPoolScope<T> : IDisposable // TODO move to Whatever.
     private readonly int Length;
 
     private readonly ArrayPool<T> Pool;
+
+    [UsedImplicitly]
+    public ArrayPoolScope()
+    {
+        throw new InvalidOperationException("Use parameterized constructor.");
+    }
 
     public ArrayPoolScope(int length, ArrayPool<T>? pool = null)
     {
