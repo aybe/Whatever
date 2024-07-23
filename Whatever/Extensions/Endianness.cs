@@ -3,18 +3,18 @@ using System.Diagnostics.CodeAnalysis;
 namespace Whatever.Extensions;
 
 /// <summary>
-///     Specifies the endianness.
+///     Specifies the endianness to use for endian-aware methods.
 /// </summary>
 [SuppressMessage("ReSharper", "InconsistentNaming")]
 public enum Endianness
 {
     /// <summary>
-    ///     Big-endian, i.e. MSB.
+    ///     MSB, e.g. Motorola.
     /// </summary>
     BE = 0,
 
     /// <summary>
-    ///     Little-endian, i.e. LSB.
+    ///     LSB, e.g. Intel.
     /// </summary>
     LE = 1
 }
