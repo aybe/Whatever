@@ -6,7 +6,7 @@ namespace Whatever.ISO9660.Extensions;
 /// <summary>
 ///     Disposable scope for <see cref="ArrayPool{T}" />.
 /// </summary>
-public readonly struct ArrayPoolScope<T> : IDisposable // TODO move to Whatever.Extensions
+public readonly struct ArrayPoolScope<T> : IDisposable, IEquatable<ArrayPoolScope<T>> // TODO move to Whatever.Extensions
 {
     private readonly T[] Array;
 
@@ -34,5 +34,30 @@ public readonly struct ArrayPoolScope<T> : IDisposable // TODO move to Whatever.
     public void Dispose()
     {
         Pool.Return(Array);
+    }
+
+    public bool Equals(ArrayPoolScope<T> other)
+    {
+        return Array.Equals(other.Array);
+    }
+
+    public override bool Equals(object? obj)
+    {
+        return obj is ArrayPoolScope<T> other && Equals(other);
+    }
+
+    public override int GetHashCode()
+    {
+        return Array.GetHashCode();
+    }
+
+    public static bool operator ==(ArrayPoolScope<T> left, ArrayPoolScope<T> right)
+    {
+        return left.Equals(right);
+    }
+
+    public static bool operator !=(ArrayPoolScope<T> left, ArrayPoolScope<T> right)
+    {
+        return !left.Equals(right);
     }
 }
