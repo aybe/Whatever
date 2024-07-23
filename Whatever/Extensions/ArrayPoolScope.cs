@@ -60,4 +60,24 @@ public readonly struct ArrayPoolScope<T> : IDisposable, IEquatable<ArrayPoolScop
     {
         return !left.Equals(right);
     }
+
+    public static implicit operator Memory<T>(ArrayPoolScope<T> scope)
+    {
+        return scope.Memory;
+    }
+
+    public static implicit operator ReadOnlyMemory<T>(ArrayPoolScope<T> scope)
+    {
+        return scope.Memory;
+    }
+
+    public static implicit operator Span<T>(ArrayPoolScope<T> scope)
+    {
+        return scope.Span;
+    }
+
+    public static implicit operator ReadOnlySpan<T>(ArrayPoolScope<T> scope)
+    {
+        return scope.Span;
+    }
 }
