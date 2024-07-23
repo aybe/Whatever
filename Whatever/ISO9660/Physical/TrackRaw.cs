@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Versioning;
 using Microsoft.Win32.SafeHandles;
-using Whatever.ISO9660.Extensions;
+using Whatever.Interop;
 
 namespace Whatever.ISO9660.Physical;
 

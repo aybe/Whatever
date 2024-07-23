@@ -26,6 +26,9 @@ General:
 		merge stream extensions/scope
 	XA
 	fix CLI app
+	disposable async: make core abstract
+	track: pass aligned buffer
+	stream extensions: merge sizeof
 	
 
 ISOFS:

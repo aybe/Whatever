@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 using Microsoft.Win32.SafeHandles;
 using Whatever.ISO9660.Physical;
 
-namespace Whatever.ISO9660.Extensions;
+namespace Whatever.Interop;
 
 public static class DeviceIoControl
 {
@@ -30,7 +30,7 @@ public static class DeviceIoControl
     [MustUseReturnValue]
     [SuppressMessage("ReSharper", "UnusedMethodReturnValue.Global")]
     public static uint Send<TSource, TTarget>(
-        SafeFileHandle handle, uint code, NativeMarshaller<TSource> source, NativeMarshaller<TTarget> target
+        SafeFileHandle handle, uint code, NativeMarshal<TSource> source, NativeMarshal<TTarget> target
     )
         where TSource : struct
         where TTarget : struct
@@ -47,8 +47,8 @@ public static class DeviceIoControl
     private static unsafe uint SendWindows<TSource, TTarget>(
         SafeFileHandle handle,
         uint code,
-        NativeMarshaller<TSource> source,
-        NativeMarshaller<TTarget> target
+        NativeMarshal<TSource> source,
+        NativeMarshal<TTarget> target
     )
         where TSource : struct
         where TTarget : struct
@@ -70,8 +70,8 @@ public static class DeviceIoControl
     public static async Task<uint> SendAsync<TSource, TTarget>(
         SafeFileHandle handle,
         uint code,
-        NativeMarshaller<TSource> source,
-        NativeMarshaller<TTarget> target,
+        NativeMarshal<TSource> source,
+        NativeMarshal<TTarget> target,
         TimeSpan timeout
     )
         where TSource : struct
@@ -89,8 +89,8 @@ public static class DeviceIoControl
     private static async Task<uint> SendWindowsAsync<TSource, TTarget>(
         SafeFileHandle handle,
         uint code,
-        NativeMarshaller<TSource> source,
-        NativeMarshaller<TTarget> target,
+        NativeMarshal<TSource> source,
+        NativeMarshal<TTarget> target,
         TimeSpan timeout
     )
         where TSource : struct

@@ -27,10 +27,10 @@ public abstract class DisposableAsync : Disposable, IAsyncDisposable
     ///     Current implementation calls <see cref="Disposable.DisposeManaged" />.
     /// </remarks>
     [SuppressMessage("ReSharper", "VirtualMemberNeverOverridden.Global")]
-    protected virtual async ValueTask DisposeAsyncCore()
+    protected virtual ValueTask DisposeAsyncCore()
     {
         DisposeManaged();
 
-        await ValueTask.CompletedTask.ConfigureAwait(false);
+        return ValueTask.CompletedTask;
     }
 }

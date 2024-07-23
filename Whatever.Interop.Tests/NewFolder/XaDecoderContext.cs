@@ -1,69 +1,67 @@
 ﻿namespace Whatever.Interop.Tests.NewFolder;
 
-public struct XaDecoderContext : IDisposable
+public sealed class XaDecoderContext
 {
-    private static readonly int[] Filter1 = [0, +60, +115, +98, +122];
+    private static int[] Filter1 { get; } = [0, +60, +115, +98, +122];
 
-    private static readonly int[] Filter2 = [0, 0, -52, -55, -60];
+    private static int[] Filter2 { get; } = [0, 0, -52, -55, -60];
 
-    private readonly NativeBuffer2D<int> Buffer;
+    private int[][] Buffer { get; } = [[0, 0], [0, 0]];
 
-    public readonly NativeBuffer1D<byte> Sector;
+    private short[] Output { get; } = new short[18 * 112 * 4];
 
-    public readonly NativeBuffer1D<short> Output;
+    /// <summary>
+    ///     Gets the number of channels decoded by last <see cref="Decode" />.
+    /// </summary>
+    public int Channels { get; private set; }
 
-    public int OutputChannels;
+    /// <summary>
+    ///     Gets the frequency decoded by last <see cref="Decode" />.
+    /// </summary>
+    public int Frequency { get; private set; }
 
-    public int OutputSampleRate;
+    /// <summary>
+    ///     Gets the number of samples decoded by last <see cref="Decode" />.
+    /// </summary>
+    public int Samples { get; private set; }
 
-    public int OutputSampleCount;
-
-    public XaDecoderContext()
+    public Span<short> Decode(Span<byte> sector)
     {
-        Buffer = new NativeBuffer2D<int>(2, 2);
-        Sector = new NativeBuffer1D<byte>(2352);
-        Output = new NativeBuffer1D<short>(18 * 112 * 4);
-    }
+        ArgumentOutOfRangeException.ThrowIfNotEqual(sector.Length, 2352);
 
-    public readonly void Dispose()
-    {
-        Buffer.Dispose();
-        Sector.Dispose();
-        Output.Dispose();
-    }
-
-    public static void Decode(ref XaDecoderContext ctx)
-    {
-        var info = ctx.Sector[19];
+        var info = sector[19];
 
         var is8Bit = (info & 0x30) != 0;
         var isStereo = (info & 0x03) != 0;
         var sampleRate = (info & 0x0C) != 0;
 
-        ctx.OutputChannels = isStereo
+        Channels = isStereo
             ? 2
             : 1;
 
-        ctx.OutputSampleRate = sampleRate
+        Frequency = sampleRate
             ? 18900
             : 37800;
 
-        ctx.OutputSampleCount = is8Bit
+        Samples = is8Bit
             ? isStereo
-                ? Decode(ref ctx, 8, 2, 0, 2, 0, 0xFF, 8, 24)
-                : Decode(ref ctx, 8, 4, 0, 1, 0, 0xFF, 8, 24)
+                ? Decode(sector, 8, 2, 0, 2, 0, 0xFF, 8, 24)
+                : Decode(sector, 8, 4, 0, 1, 0, 0xFF, 8, 24)
             : isStereo
-                ? Decode(ref ctx, 4, 4, 0, 2, 1, 0xF, 12, 28)
-                : Decode(ref ctx, 4, 8, 1, 1, 0, 0xF, 12, 28);
+                ? Decode(sector, 4, 4, 0, 2, 1, 0xF, 12, 28)
+                : Decode(sector, 4, 8, 1, 1, 0, 0xF, 12, 28);
+
+        var span = Output.AsSpan(0, Samples * Channels);
+
+        return span;
     }
 
-    private static int Decode(
-        ref XaDecoderContext ctx,
-        int bits, int blockCount, int blockMask, int channelCount, int channelMask, int sampleMask, int sampleShift, int signedShift)
+    private int Decode(
+        Span<byte> span, int bits, int blockCount, int blockMask, int channelCount, int channelMask, int sampleMask, int sampleShift, int signedShift)
     {
-        var buffer = ctx.Buffer;
-        var output = ctx.Output;
-        var sector = ctx.Sector.Span[(12 + 4 + 8)..];
+        var buffer = Buffer;
+        var output = Output;
+        var sector = span[(12 + 4 + 8)..];
         var offset = 0;
 
         for (var group = 0; group < 18; group++)

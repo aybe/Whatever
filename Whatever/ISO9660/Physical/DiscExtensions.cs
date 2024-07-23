@@ -1,13 +1,10 @@
-﻿using Microsoft.Extensions.ObjectPool;
-using Whatever.Extensions;
+﻿using Whatever.Extensions;
 using Whatever.ISO9660.Logical;
 
 namespace Whatever.ISO9660.Physical;
 
 public static class DiscExtensions
 {
-    private static readonly DefaultObjectPool<SpanMemoryManager<byte>> ReadFileManager = new(new ReadFileManagerPolicy());
-
     public static async Task ReadFileRawAsync(this Disc disc, IsoFileSystemEntryFile file, Stream stream, IProgress<double>? progress = null)
     {
         await ReadFileAsync(disc, file, stream, ReadFileRaw, progress).ConfigureAwait(false);
@@ -27,23 +24,21 @@ public static class DiscExtensions
 
         var sectors = (int)Math.Ceiling((double)file.Length / track.Sector.GetUserDataLength());
 
-        using var manager = ReadFileManager.Get();
+        using var buffer = new ArrayPoolScope<byte>(2352);
 
         for (var i = 0; i < sectors; i++)
         {
             var sector = await track.ReadSectorAsync(i + position).ConfigureAwait(false);
 
-            handler(file, stream, sector, manager);
+            var length = handler(file, stream, sector, buffer);
 
-            await stream.WriteAsync(manager.Memory).ConfigureAwait(false);
+            await stream.WriteAsync(buffer.Memory[..length]).ConfigureAwait(false);
 
             progress?.Report(1.0d / sectors * (i + 1));
         }
-
-        ReadFileManager.Return(manager);
     }
 
-    private static void ReadFileRaw(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager)
+    private static int ReadFileRaw(IsoFileSystemEntryFile file, Stream stream, ISector sector, ArrayPoolScope<byte> buffer)
     {
         var data = sector.GetData();
 
@@ -51,10 +46,12 @@ public static class DiscExtensions
 
         var span = data[..size];
 
-        manager.SetSpan(span);
+        span.CopyTo(buffer);
+
+        return size;
     }
 
-    private static void ReadFileUser(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager)
+    private static int ReadFileUser(IsoFileSystemEntryFile file, Stream stream, ISector sector, ArrayPoolScope<byte> buffer)
     {
         var data = sector.GetUserData();
 
@@ -62,23 +59,10 @@ public static class DiscExtensions
 
         var span = data[..size];
 
-        manager.SetSpan(span);
+        span.CopyTo(buffer);
+
+        return size;
     }
 
-    private sealed class ReadFileManagerPolicy : IPooledObjectPolicy<SpanMemoryManager<byte>>
-    {
-        public SpanMemoryManager<byte> Create()
-        {
-            return new SpanMemoryManager<byte>();
-        }
-
-        public bool Return(SpanMemoryManager<byte> obj)
-        {
-            using var manager = obj;
-
-            return true;
-        }
-    }
-
-    private delegate void ReadFileHandler(IsoFileSystemEntryFile file, Stream stream, ISector sector, SpanMemoryManager<byte> manager);
+    private delegate int ReadFileHandler(IsoFileSystemEntryFile file, Stream stream, ISector sector, ArrayPoolScope<byte> buffer);
 }

@@ -10,29 +10,16 @@ namespace Whatever.Extensions;
 /// </summary>
 public static class StreamExtensions
 {
-    private static SharedBuffer<byte> ToBuffer<T>(ref T value, Endianness? endianness)
-        where T : unmanaged
-    {
-        var span = MemoryMarshal.CreateSpan(ref value, 1);
-
-        var bytes = MemoryMarshal.AsBytes(span);
-
-        TryReverseEndianness(endianness, bytes);
-
-        var buffer = new SharedBuffer<byte>(SizeOf<T>());
-
-        bytes.CopyTo(buffer);
-
-        return buffer;
-    }
-
     #region Endianness
 
     /// <summary>
     ///     Gets the endianness of current environment.
     /// </summary>
     [PublicAPI]
-    public static Endianness EnvironmentEndianness { get; } = BitConverter.IsLittleEndian ? Endianness.LE : Endianness.BE;
+    public static Endianness EnvironmentEndianness { get; } =
+        BitConverter.IsLittleEndian
+            ? Endianness.LE
+            : Endianness.BE;
 
     private static ConcurrentDictionary<Stream, Endianness?> EndiannessDictionary { get; } = new();
 
@@ -87,9 +74,7 @@ public static class StreamExtensions
     /// </returns>
     public static IDisposable SetEndiannessScope(this Stream stream, Endianness? endianness)
     {
-        var scope = new EndiannessScope(stream, endianness);
-
-        return scope;
+        return new EndiannessScope(stream, endianness);
     }
 
     private readonly struct EndiannessScope : IDisposable
@@ -188,7 +173,7 @@ public static class StreamExtensions
 
         var length = SizeOf<T>();
 
-        using var buffer = new SharedBuffer<byte>(length);
+        using var buffer = new ArrayPoolScope<byte>(length);
 
         stream.ReadExactly(buffer);
 
@@ -210,7 +195,7 @@ public static class StreamExtensions
 
         var length = SizeOf<T>();
 
-        using var buffer = new SharedBuffer<byte>(length);
+        using var buffer = new ArrayPoolScope<byte>(length);
 
         await stream
             .ReadExactlyAsync(buffer, cancellationToken)
@@ -267,7 +252,7 @@ public static class StreamExtensions
     /// </summary>
     public static async Task<string> ReadStringAsciiAsync(this Stream stream, int length)
     {
-        using var buffer = new SharedBuffer<byte>(length);
+        using var buffer = new ArrayPoolScope<byte>(length);
 
         await stream.ReadExactlyAsync(buffer).ConfigureAwait(false);
 
@@ -279,6 +264,22 @@ public static class StreamExtensions
     #endregion
 
     #region Write
+
+    private static ArrayPoolScope<byte> ToBuffer<T>(ref T value, Endianness? endianness)
+        where T : unmanaged
+    {
+        var span = MemoryMarshal.CreateSpan(ref value, 1);
+
+        var bytes = MemoryMarshal.AsBytes(span);
+
+        TryReverseEndianness(endianness, bytes);
+
+        var buffer = new ArrayPoolScope<byte>(SizeOf<T>());
+
+        bytes.CopyTo(buffer);
+
+        return buffer;
+    }
 
     /// <summary>
     ///     Writes an unmanaged type with specified endianness.

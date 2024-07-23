@@ -1,0 +1,54 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ output extension=".g.cs" #>
+
+namespace Whatever.Extensions;
+
+/// <summary>
+///     <see cref="Convert" />.To... as extension methods.
+/// </summary>
+public static class ConvertExtensions
+{
+
+<#
+    var types = new Dictionary<string, string> {
+        { "ToBoolean", "bool" },
+        { "ToByte", "byte" },
+        { "ToChar", "char" },
+        { "ToDecimal", "decimal" },
+        { "ToDouble", "double" },
+        { "ToInt16", "short" },
+        { "ToInt32", "int" },
+        { "ToInt64", "long" },
+        { "ToSByte", "sbyte" },
+        { "ToSingle", "float" },
+        { "ToUInt16", "ushort" },
+        { "ToUInt32", "uint" },
+        { "ToUInt64", "ulong" },
+    };
+
+    PushIndent("    ");
+
+    foreach(var x in types)
+    {
+        foreach(var y in types)
+        {
+            WriteLine($"/// <summary>");
+            WriteLine($"///     <see cref=\"Convert.{x.Key}({y.Value})\" />.");
+            WriteLine($"/// </summary>");
+            WriteLine($"public static {x.Value} {x.Key}(this {y.Value} value)");
+            WriteLine("{");
+            PushIndent("    ");
+            WriteLine($"return Convert.{x.Key}(value);");
+            PopIndent();
+            WriteLine("}");
+            WriteLine("");
+        }
+    }
+
+    PopIndent();
+#>
+}

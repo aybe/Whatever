@@ -1,11 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using Whatever.Extensions;
 
-namespace Whatever.ISO9660.Extensions;
+namespace Whatever.Interop;
 
-public sealed class NativeMarshaller<T> : DisposableAsync where T : struct
+public sealed class NativeMarshal<T> : Disposable where T : struct
 {
-    public NativeMarshaller(T structure = default)
+    public NativeMarshal(T structure = default)
     {
         Length = Marshal.SizeOf<T>();
 

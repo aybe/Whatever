@@ -12,8 +12,10 @@ public static class EnumExtensions
     /// </summary>
     public static bool HasFlags<T>(this T value, T flags) where T : Enum
     {
-        var a = Convert.ToUInt64(value, CultureInfo.InvariantCulture);
-        var b = Convert.ToUInt64(flags, CultureInfo.InvariantCulture);
+        var info = CultureInfo.InvariantCulture;
+
+        var a = Convert.ToUInt64(value, info);
+        var b = Convert.ToUInt64(flags, info);
         var c = (a & b) == b;
 
         return c;

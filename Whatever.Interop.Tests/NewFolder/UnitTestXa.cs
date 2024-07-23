@@ -47,26 +47,24 @@ public class UnitTestXa : UnitTestBase
 
         WriteWavHeader(target);
 
+        var sector = new byte[2352];
+
         while (source.Position < source.Length)
         {
-            source.ReadExactly(ctx.Sector);
+            source.ReadExactly(sector);
 
-            XaDecoderContext.Decode(ref ctx);
+            var decode = ctx.Decode(sector);
 
-            var outputSampleCount = ctx.OutputSampleCount;
-
-            var span = ctx.Output.Span[..(outputSampleCount * ctx.OutputChannels)];
+            var outputSampleCount = ctx.Samples;
 
             samples += outputSampleCount;
 
-            target.Write(MemoryMarshal.AsBytes(span));
+            target.Write(MemoryMarshal.AsBytes(decode));
         }
-
-        ctx.Dispose();
 
         target.Position = 0;
 
-        WriteWavHeader(target, 16, (ushort)ctx.OutputChannels, (uint)ctx.OutputSampleRate, (uint)samples);
+        WriteWavHeader(target, 16, (ushort)ctx.Channels, (uint)ctx.Frequency, (uint)samples);
 
         var expectedHash = sourceFileName switch
         {

@@ -305,7 +305,7 @@ internal static partial class Program
             await stream.WriteAsync((uint)(length - 44));
         }
 
-        using var buffer = new SharedBuffer<byte>(sectorLength);
+        using var buffer = new ArrayPoolScope<byte>(sectorLength);
 
         for (var i = 0; i < trackLength; i++)
         {

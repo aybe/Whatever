@@ -221,7 +221,10 @@ public sealed class IsoFileSystem : Disposable
 
         foreach (var pathTableRecord in pathTableRecords)
         {
-            var records = dictionary.GetOrAdd(pathTableRecord, () => new List<DirectoryRecord>());
+            if (dictionary.TryGetValue(pathTableRecord, out var records) is false)
+            {
+                dictionary.Add(pathTableRecord, records = new List<DirectoryRecord>());
+            }
 
             var extent = pathTableRecord.LocationOfExtent;
 
