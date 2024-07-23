@@ -9,8 +9,6 @@ General:
 		1. track stream -> read async
 		2. ???
 	make track getstream public
-	rename native memory to aligned memory
-	rename native memory manager
 	remove native allocator/buffers
 	fix/merge tests
 		merge stream extensions/scope
