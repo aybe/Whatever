@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using Whatever.Extensions;
-using Whatever.ISO9660.Extensions;
 using Whatever.ISO9660.GoldenHawk;
 
 namespace Whatever.ISO9660.Physical;

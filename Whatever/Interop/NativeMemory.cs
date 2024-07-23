@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Whatever.Extensions;
 
-namespace Whatever.ISO9660.Extensions;
+namespace Whatever.Interop;
 
 public sealed class NativeMemory<T> : Disposable where T : unmanaged
 {

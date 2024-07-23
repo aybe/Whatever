@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 using Microsoft.Win32.SafeHandles;
 using Whatever.ISO9660.Physical;
 
-namespace Whatever.ISO9660.Extensions;
+namespace Whatever.Interop;
 
 public static class DeviceIoControl
 {

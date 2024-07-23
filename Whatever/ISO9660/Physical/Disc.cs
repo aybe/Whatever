@@ -5,7 +5,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Microsoft.Win32.SafeHandles;
 using Whatever.Extensions;
-using Whatever.ISO9660.Extensions;
+using Whatever.Interop;
 using Whatever.ISO9660.GoldenHawk;
 
 namespace Whatever.ISO9660.Physical;
