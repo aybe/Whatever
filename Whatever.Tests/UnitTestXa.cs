@@ -1,7 +1,5 @@
 ﻿using System.Runtime.InteropServices;
 using System.Security.Cryptography;
-using Whatever.Interop.Tests.NewFolder;
-using Whatever.Tests.ISO9660;
 
 namespace Whatever.Tests;
 

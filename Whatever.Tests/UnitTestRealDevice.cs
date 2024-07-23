@@ -3,7 +3,7 @@ using System.Text;
 using Whatever.ISO9660.Logical;
 using Whatever.ISO9660.Physical;
 
-namespace Whatever.Tests.ISO9660;
+namespace Whatever.Tests;
 
 [TestClass]
 public sealed class UnitTestRealDevice : UnitTestBase

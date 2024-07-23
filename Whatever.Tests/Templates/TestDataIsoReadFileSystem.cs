@@ -1,5 +1,5 @@
 ﻿#pragma warning disable CS8618 // Non-nullable field must contain a non-null value when exiting constructor. Consider declaring as nullable.
-namespace Whatever.Tests.ISO9660.Templates;
+namespace Whatever.Tests.Templates;
 
 public sealed class TestDataIsoReadFileSystem : TestData
 {

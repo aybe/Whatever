@@ -1,4 +1,4 @@
-﻿namespace Whatever.Interop.Tests.NewFolder;
+﻿namespace Whatever.Tests;
 
 public sealed class XaDecoderContext
 {

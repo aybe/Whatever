@@ -1,7 +1,7 @@
 ﻿using JetBrains.Annotations;
 using Newtonsoft.Json;
 
-namespace Whatever.Tests.ISO9660.Templates;
+namespace Whatever.Tests.Templates;
 
 /// <remarks>
 ///     <para>

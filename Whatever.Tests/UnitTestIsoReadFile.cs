@@ -1,9 +1,9 @@
 ﻿using System.Security.Cryptography;
 using Whatever.ISO9660.Logical;
 using Whatever.ISO9660.Physical;
-using Whatever.Tests.ISO9660.Templates;
+using Whatever.Tests.Templates;
 
-namespace Whatever.Tests.ISO9660;
+namespace Whatever.Tests;
 
 [TestClass]
 public sealed class UnitTestIsoReadFile : UnitTestBase
