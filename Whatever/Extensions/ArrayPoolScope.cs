@@ -1,12 +1,12 @@
 using System.Buffers;
 using JetBrains.Annotations;
 
-namespace Whatever.ISO9660.Extensions;
+namespace Whatever.Extensions;
 
 /// <summary>
 ///     Disposable scope for <see cref="ArrayPool{T}" />.
 /// </summary>
-public readonly struct ArrayPoolScope<T> : IDisposable, IEquatable<ArrayPoolScope<T>> // TODO move to Whatever.Extensions
+public readonly struct ArrayPoolScope<T> : IDisposable, IEquatable<ArrayPoolScope<T>>
 {
     private readonly T[] Array;
 
