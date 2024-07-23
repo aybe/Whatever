@@ -55,14 +55,12 @@ public class UnitTestXa : UnitTestBase
 
             var outputSampleCount = ctx.OutputSampleCount;
 
-            var span = ctx.Output.Span[..(outputSampleCount * ctx.OutputChannels)];
+            var span = ctx.Output.AsSpan(0, outputSampleCount * ctx.OutputChannels);
 
             samples += outputSampleCount;
 
             target.Write(MemoryMarshal.AsBytes(span));
         }
-
-        ctx.Dispose();
 
         target.Position = 0;
 

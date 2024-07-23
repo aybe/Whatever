@@ -1,36 +1,22 @@
 ﻿namespace Whatever.Interop.Tests.NewFolder;
 
-public struct XaDecoderContext : IDisposable
+public struct XaDecoderContext()
 {
     private static readonly int[] Filter1 = [0, +60, +115, +98, +122];
 
     private static readonly int[] Filter2 = [0, 0, -52, -55, -60];
 
-    private readonly NativeBuffer2D<int> Buffer;
+    private readonly int[][] Buffer = [[0, 0], [0, 0]];
 
-    public readonly NativeBuffer1D<byte> Sector;
+    public readonly byte[] Sector = new byte[2352];
 
-    public readonly NativeBuffer1D<short> Output;
+    public readonly short[] Output = new short[18 * 112 * 4];
 
     public int OutputChannels;
 
     public int OutputSampleRate;
 
     public int OutputSampleCount;
-
-    public XaDecoderContext()
-    {
-        Buffer = new NativeBuffer2D<int>(2, 2);
-        Sector = new NativeBuffer1D<byte>(2352);
-        Output = new NativeBuffer1D<short>(18 * 112 * 4);
-    }
-
-    public readonly void Dispose()
-    {
-        Buffer.Dispose();
-        Sector.Dispose();
-        Output.Dispose();
-    }
 
     public static void Decode(ref XaDecoderContext ctx)
     {
@@ -63,7 +49,7 @@ public struct XaDecoderContext : IDisposable
     {
         var buffer = ctx.Buffer;
         var output = ctx.Output;
-        var sector = ctx.Sector.Span[(12 + 4 + 8)..];
+        var sector = ctx.Sector[(12 + 4 + 8)..];
         var offset = 0;
 
         for (var group = 0; group < 18; group++)
