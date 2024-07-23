@@ -3,6 +3,9 @@ using JetBrains.Annotations;
 
 namespace Whatever.ISO9660.Extensions;
 
+/// <summary>
+///     Disposable scope for <see cref="ArrayPool{T}" />.
+/// </summary>
 public readonly struct ArrayPoolScope<T> : IDisposable // TODO move to Whatever.Extensions
 {
     private readonly T[] Array;
